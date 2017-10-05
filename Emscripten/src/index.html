@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<style>
+	body {
+		margin: 0px;
+		overflow: hidden;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<button id="btn-fullscreen" style="position: absolute; top: 10px; right: 10px;">Fullscreen</button>
+	<!--<textarea id="log-output"></textarea>-->
+
+	<script>
+
+	var canvas = document.getElementById('canvas');
+	canvas.width = screen.width;
+	canvas.height = screen.height;
+
+	/*var logOutput = document.getElementById('log-output');
+	logOutput.style.width = screen.width + 'px';
+	logOutput.style.height = (screen.height / 2) + 'px';*/
+
+	document.body.requestFullscreen = 
+		document.body.requestFullscreen ||
+		document.body.mozRequestFullScreen || 
+		document.body.webkitRequestFullScreen || 
+		document.body.msRequestFullscreen;
+
+  	canvas.requestPointerLock =
+        canvas.requestPointerLock ||
+        canvas.mozRequestPointerLock ||
+        canvas.webkitRequestPointerLock;
+
+
+	document.getElementById('btn-fullscreen').addEventListener("click", function() {
+		document.body.requestFullscreen();
+		canvas.requestPointerLock();
+  	}, false);
+
+	var Module = {
+	    print: function(text) {
+	        console.log(text);
+	        /*logOutput.value += text + '\n';
+	        logOutput.scrollTop = logOutput.scrollHeight;*/
+      	},
+	    canvas: canvas,
+	};
+
+	Module['TOTAL_MEMORY'] = 16777216 * 2;
+
+	</script>
+	<script src="callisto.js?v=1"></script>
+</body>
+</html>

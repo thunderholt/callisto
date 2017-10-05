@@ -1,0 +1,20 @@
+{
+	"controller": "MapTransition",
+	"local-aabb": {
+		"from": [0, 0, 0],
+		"to": [0.5, 0.5, 0.1]
+	},
+	"sub-actors":[
+		{
+			"type": "trigger-sphere",
+			"name": "Trigger",
+			"parent": -1,
+			"position": [0.25, 0.4, 0],
+			"rotation": [0, 0, 0],
+			"trigger-sphere-details": {
+				"radius": 0.6,
+				"applicableActorTypes": ["first-person-player"]
+			}
+		}
+	]
+}

@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{227D7635-E58D-4EB8-9E9D-49C10E0991C6}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Callisto</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\Callisto\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Build\Callisto\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\..\Engine;$(MSBuildProjectDirectory)\..\..\Game;$(MSBuildProjectDirectory)\..\Glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\..\Glew\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Glew\bin\Win32\*" "$(OutDir)" /s /i /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\..\Engine;$(MSBuildProjectDirectory)\..\..\Game;$(MSBuildProjectDirectory)\..\Glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\..\Engine;$(MSBuildProjectDirectory)\..\..\Game;$(MSBuildProjectDirectory)\..\Glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\..\Glew\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)Glew\bin\Win32\*" "$(OutDir)" /s /i /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\..\Engine;$(MSBuildProjectDirectory)\..\..\Game;$(MSBuildProjectDirectory)\..\Glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Engine\AI\Ticker.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\ActorAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\MaterialAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\PVSAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\SpriteSheetAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\StaticMeshAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\TextAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\TextureAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\MapAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Assets\WorldMeshAsset.cpp" />
+    <ClCompile Include="..\..\Engine\Core\Actor.cpp" />
+    <ClCompile Include="..\..\Engine\Core\ActorControllerManager.cpp" />
+    <ClCompile Include="..\..\Engine\Core\ActorInstance.cpp" />
+    <ClCompile Include="..\..\Engine\Core\AssetManager.cpp" />
+    <ClCompile Include="..\..\Engine\Core\CollisionMesh.cpp" />
+    <ClCompile Include="..\..\Engine\Core\DebugVisualisationRenderer.cpp" />
+    <ClCompile Include="..\..\Engine\Core\Engine.cpp" />
+    <ClCompile Include="..\..\Engine\Core\EngineBehaviour.cpp" />
+    <ClCompile Include="..\..\Engine\Core\Factory.cpp" />
+    <ClCompile Include="..\..\Engine\Core\FrameTimer.cpp" />
+    <ClCompile Include="..\..\Engine\Core\Renderer.cpp" />
+    <ClCompile Include="..\..\Engine\Core\SceneManager.cpp" />
+    <ClCompile Include="..\..\Engine\Core\SubActor.cpp" />
+    <ClCompile Include="..\..\Engine\Core\UnitTester.cpp" />
+    <ClCompile Include="..\..\Engine\Core\Volume.cpp" />
+    <ClCompile Include="..\..\Engine\Core\VolumeManager.cpp" />
+    <ClCompile Include="..\..\Engine\FileIO\AndroidFile.cpp" />
+    <ClCompile Include="..\..\Engine\FileIO\BackgroundThreadFileLoader.cpp" />
+    <ClCompile Include="..\..\Engine\FileIO\TokenFileParser.cpp" />
+    <ClCompile Include="..\..\Engine\FileIO\WebBrowserFileLoader.cpp" />
+    <ClCompile Include="..\..\Engine\FileIO\WindowsFile.cpp" />
+    <ClCompile Include="..\..\Engine\Input\AggregatedGamePad.cpp" />
+    <ClCompile Include="..\..\Engine\Input\AndroidTouchScreen.cpp" />
+    <ClCompile Include="..\..\Engine\Input\KeyboardMouseGamePad.cpp" />
+    <ClCompile Include="..\..\Engine\Input\NullKeyboard.cpp" />
+    <ClCompile Include="..\..\Engine\Input\NullPhysicalGamePad.cpp" />
+    <ClCompile Include="..\..\Engine\Input\NullTouchScreen.cpp" />
+    <ClCompile Include="..\..\Engine\Input\TouchScreenGamePad.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WebBrowserKeyboard.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WebBrowserPhysicalGamePad.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WebBrowserTouchScreen.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WindowsKeyboard.cpp" />
+    <ClCompile Include="..\..\Engine\Input\NullMouse.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WebBrowserMouse.cpp" />
+    <ClCompile Include="..\..\Engine\Input\WindowsMouse.cpp" />
+    <ClCompile Include="..\..\Engine\Json\JsonParser.cpp" />
+    <ClCompile Include="..\..\Engine\Json\JsonProperty.cpp" />
+    <ClCompile Include="..\..\Engine\Json\JsonValue.cpp" />
+    <ClCompile Include="..\..\Engine\Logging\AndroidLogger.cpp" />
+    <ClCompile Include="..\..\Engine\Logging\WebBrowserLogger.cpp" />
+    <ClCompile Include="..\..\Engine\Logging\WindowsLogger.cpp" />
+    <ClCompile Include="..\..\Engine\Math\AABB.cpp" />
+    <ClCompile Include="..\..\Engine\Math\CollisionFace.cpp" />
+    <ClCompile Include="..\..\Engine\Math\CollisionLine.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Mat2.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Mat4.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Math.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Plane.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Ray3.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Sphere.cpp" />
+    <ClCompile Include="..\..\Engine\Math\Vec3.cpp" />
+    <ClCompile Include="..\..\Engine\Rasterization\OpenGL\OpenGLHelper.cpp" />
+    <ClCompile Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizer.cpp" />
+    <ClCompile Include="..\..\Engine\Rasterization\RasterJobManager.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\PosixMutex.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\WebBrowserThreadManager.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\WindowsMutex.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\PosixSemaphore.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\PosixThreadManager.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\WindowsThreadManager.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\WindowsSemaphore.cpp" />
+    <ClCompile Include="..\..\Engine\Threading\Worker.cpp" />
+    <ClCompile Include="..\..\Engine\Time\PosixTimestampProvider.cpp" />
+    <ClCompile Include="..\..\Engine\Time\WebBrowserTimestampProvider.cpp" />
+    <ClCompile Include="..\..\Engine\Time\WindowsTimestampProvider.cpp" />
+    <ClCompile Include="..\..\Engine\Util\StringUtil.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\CharacterActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\DoorActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\FirstPersonPlayerActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\KeyActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\MapTransitionActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\ProjectileActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\SpawnPointActorController.cpp" />
+    <ClCompile Include="..\..\Game\ActorControllers\SpawnTriggerActorController.cpp" />
+    <ClCompile Include="..\..\Game\Game.cpp" />
+    <ClCompile Include="..\..\Game\GameController.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Engine\AI\Ticker.h" />
+    <ClInclude Include="..\..\Engine\Assets\ActorAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\MaterialAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\PVSAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\SpriteSheetAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\StaticMeshAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\TextAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\TextureAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\MapAsset.h" />
+    <ClInclude Include="..\..\Engine\Assets\WorldMeshAsset.h" />
+    <ClInclude Include="..\..\Engine\Core\Actor.h" />
+    <ClInclude Include="..\..\Engine\Core\ActorControllerManager.h" />
+    <ClInclude Include="..\..\Engine\Core\ActorInstance.h" />
+    <ClInclude Include="..\..\Engine\Core\AssetManager.h" />
+    <ClInclude Include="..\..\Engine\Core\CollisionMesh.h" />
+    <ClInclude Include="..\..\Engine\Core\DebugVisualisationRenderer.h" />
+    <ClInclude Include="..\..\Engine\Core\Engine.h" />
+    <ClInclude Include="..\..\Engine\Core\EngineBehaviour.h" />
+    <ClInclude Include="..\..\Engine\Core\Factory.h" />
+    <ClInclude Include="..\..\Engine\Core\FrameTimer.h" />
+    <ClInclude Include="..\..\Engine\Core\Renderer.h" />
+    <ClInclude Include="..\..\Engine\Core\SceneManager.h" />
+    <ClInclude Include="..\..\Engine\Core\SubActor.h" />
+    <ClInclude Include="..\..\Engine\Core\UnitTester.h" />
+    <ClInclude Include="..\..\Engine\Core\Volume.h" />
+    <ClInclude Include="..\..\Engine\Core\VolumeManager.h" />
+    <ClInclude Include="..\..\Engine\FileIO\AndroidFile.h" />
+    <ClInclude Include="..\..\Engine\FileIO\BackgroundThreadFileLoader.h" />
+    <ClInclude Include="..\..\Engine\FileIO\TokenFileParser.h" />
+    <ClInclude Include="..\..\Engine\FileIO\WebBrowserFileLoader.h" />
+    <ClInclude Include="..\..\Engine\FileIO\WindowsFile.h" />
+    <ClInclude Include="..\..\Engine\Include\Callisto.h" />
+    <ClInclude Include="..\..\Engine\Include\Common.h" />
+    <ClInclude Include="..\..\Engine\Include\DynamicLengthArray.h" />
+    <ClInclude Include="..\..\Engine\Include\DynamicLengthSlottedArray.h" />
+    <ClInclude Include="..\..\Engine\Include\FixedLengthArray.h" />
+    <ClInclude Include="..\..\Engine\Include\FixedLengthSlottedArray.h" />
+    <ClInclude Include="..\..\Engine\Include\Interfaces.h" />
+    <ClInclude Include="..\..\Engine\Include\Types.h" />
+    <ClInclude Include="..\..\Engine\Input\AggregatedGamePad.h" />
+    <ClInclude Include="..\..\Engine\Input\AndroidTouchScreen.h" />
+    <ClInclude Include="..\..\Engine\Input\NullTouchScreen.h" />
+    <ClInclude Include="..\..\Engine\Input\WebBrowserPhysicalGamePad.h" />
+    <ClInclude Include="..\..\Engine\Input\WebBrowserTouchScreen.h" />
+    <ClInclude Include="..\..\Engine\Input\KeyboardMouseGamePad.h" />
+    <ClInclude Include="..\..\Engine\Input\NullKeyboard.h" />
+    <ClInclude Include="..\..\Engine\Input\NullPhysicalGamePad.h" />
+    <ClInclude Include="..\..\Engine\Input\TouchScreenGamePad.h" />
+    <ClInclude Include="..\..\Engine\Input\WebBrowserKeyboard.h" />
+    <ClInclude Include="..\..\Engine\Input\WindowsKeyboard.h" />
+    <ClInclude Include="..\..\Engine\Input\NullMouse.h" />
+    <ClInclude Include="..\..\Engine\Input\WebBrowserMouse.h" />
+    <ClInclude Include="..\..\Engine\Input\WindowsMouse.h" />
+    <ClInclude Include="..\..\Engine\Json\JsonParser.h" />
+    <ClInclude Include="..\..\Engine\Json\JsonProperty.h" />
+    <ClInclude Include="..\..\Engine\Json\JsonValue.h" />
+    <ClInclude Include="..\..\Engine\Lib\stb_image.h" />
+    <ClInclude Include="..\..\Engine\Logging\AndroidLogger.h" />
+    <ClInclude Include="..\..\Engine\Logging\WebBrowserLogger.h" />
+    <ClInclude Include="..\..\Engine\Logging\WindowsLogger.h" />
+    <ClInclude Include="..\..\Engine\Math\AABB.h" />
+    <ClInclude Include="..\..\Engine\Math\CollisionFace.h" />
+    <ClInclude Include="..\..\Engine\Math\CollisionLine.h" />
+    <ClInclude Include="..\..\Engine\Math\Colours.h" />
+    <ClInclude Include="..\..\Engine\Math\Mat2.h" />
+    <ClInclude Include="..\..\Engine\Math\Math.h" />
+    <ClInclude Include="..\..\Engine\Math\Mat4.h" />
+    <ClInclude Include="..\..\Engine\Math\Plane.h" />
+    <ClInclude Include="..\..\Engine\Math\Ray3.h" />
+    <ClInclude Include="..\..\Engine\Math\Rect.h" />
+    <ClInclude Include="..\..\Engine\Math\Sphere.h" />
+    <ClInclude Include="..\..\Engine\Math\Vec2.h" />
+    <ClInclude Include="..\..\Engine\Math\Vec3.h" />
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGL.h" />
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLHelper.h" />
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizer.h" />
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizerPrograms.h" />
+    <ClInclude Include="..\..\Engine\Rasterization\RasterJobManager.h" />
+    <ClInclude Include="..\..\Engine\Threading\PosixMutex.h" />
+    <ClInclude Include="..\..\Engine\Threading\WebBrowserThreadManager.h" />
+    <ClInclude Include="..\..\Engine\Threading\WindowsMutex.h" />
+    <ClInclude Include="..\..\Engine\Threading\PosixSemaphore.h" />
+    <ClInclude Include="..\..\Engine\Threading\PosixThreadManager.h" />
+    <ClInclude Include="..\..\Engine\Threading\WindowsThreadManager.h" />
+    <ClInclude Include="..\..\Engine\Threading\WindowsSemaphore.h" />
+    <ClInclude Include="..\..\Engine\Threading\Worker.h" />
+    <ClInclude Include="..\..\Engine\Time\PosixTimestampProvider.h" />
+    <ClInclude Include="..\..\Engine\Time\WebBrowserTimestampProvider.h" />
+    <ClInclude Include="..\..\Engine\Time\WindowsTimestampProvider.h" />
+    <ClInclude Include="..\..\Engine\Util\Util.h" />
+    <ClInclude Include="..\..\Engine\Util\StringUtil.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\CharacterActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\DoorActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\FirstPersonPlayerActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\KeyActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\MapTransitionActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\ProjectileActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\SpawnPointActorController.h" />
+    <ClInclude Include="..\..\Game\ActorControllers\SpawnTriggerActorController.h" />
+    <ClInclude Include="..\..\Game\Game.h" />
+    <ClInclude Include="..\..\Game\GameController.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

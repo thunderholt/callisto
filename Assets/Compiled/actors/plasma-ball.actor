@@ -1,0 +1,33 @@
+{
+	"controller": "Projectile",
+	"local-aabb": {
+	 	"from": [-0.1, -0.1, -0.1],
+	 	"to": [0.1, 0.1, 0.1]
+ 	},
+ 	"local-collision-sphere": {
+		"position": [0, 0, 0],
+		"radius": 0.01
+	},
+ 	"sprite-sheet-asset-refs": [
+		"sprite-sheets/projectiles/projectiles.ss"
+	],
+	"texture-asset-refs": [
+		"textures/sprite-sheets/projectiles/projectiles.png"
+	],
+	"sub-actors": [
+		{
+			"type": "sprite-3d",
+			"name": "Sprite",
+			"parent": -1,
+			"position": [0.0, 0.0, 0.0],
+			"rotation": [0, 0, 0],
+			"sprite-3d-details": {
+				"sprite-sheet-asset-ref-index": 0,
+				"texture-asset-ref-index": 0,
+				"sprite-name": "plasma-ball",
+				"size": [0.1, 0.1],
+				"rotation": 0.0
+			}
+		}
+	]
+}

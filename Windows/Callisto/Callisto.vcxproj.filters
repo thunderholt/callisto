@@ -1,0 +1,631 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{5db373cd-8a9f-402e-93b1-3eb754a564d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Engine\Lib">
+      <UniqueIdentifier>{a4dcc677-fee8-4f48-b9d6-2e9001f40af3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Math">
+      <UniqueIdentifier>{805b605b-2669-42af-8cad-4000574dbfde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core">
+      <UniqueIdentifier>{d74e1d79-3a09-4528-9ee8-2a334b9bedcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Util">
+      <UniqueIdentifier>{49213e7a-742c-41ee-a479-785c9417fd48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Assets">
+      <UniqueIdentifier>{6e9b2720-8133-4136-8e4c-9a7c1c49f011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Include">
+      <UniqueIdentifier>{a12d2e0c-3084-4db6-a75f-6c5fc1df53fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\FileIO">
+      <UniqueIdentifier>{43b3c6b3-3fba-4813-89d2-d54cfa1da255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Threading">
+      <UniqueIdentifier>{b293f035-9734-435a-a90f-7a9bf59d1fb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{cb35695a-ac54-4de6-90cf-b9a4bf552a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{cb9e51c0-773c-46ea-b41c-9495cb06f428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\ActorControllers">
+      <UniqueIdentifier>{15d8ef0b-de76-449c-958c-77ab41f08027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Json">
+      <UniqueIdentifier>{2c73b0a1-13c4-42d8-a919-4032c3c5eea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Logging">
+      <UniqueIdentifier>{1d775828-2998-4d30-bdd2-5b2531fa9eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Time">
+      <UniqueIdentifier>{0e95d4c1-37c0-45fb-aeb1-0a41efa46fd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AI">
+      <UniqueIdentifier>{2a3538af-c0de-48b7-af4e-c122148e98d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Rasterization">
+      <UniqueIdentifier>{579c2871-3b12-4e98-9098-5ce61c1c05d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Rasterization\OpenGL">
+      <UniqueIdentifier>{b0fdf24f-4987-4685-a218-30df291fcf5a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Engine\Core\Engine.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Mat4.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\TextureAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\EngineBehaviour.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\TextAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\SpriteSheetAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\MapAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\WorldMeshAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\FrameTimer.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\ActorAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\AssetManager.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\FileIO\BackgroundThreadFileLoader.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\Factory.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\WindowsSemaphore.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\PosixSemaphore.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\WindowsThreadManager.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\PosixThreadManager.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\WindowsMutex.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\PosixMutex.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\FileIO\AndroidFile.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\FileIO\WindowsFile.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\SceneManager.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\FileIO\WebBrowserFileLoader.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\WebBrowserThreadManager.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\Actor.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\SubActor.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Math.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Vec3.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\FirstPersonPlayerActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WindowsMouse.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\NullMouse.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WebBrowserMouse.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WindowsKeyboard.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\NullKeyboard.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WebBrowserKeyboard.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\AggregatedGamePad.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\KeyboardMouseGamePad.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\TouchScreenGamePad.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WebBrowserTouchScreen.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\NullPhysicalGamePad.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\NullTouchScreen.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\AndroidTouchScreen.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\MaterialAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\UnitTester.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Ray3.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Plane.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\CollisionFace.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\CollisionLine.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Sphere.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\CollisionMesh.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Input\WebBrowserPhysicalGamePad.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\StaticMeshAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\AABB.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\DoorActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\CharacterActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\MapTransitionActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Json\JsonValue.cpp">
+      <Filter>Engine\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Json\JsonProperty.cpp">
+      <Filter>Engine\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Json\JsonParser.cpp">
+      <Filter>Engine\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Logging\AndroidLogger.cpp">
+      <Filter>Engine\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Logging\WebBrowserLogger.cpp">
+      <Filter>Engine\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Logging\WindowsLogger.cpp">
+      <Filter>Engine\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\FileIO\TokenFileParser.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Time\PosixTimestampProvider.cpp">
+      <Filter>Engine\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Time\WebBrowserTimestampProvider.cpp">
+      <Filter>Engine\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Time\WindowsTimestampProvider.cpp">
+      <Filter>Engine\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Threading\Worker.cpp">
+      <Filter>Engine\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\AI\Ticker.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Util\StringUtil.cpp">
+      <Filter>Engine\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\ActorInstance.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Math\Mat2.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Rasterization\RasterJobManager.cpp">
+      <Filter>Engine\Rasterization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\Renderer.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Rasterization\OpenGL\OpenGLHelper.cpp">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizer.cpp">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\ActorControllerManager.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\ProjectileActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\VolumeManager.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\Volume.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Core\DebugVisualisationRenderer.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\SpawnTriggerActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\GameController.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\SpawnPointActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\ActorControllers\KeyActorController.cpp">
+      <Filter>Game\ActorControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Assets\PVSAsset.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Engine\Lib\stb_image.h">
+      <Filter>Engine\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Vec3.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\Engine.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Math.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Mat4.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\TextureAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Vec2.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\EngineBehaviour.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\TextAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\SpriteSheetAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\MapAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\AABB.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Sphere.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\WorldMeshAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\FrameTimer.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\ActorAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Colours.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\Types.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\Callisto.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\AssetManager.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\FileIO\BackgroundThreadFileLoader.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\Factory.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\Interfaces.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\WindowsSemaphore.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\WindowsThreadManager.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\PosixThreadManager.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\WindowsMutex.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\PosixMutex.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\FileIO\AndroidFile.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\FileIO\WindowsFile.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\Common.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\SceneManager.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\PosixSemaphore.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\FileIO\WebBrowserFileLoader.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\WebBrowserThreadManager.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\Actor.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\SubActor.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\FirstPersonPlayerActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WindowsMouse.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\NullMouse.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WebBrowserMouse.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WindowsKeyboard.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\NullKeyboard.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WebBrowserKeyboard.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\AggregatedGamePad.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\KeyboardMouseGamePad.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\TouchScreenGamePad.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WebBrowserTouchScreen.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\NullPhysicalGamePad.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\NullTouchScreen.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\AndroidTouchScreen.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\MaterialAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\DynamicLengthArray.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\DynamicLengthSlottedArray.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\FixedLengthArray.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Include\FixedLengthSlottedArray.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\UnitTester.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Ray3.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Plane.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\CollisionFace.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\CollisionLine.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\CollisionMesh.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Input\WebBrowserPhysicalGamePad.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\StaticMeshAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\DoorActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\CharacterActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\MapTransitionActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Json\JsonValue.h">
+      <Filter>Engine\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Json\JsonProperty.h">
+      <Filter>Engine\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Json\JsonParser.h">
+      <Filter>Engine\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Logging\AndroidLogger.h">
+      <Filter>Engine\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Logging\WebBrowserLogger.h">
+      <Filter>Engine\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Logging\WindowsLogger.h">
+      <Filter>Engine\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\FileIO\TokenFileParser.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Time\PosixTimestampProvider.h">
+      <Filter>Engine\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Time\WebBrowserTimestampProvider.h">
+      <Filter>Engine\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Time\WindowsTimestampProvider.h">
+      <Filter>Engine\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Threading\Worker.h">
+      <Filter>Engine\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\AI\Ticker.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Util\StringUtil.h">
+      <Filter>Engine\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Util\Util.h">
+      <Filter>Engine\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\ActorInstance.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Mat2.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rasterization\RasterJobManager.h">
+      <Filter>Engine\Rasterization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGL.h">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLHelper.h">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizer.h">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLRasterizerPrograms.h">
+      <Filter>Engine\Rasterization\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\Renderer.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\ActorControllerManager.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\ProjectileActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\VolumeManager.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\Volume.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Core\DebugVisualisationRenderer.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\SpawnTriggerActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\GameController.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\SpawnPointActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\ActorControllers\KeyActorController.h">
+      <Filter>Game\ActorControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Rect.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Assets\PVSAsset.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

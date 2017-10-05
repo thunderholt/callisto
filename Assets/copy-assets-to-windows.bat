@@ -1,0 +1,1 @@
+xcopy "Compiled\*" "..\Windows\Build\Callisto\Assets" /s /i /d /y

@@ -1,0 +1,120 @@
+{
+	"world-mesh-asset-refs": [
+		"world-meshes/demo-1.wmesh"
+	],
+
+	"pvs-asset-refs": [
+		"pvs/demo-1.pvs"
+	],
+
+	"static-mesh-asset-refs": [
+		"static-meshes/door-1.smesh",
+		"static-meshes/robot.smesh",
+		"static-meshes/gun.smesh",
+		"static-meshes/key.smesh"
+	],
+
+	"material-asset-refs": [
+		"materials/demo-map/floor-2x8-1.mat",
+		"materials/demo-map/floor-8x8-1.mat",
+		"materials/static-meshes/door-1.mat",
+		"materials/static-meshes/key.mat",
+		"materials/static-meshes/robot.mat",
+		"materials/static-meshes/gun.mat"
+	],
+
+	"texture-asset-refs": [
+		"textures/demo-map/floor-2x8-1-d.png",
+		"textures/demo-map/floor-8x8-1-d.png",
+		"textures/static-meshes/door-1-d.png",
+		"textures/static-meshes/key-d.png",
+		"textures/static-meshes/robot-d.png",
+		"textures/static-meshes/gun-d.png",
+		"textures/sprite-sheets/projectiles/projectiles.png"
+	],
+
+	"actor-asset-refs": [
+		"actors/first-person-player.actor",
+		"actors/door.actor",
+		"actors/robot.actor",
+		"actors/map-transition.actor",
+		"actors/plasma-ball.actor",
+		"actors/spawn-trigger.actor",
+		"actors/spawn-point.actor",
+		"actors/key.actor"
+	],
+
+	"sprite-sheet-asset-refs": [
+		"sprite-sheets/projectiles/projectiles.ss"
+	],
+
+	"world-mesh-asset-ref": "world-meshes/demo-1.wmesh",
+
+	"actor-instances": [
+		{
+			"name": "Player",
+			"asset-ref": "actors/first-person-player.actor",
+			"position": [0.5, 0.3, 0.5],
+			"rotation": [0.0, 0.0, 0.0],
+			"config": {
+				"auto-set-as-default-camera": true
+			}
+		},
+		{
+			"name": "SpawnPoint1",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [-3.5, 0.8, 1.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"config": {
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "SpawnPoint2",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [-3.5, 0.8, 2.5],
+			"rotation": [0.0, 0.0, 0.0],
+			"config": {
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "SpawnTrigger1",
+			"asset-ref": "actors/spawn-trigger.actor",
+			"position": [-1.5, 0.3, 1.5],
+			"rotation": [0.0, 0.0, 0.0],
+			"config": {
+				"spawn-points": ["SpawnPoint1", "SpawnPoint2"],
+				"reward-drop-actor-asset-ref": "actors/key.actor",
+				"reward-drop-actor-config": {
+					"key-type": "blue"
+				}
+			}
+		},
+		{
+			"name": "Door1",
+			"asset-ref": "actors/door.actor",
+			"position": [1.04167, 0.16667, 1.75],
+			"rotation": [0, 1.57079, 0],
+			"config": {
+				"is-locked": true,
+				"required-key-type": "blue"
+			}
+		},
+		{
+			"name": "Door2",
+			"asset-ref": "actors/door.actor",
+			"position": [-0.75, 1.16667, 3.04167],
+			"rotation": [0, 0, 0]
+		},
+		{
+			"name": "MapTransition1",
+			"asset-ref": "actors/map-transition.actor",
+			"position": [-1.83333, 100.16667, 4.16667],
+			"rotation": [0, 0.0, 0],
+			"config": {
+				"destination-map-file-path": "maps/demo-2.map"
+			}
+		}
+	]
+}

@@ -1,0 +1,94 @@
+{
+	"controller": "FirstPersonPlayer",
+	"local-aabb": {
+		"from": [-0.05, 0, -0.05],
+		"to": [0.05, 0.35, 0.05]
+	},
+	"local-collision-sphere": {
+		"position": [0, 0.13, 0],
+		"radius": 0.13
+	},
+	"static-mesh-asset-refs": [
+		"static-meshes/gun.smesh"
+	],
+	"sprite-sheet-asset-refs": [
+		"sprite-sheets/projectiles/projectiles.ss"
+	],
+	"texture-asset-refs": [
+		"textures/sprite-sheets/projectiles/projectiles.png"
+	],
+	"sub-actors": [
+		{
+			"type": "camera",
+			"name": "Camera",
+			"parent": -1,
+			"position": [0, 0.33, 0],
+			"rotation": [0, 0, 0],
+			"camera-details": {
+				"fov": 1.0
+			}
+		},
+		{
+			"type": "target",
+			"name": "BodyTarget",
+			"parent": -1,
+			"position": [0, 0.18, 0],
+			"rotation": [0, 0, 0]
+		},
+		{
+			"type": "target",
+			"name": "HeadTarget",
+			"parent": -1,
+			"position": [0, 0.33, 0],
+			"rotation": [0, 0, 0]
+		},
+		{
+			"type": "static-mesh",
+			"name": "GunMesh",
+			"parent": 0,
+			"position": [0.025, -0.025, 0.03],
+			"rotation": [0, 0, 0],
+			"static-mesh-details": {
+				"static-mesh-asset-ref-index": 0,
+				"is-collidable": false
+			}
+		},
+		{
+			"type": "dummy",
+			"name": "Muzzle",
+			"parent": 3,
+			"position": [0.0, 0.005, 0.044],
+			"rotation": [0, 0, 0]
+		},
+		{
+			"type": "sprite-3d",
+			"name": "MuzzleFlashSprite",
+			"parent": 4,
+			"position": [0.0, 0.0, 0.0],
+			"rotation": [0, 0, 0],
+			"sprite-3d-details": {
+				"sprite-sheet-asset-ref-index": 0,
+				"texture-asset-ref-index": 0,
+				"sprite-name": "plasma-ball",
+				"size": [0.04, 0.04],
+				"rotation": 0.0
+			}
+		},
+		{
+			"type": "volume",
+			"name": "CollisionCylinder",
+			"parent": -1,
+			"position": [0, 0, 0],
+			"rotation": [0, 0, 0],
+			"volume-details": {
+				"type": "cylinder",
+				"number-of-sides": 5,
+				"size": [0.1, 0.35, 0.1]
+			}
+		}
+	],
+	"config": {
+		"movement-speed": 0.03,
+		"auto-set-as-default-camera": true
+	}
+}

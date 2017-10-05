@@ -1,0 +1,36 @@
+{
+	"controller": "Key",
+	"local-aabb": {
+		"from": [-0.05, 0, -0.05],
+		"to": [0.05, 0.4, 0.05]
+	},
+	"static-mesh-asset-refs": [
+		"static-meshes/key.smesh"
+	],
+	"sub-actors": [
+		{
+			"type": "static-mesh",
+			"name": "KeyMesh",
+			"parent": -1,
+			"position": [0, 0.1, 0],
+			"rotation": [0, 3.142, 0],
+			"static-mesh-details": {
+				"static-mesh-asset-ref-index": 0,
+				"is-collidable": false
+			}
+		},
+		{
+			"type": "trigger-sphere",
+			"name": "Trigger",
+			"parent": -1,
+			"position": [0.0, 0.1, 0],
+			"rotation": [0, 0, 0],
+			"trigger-sphere-details": {
+				"radius": 0.1,
+				"applicableActorTypes": ["first-person-player"]
+			}
+		}
+	],
+	"config": {
+	}
+}

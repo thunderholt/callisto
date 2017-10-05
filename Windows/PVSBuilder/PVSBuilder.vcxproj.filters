@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="PVSBuilder">
+      <UniqueIdentifier>{77f3d1ce-6003-46db-b660-82fc3b38ce8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Core">
+      <UniqueIdentifier>{12d18d0f-1368-4a8b-973e-0425be36267c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Include">
+      <UniqueIdentifier>{16f201f0-802d-4709-a476-93fab36cd010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Util">
+      <UniqueIdentifier>{3620eeac-5b07-4fe9-9c14-8d5e9ff12b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\FileIO">
+      <UniqueIdentifier>{1c3a21c8-dc99-430d-88a7-1f043a2030ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Math">
+      <UniqueIdentifier>{9602b1f0-07b8-4ac7-b7b2-aa9bfe873f94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Logging">
+      <UniqueIdentifier>{67cf025b-c9cd-4800-be08-5058c8f68c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PVSBuilder\Threading">
+      <UniqueIdentifier>{6c4dbf6f-4a71-4d30-bd7e-ddeef4728c88}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\Engine.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\Factory.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\FileIO\WindowsFile.cpp">
+      <Filter>PVSBuilder\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\FileIO\TokenFileParser.cpp">
+      <Filter>PVSBuilder\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\CollisionMesh.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\Plane.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\Ray3.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\CollisionFace.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\CollisionLine.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\WorldMeshAsset.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Logging\WindowsLogger.cpp">
+      <Filter>PVSBuilder\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\BruteForceSectorCruncher.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\Worker.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Threading\WindowsThreadManager.cpp">
+      <Filter>PVSBuilder\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\Math.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Include\Types.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Include\Interfaces.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\Engine.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Include\Common.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Util\Util.h">
+      <Filter>PVSBuilder\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\Factory.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\FileIO\WindowsFile.h">
+      <Filter>PVSBuilder\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\FileIO\TokenFileParser.h">
+      <Filter>PVSBuilder\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Vec2.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Vec3.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Math.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\CollisionMesh.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Plane.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Ray3.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\CollisionFace.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\CollisionLine.h">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\WorldMeshAsset.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Logging\WindowsLogger.h">
+      <Filter>PVSBuilder\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\BruteForceSectorCruncher.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\Worker.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Include\FixedLengthArray.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Threading\WindowsThreadManager.h">
+      <Filter>PVSBuilder\Threading</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

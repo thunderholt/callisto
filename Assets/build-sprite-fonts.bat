@@ -1,0 +1,1 @@
+C:\Users\andym\Documents\GitHub\Callisto\Windows\SpriteFontBuilder\bin\Debug\SpriteFontBuilder.exe "C:\\Users\\andym\\Documents\\GitHub\\Callisto\\Assets\\Compiled" "C:\\Users\\andym\\Documents\\GitHub\\Callisto\\Assets\\Src\\SpriteFonts"

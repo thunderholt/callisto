@@ -1,0 +1,1 @@
+sprite plasma-ball 0 0 100 100

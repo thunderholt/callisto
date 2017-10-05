@@ -1,0 +1,1 @@
+xcopy "C:\Users\andym\Documents\GitHub\Callisto\Assets\Compiled\*" "C:\Users\andym\Documents\GitHub\Callisto\Emscripten\compiled\assets" /s /i /d /y

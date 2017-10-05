@@ -1,0 +1,1 @@
+xcopy "Compiled\*" "..\Windows\Android\app\src\main\assets" /s /i /d /y

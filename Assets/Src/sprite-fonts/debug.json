@@ -1,0 +1,13 @@
+{
+	"ssRelativeOutputFilePath": "sprite-sheets/fonts/debug.ss",
+    "textureRelativeOutputFilePath": "textures/sprite-sheets/fonts/debug.png",
+    "fontName": "Calibri",
+    "fontEmSize": 16,
+    "fontColour": {
+    	"red": 255,
+    	"green": 255,
+    	"blue": 255
+    },
+    "textureWidth": 256,
+    "textureHeight": 128
+}

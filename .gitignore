@@ -1,0 +1,13 @@
+/Blender
+
+/Windows/Build
+/Windows/*.db
+/Windows/*.opendb
+/Windows/packages
+/Windows/.vs
+/Windows/**/*.user
+/Windows/**/Debug
+/Windows/**/Release
+/Windows/**/bin
+/Windows/**/obj
+/Emscripten/compiled

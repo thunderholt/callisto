@@ -48,6 +48,7 @@ struct CollisionMeshChunk
 {
 	int startFaceIndex;
 	int numberOfFaces;
+	AABB aabb;
 };
 
 struct CollisionMeshIntersectionResult

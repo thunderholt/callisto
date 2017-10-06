@@ -346,5 +346,7 @@ void Engine::WriteOutputFile()
 	// We're done!
 	outputFile->Close();
 
+	delete outputFile;
+
 	this->logger->Write("... done.");
 }

@@ -17,7 +17,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 	ILogger* logger = engine->GetLogger();
 
 	bool success = false;
-	Buffer fileData;
+	Buffer fileData = { 0 };
 	float* tempPositions = null;
 	unsigned short* tempIndecies = null;
 	WorldMeshChunk* tempChunks = null;

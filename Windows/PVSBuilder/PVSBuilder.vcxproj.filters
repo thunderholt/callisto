@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\PVSBuilder\Math\Math.cpp">
       <Filter>PVSBuilder\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Math\AABB.cpp">
+      <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h">
@@ -158,6 +161,9 @@
     </ClInclude>
     <ClInclude Include="..\..\PVSBuilder\Threading\WindowsThreadManager.h">
       <Filter>PVSBuilder\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\AABB.h">
+      <Filter>PVSBuilder\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

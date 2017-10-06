@@ -52,6 +52,8 @@ void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, float* position
 		CollisionFace* face = &this->faces[this->nextFaceIndex++];
 		CollisionFace::BuildFromPoints(face, facePoints);
 	}
+
+	AABB::CalculateFromCollisionFaces(&chunk->aabb, &this->faces[chunk->startFaceIndex], chunk->numberOfFaces);
 }
 
 void CollisionMesh::Finish()

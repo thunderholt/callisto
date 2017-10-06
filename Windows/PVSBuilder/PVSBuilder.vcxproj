@@ -163,6 +163,7 @@
     <ClCompile Include="..\..\PVSBuilder\FileIO\TokenFileParser.cpp" />
     <ClCompile Include="..\..\PVSBuilder\FileIO\WindowsFile.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Logging\WindowsLogger.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Math\AABB.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Math\CollisionFace.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Math\CollisionLine.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Math\Math.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\Types.h" />
     <ClInclude Include="..\..\PVSBuilder\Logging\WindowsLogger.h" />
+    <ClInclude Include="..\..\PVSBuilder\Math\AABB.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\CollisionFace.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\CollisionLine.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\Math.h" />

@@ -11,6 +11,7 @@ public:
 	virtual PVSSectorMetrics* GetSectorMetrics();
 	virtual PVSSector* GetSector(int sectorIndex);
 	virtual int* GetVisibleSectorIndexes();
+	virtual int* GetResidentWorldMeshChunkIndexes();
 
 	virtual bool ResolveReferencedAssets();
 
@@ -29,4 +30,5 @@ private:
 	PVSSectorMetrics sectorMetrics;
 	PVSSector* sectors;
 	int* visibleSectorIndexes;
+	int* residentWorldMeshChunkIndexes;
 };

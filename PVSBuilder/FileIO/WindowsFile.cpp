@@ -25,8 +25,8 @@ bool WindowsFile::OpenForReading(const char* filePath)
 	strcpy(this->path, filePath);
 
 	char fixedUpPath[512];
-	//strcpy(fixedUpPath, "C:/Users/andym/Documents/GitHub/Callisto/Assets/Compiled/"); // TODO
-	strcpy(fixedUpPath, "C:/Work/Research/GitHub/callisto/Assets/Compiled/"); // TODO
+	strcpy(fixedUpPath, "C:/Users/andym/Documents/GitHub/Callisto/Assets/Compiled/"); // TODO
+	//strcpy(fixedUpPath, "C:/Work/Research/GitHub/callisto/Assets/Compiled/"); // TODO
 	strcat(fixedUpPath, this->path);
 	
 	_sopen_s(&this->fd, fixedUpPath, _O_RDONLY | _O_BINARY, _SH_DENYRW, _S_IREAD);
@@ -45,7 +45,8 @@ bool WindowsFile::OpenForWriting(const char* filePath)
 	strcpy(this->path, filePath);
 
 	char fixedUpPath[512];
-	strcpy(fixedUpPath, "C:/Work/Research/GitHub/callisto/Assets/Compiled/"); // TODO
+	strcpy(fixedUpPath, "C:/Users/andym/Documents/GitHub/Callisto/Assets/Compiled/"); // TODO
+	//strcpy(fixedUpPath, "C:/Work/Research/GitHub/callisto/Assets/Compiled/"); // TODO
 	strcat(fixedUpPath, this->path);
 
 	_sopen_s(&this->fd, fixedUpPath, _O_RDWR | _O_CREAT | _O_BINARY, _SH_DENYNO, _S_IREAD | _S_IWRITE);

@@ -9,6 +9,11 @@
 	int spriteIndexLookUp[DebugIconCount];
 };*/
 
+struct RenderStats
+{
+	int numberOfVisibleWorldMeshChunks;
+};
+
 class Renderer : public IRenderer
 {
 public:
@@ -36,4 +41,5 @@ private:
 	//DebugIconData debugIcons;
 	bool drawDebugVisualisations;
 	bool drawVolumes;
+	RenderStats stats;
 };

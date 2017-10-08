@@ -83,7 +83,7 @@ void Renderer::SetupCamera(ISubActor* cameraSubActor)
 
 	commonRasterizationParameters->cameraWorldPosition = *cameraSubActor->GetWorldPosition();
 
-	commonRasterizationParameters->residentPvsSectorIndex = 
+	commonRasterizationParameters->cameraResidentPvsSectorIndex =
 		this->FindResidentSectorIndexFromWorldPosition(&commonRasterizationParameters->cameraWorldPosition);
 }
 
@@ -96,15 +96,50 @@ void Renderer::DrawWorldMesh()
 	IMapAsset* mapAsset = assetManager->GetMapAsset(mapAssetRef->index);
 	AssetRef*  worldMeshAssetRef = mapAsset->GetWorldMeshAssetRef();
 	IWorldMeshAsset* worldMeshAsset = assetManager->GetWorldMeshAsset(worldMeshAssetRef->index);
+	AssetRef* pvsAssetRef = worldMeshAsset->GetPVSAssetRef();
+	IPVSAsset* pvsAsset = assetManager->GetPVSAsset(pvsAssetRef->index);
+	int frameId = engine->GetFrameId();
 
 	rasterJob->worldMeshAssetIndex = worldMeshAssetRef->index;
 
-	// TODO - Use PVS
+	PVSSector* residentSector = pvsAsset->GetSector(rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex);
+	int* visibleSectorIndexes = pvsAsset->GetVisibleSectorIndexes();
+	int* residentWorldMeshChunkIndexes = pvsAsset->GetResidentWorldMeshChunkIndexes();
+
+	this->stats.numberOfVisibleWorldMeshChunks = 0;
+
+	// Loop through all of the visible sectors.
+	for (int i = 0; i < residentSector->numberOfVisibleSectors; i++)
+	{
+		int sectorIndex = visibleSectorIndexes[residentSector->visibleSectorIndexesOffset + i];
+		PVSSector* visibleSector = pvsAsset->GetSector(sectorIndex);
+
+		// Loop through all of the resident world mesh chunks in the visible sector.
+		for (int j = 0; j < visibleSector->numberOfResidentWorldMeshChunkIndexes; j++)
+		{
+			int chunkIndex = residentWorldMeshChunkIndexes[visibleSector->residentWorldMeshChunkIndexesOffset + j];
+			WorldMeshChunk* chunk = worldMeshAsset->GetChunk(chunkIndex);
+
+			// TODO - Frustum cull.
+
+			// If the chunk hasn't been rendered this frame yet, render it.
+			if (chunk->lastRenderedFrameId != frameId)
+			{
+				DrawWorldMeshChunkRasterJobItem* drawWorldMeshChunkRasterJobItem = &rasterJob->drawWorldMeshChunkJobItems.PushAndGet();
+				drawWorldMeshChunkRasterJobItem->chunkIndex = chunkIndex;
+				
+				chunk->lastRenderedFrameId = frameId;
+				this->stats.numberOfVisibleWorldMeshChunks++;
+			}
+		}
+	}
+
+	/*// TODO - Use PVS
 	for (int chunkIndex = 0; chunkIndex < worldMeshAsset->GetNumberOfChunks(); chunkIndex++)
 	{
 		DrawWorldMeshChunkRasterJobItem* drawWorldMeshChunkRasterJobItem = &rasterJob->drawWorldMeshChunkJobItems.PushAndGet();
 		drawWorldMeshChunkRasterJobItem->chunkIndex = chunkIndex;
-	}
+	}*/
 }
 
 void Renderer::DrawActors()
@@ -257,6 +292,12 @@ void Renderer::DrawStats()
 	// Display the number of FPS hitch rate.
 	sprintf(message, "FPS hitch rate: %.4f%%", frameTimer->GetFpsHitchRate());
 	this->DrawString(message, Vec2::Create(10, 110), 0, RgbaFloat::GetWhite());
+
+	// Display the number of FPS hitch rate.
+	sprintf(message, "Visible World Mesh Chunks: %d", this->stats.numberOfVisibleWorldMeshChunks);
+	this->DrawString(message, Vec2::Create(10, 130), 0, RgbaFloat::GetWhite());
+
+	
 
 	/*// Display the mouse movement offset.
 	sprintf(message, "Mouse movement offset: %f,%f", mouse->GetMovementOffset()->x, mouse->GetMovementOffset()->y);

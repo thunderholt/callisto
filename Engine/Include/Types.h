@@ -585,6 +585,7 @@ struct WorldMeshChunk
 	int startIndex;
 	int numberOfFaces;
 	int materialAssetRefIndex;
+	int lastRenderedFrameId;
 };
 
 //------ Static Meshes -----//
@@ -633,9 +634,11 @@ struct PVSSectorMetrics
 
 struct PVSSector
 {
+	Vec3 origin;
 	int visibleSectorIndexesOffset;
 	int numberOfVisibleSectors;
-	Vec3 origin;
+	int residentWorldMeshChunkIndexesOffset;
+	int numberOfResidentWorldMeshChunkIndexes;
 };
 
 //------ * -----//
@@ -708,7 +711,7 @@ struct CommonRastorizationParameters
 	Mat4 projTransform;
 	Mat4 viewProjTransform;
 	Vec3 cameraWorldPosition;
-	int residentPvsSectorIndex;
+	int cameraResidentPvsSectorIndex;
 };
 
 struct RasterJob

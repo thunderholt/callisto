@@ -121,8 +121,8 @@ void DebugVisualisationRenderer::RenderPVSDebugVisualisations(RasterJob* rasterJ
 	IWorldMeshAsset* worldMeshAsset = assetManager->GetWorldMeshAsset(worldMeshAssetRef->index);
 	AssetRef* pvsAssetRef = worldMeshAsset->GetPVSAssetRef();
 
-	if (pvsAssetRef->index != -1)
-	{
+	//if (pvsAssetRef->index != -1)
+	//{
 		IPVSAsset* pvsAsset = assetManager->GetPVSAsset(pvsAssetRef->index);
 		PVSSectorMetrics* sectorMetrics = pvsAsset->GetSectorMetrics();
 		int* visibleSectorIndexes = pvsAsset->GetVisibleSectorIndexes();
@@ -138,16 +138,9 @@ void DebugVisualisationRenderer::RenderPVSDebugVisualisations(RasterJob* rasterJ
 			Vec3::Set(&rasterJobItem->size, sectorMetrics->sectorSize, sectorMetrics->sectorSize, sectorMetrics->sectorSize);
 		}
 
-		if (rasterJob->commonRasterizationParameters.residentPvsSectorIndex != -1)
+		if (rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex != -1)
 		{
-			PVSSector* sector = pvsAsset->GetSector(rasterJob->commonRasterizationParameters.residentPvsSectorIndex);
-			/*
-
-			DrawLineCubeRasterJobItem* rasterJobItem = &rasterJob->drawLineCubeJobItems.PushAndGet();
-			RgbFloat::Set(&rasterJobItem->unoccludedColour, 0.0f, 1.0f, 0.0f);
-			RgbFloat::Set(&rasterJobItem->occludedColour, 0.0f, 0.5f, 0.0f);
-			rasterJobItem->position = sector->origin;
-			Vec3::Set(&rasterJobItem->size, sectorMetrics->sectorSize, sectorMetrics->sectorSize, sectorMetrics->sectorSize);*/
+			PVSSector* sector = pvsAsset->GetSector(rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex);
 
 			for (int i = 0; i < sector->numberOfVisibleSectors; i++)
 			{
@@ -161,21 +154,7 @@ void DebugVisualisationRenderer::RenderPVSDebugVisualisations(RasterJob* rasterJ
 				Vec3::Set(&rasterJobItem->size, sectorMetrics->sectorSize, sectorMetrics->sectorSize, sectorMetrics->sectorSize);
 			}
 		}
-
-		/*for (int z = 0; z < sectorMetrics->sectorCounts[2]; z++)
-		{
-			for (int y = 0; y < sectorMetrics->sectorCounts[1]; y++)
-			{
-				for (int x = 0; x < sectorMetrics->sectorCounts[0]; x++)
-				{
-					DrawLineCubeRasterJobItem* rasterJobItem = &rasterJob->drawLineCubeJobItems.PushAndGet();
-					Vec3::Set(&rasterJobItem->position, x * sectorMetrics->sectorSize, y * sectorMetrics->sectorSize, z * sectorMetrics->sectorSize);
-					Vec3::Add(&rasterJobItem->position, &rasterJobItem->position, &sectorMetrics->sectorOriginOffset);
-					Vec3::Set(&rasterJobItem->size, sectorMetrics->sectorSize, sectorMetrics->sectorSize, sectorMetrics->sectorSize);
-				}
-			}
-		}*/
-	}
+	//}
 }
 
 void DebugVisualisationRenderer::DrawActorAABB(RasterJob* rasterJob, IActor* actor)

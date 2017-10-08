@@ -15,6 +15,7 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 
 	char token[256];
 	int numberOfVisibleSectorIndexes = 0;
+	int numberOfResidentWorldMeshChunkIndexes = 0;
 	
 	while (!parser->GetIsEOF())
 	{
@@ -44,6 +45,11 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 			numberOfVisibleSectorIndexes = parser->ReadInt();
 			this->visibleSectorIndexes = new int[numberOfVisibleSectorIndexes];
 		}
+		else if (strcmp(token, "number-of-resident-world-mesh-chunk-indexes") == 0)
+		{
+			numberOfResidentWorldMeshChunkIndexes = parser->ReadInt();
+			this->residentWorldMeshChunkIndexes = new int[numberOfResidentWorldMeshChunkIndexes];
+		}
 		else if (strcmp(token, "sector-origins") == 0)
 		{
 			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
@@ -68,11 +74,34 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 				sector->numberOfVisibleSectors = parser->ReadInt();
 			}
 		}
+		else if (strcmp(token, "sector-resident-world-mesh-chunk-indexes-offsets") == 0)
+		{
+			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			{
+				PVSSector* sector = &this->sectors[i];
+				sector->residentWorldMeshChunkIndexesOffset = parser->ReadInt();
+			}
+		}
+		else if (strcmp(token, "sector-resident-world-mesh-chunk-index-quantities") == 0)
+		{
+			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			{
+				PVSSector* sector = &this->sectors[i];
+				sector->numberOfResidentWorldMeshChunkIndexes = parser->ReadInt();
+			}
+		}
 		else if (strcmp(token, "visible-sector-indexes") == 0)
 		{
 			for (int i = 0; i < numberOfVisibleSectorIndexes; i++)
 			{
 				this->visibleSectorIndexes[i] = parser->ReadInt();
+			}
+		}
+		else if (strcmp(token, "resident-world-mesh-chunk-indexes") == 0)
+		{
+			for (int i = 0; i < numberOfResidentWorldMeshChunkIndexes; i++)
+			{
+				this->residentWorldMeshChunkIndexes[i] = parser->ReadInt();
 			}
 		}
 	}
@@ -86,6 +115,7 @@ PVSAsset::~PVSAsset()
 {
 	SafeDeleteArrayAndNull(this->sectors);
 	SafeDeleteArrayAndNull(this->visibleSectorIndexes);
+	SafeDeleteArrayAndNull(this->residentWorldMeshChunkIndexes);
 }
 
 bool PVSAsset::ResolveReferencedAssets()
@@ -131,4 +161,9 @@ PVSSector* PVSAsset::GetSector(int sectorIndex)
 int* PVSAsset::GetVisibleSectorIndexes()
 {
 	return this->visibleSectorIndexes;
+}
+
+int* PVSAsset::GetResidentWorldMeshChunkIndexes()
+{
+	return this->residentWorldMeshChunkIndexes;
 }

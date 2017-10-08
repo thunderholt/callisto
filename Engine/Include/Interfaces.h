@@ -324,6 +324,7 @@ public:
 	virtual PVSSectorMetrics* GetSectorMetrics() = 0;
 	virtual PVSSector* GetSector(int sectorIndex) = 0;
 	virtual int* GetVisibleSectorIndexes() = 0;
+	virtual int* GetResidentWorldMeshChunkIndexes() = 0;
 };
 
 class IAssetManager

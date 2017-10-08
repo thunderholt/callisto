@@ -93,6 +93,7 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				chunk->startIndex = parser->ReadInt();
 				chunk->numberOfFaces = parser->ReadInt();
 				chunk->materialAssetRefIndex = parser->ReadInt();
+				chunk->lastRenderedFrameId = -1;
 			}
 		}
 		else if (strcmp(token, "material-asset-refs") == 0)

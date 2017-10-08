@@ -33,5 +33,5 @@ private:
 	Sector* sectors;
 	//Vec3 pointCompletelyOutsideOfCollisionMeshExtremities;
 	FixedLengthArray<IWorker*, 16> workers;
-	int numberOfVisibleSectorIndexes;
+	//int numberOfVisibleSectorIndexes;
 };

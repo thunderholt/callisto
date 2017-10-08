@@ -183,6 +183,7 @@
     <ClInclude Include="..\..\PVSBuilder\FileIO\TokenFileParser.h" />
     <ClInclude Include="..\..\PVSBuilder\FileIO\WindowsFile.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\Common.h" />
+    <ClInclude Include="..\..\PVSBuilder\Include\DynamicLengthArray.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\FixedLengthArray.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\Interfaces.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h" />

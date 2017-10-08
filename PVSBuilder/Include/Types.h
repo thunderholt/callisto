@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Include/FixedLengthArray.h"
+#include "Include/DynamicLengthArray.h"
 #include "Math/Math.h"
 
 #define SectorMaxInsidePoints 100
@@ -38,8 +39,10 @@ struct Sector
 	Vec3 origin;
 	Vec3 insidePoints[SectorMaxInsidePoints];
 	int numberOfInsidePoints;
-	int visibleSectorIndexesOffset;
-	int numberOfVisibleSectors;
+	//int visibleSectorIndexesOffset;
+	//int numberOfVisibleSectors;
+	DynamicLengthArray<int> visibleSectorIndexes;
+	DynamicLengthArray<int> residentWorldMeshChunkIndexes;
 };
 
 //------ Collision Meshes -----//

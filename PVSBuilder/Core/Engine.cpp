@@ -148,7 +148,6 @@ void Engine::InitWorkers()
 void Engine::InitSectors()
 {
 	this->sectors = new Sector[this->sectorMetrics.numberOfSectors];
-	memset(this->sectors, 0, sizeof(Sector) * this->sectorMetrics.numberOfSectors);
 
 	int sectorIndex = 0;
 
@@ -160,6 +159,11 @@ void Engine::InitSectors()
 			{
 				Sector* sector = &this->sectors[sectorIndex];
 
+				// Clear the inside points.
+				sector->numberOfInsidePoints = 0;
+				memset(sector->insidePoints, 0, sizeof(Vec3) * SectorMaxInsidePoints);
+
+				// Compute and set the sector origin.
 				Vec3::Set(
 					&sector->origin,
 					x * this->sectorMetrics.sectorSize,
@@ -234,21 +238,33 @@ void Engine::WaitForAllWorkersToFinish()
 
 void Engine::ComputeSectorOutputVariables()
 {
-	int offset = 0;
-	this->numberOfVisibleSectorIndexes = 0;
-
+	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
+	
 	for (int sectorAIndex = 0; sectorAIndex < this->sectorMetrics.numberOfSectors; sectorAIndex++)
 	{
 		Sector* sectorA = &this->sectors[sectorAIndex];
-		sectorA->visibleSectorIndexesOffset = offset;
-
+	
+		// Find the visible sector indexes for this sector.
 		for (int sectorBIndex = 0; sectorBIndex < this->sectorMetrics.numberOfSectors; sectorBIndex++)
 		{
 			if (this->sectorVisibilityLookup->GetSectorVisibilityState(sectorAIndex, sectorBIndex) == SectorVisibilityStateVisible)
 			{
-				offset++;
-				sectorA->numberOfVisibleSectors++;
-				this->numberOfVisibleSectorIndexes++;
+				sectorA->visibleSectorIndexes.Push(sectorBIndex);
+			}
+		}
+
+		// Find the resident world mesh chunk indexes for this sector.
+		AABB sectorAabb;
+		sectorAabb.from = sectorA->origin;
+		Vec3::Add(&sectorAabb.to, &sectorAabb.from, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize);
+
+		for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
+		{
+			CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
+			
+			if (AABB::CheckIntersectsAABB(&sectorAabb, &chunk->aabb))
+			{
+				sectorA->residentWorldMeshChunkIndexes.Push(chunkIndex);
 			}
 		}
 	}
@@ -282,7 +298,25 @@ void Engine::WriteOutputFile()
 	outputFile->WriteString(buffer);
 
 	// Write the number of visible sector indexes.
-	sprintf(buffer, "number-of-visible-sector-indexes %d\n", this->numberOfVisibleSectorIndexes);
+	int numberOfVisibleSectorIndexes = 0;
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+		numberOfVisibleSectorIndexes += sector->visibleSectorIndexes.GetLength();
+	}
+
+	sprintf(buffer, "number-of-visible-sector-indexes %d\n", numberOfVisibleSectorIndexes);
+	outputFile->WriteString(buffer);
+
+	// Write the number of resident world mesh chunk indexes.
+	int numberOfResidentWorldMeshChunkIndexes = 0;
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+		numberOfResidentWorldMeshChunkIndexes += sector->residentWorldMeshChunkIndexes.GetLength();
+	}
+
+	sprintf(buffer, "number-of-resident-world-mesh-chunk-indexes %d\n", numberOfResidentWorldMeshChunkIndexes);
 	outputFile->WriteString(buffer);
 
 	// Write the sector origins.
@@ -292,7 +326,7 @@ void Engine::WriteOutputFile()
 	{
 		Sector* sector = &this->sectors[sectorIndex];
 		sprintf(buffer, "%f %f %f ", sector->origin.x, sector->origin.y, sector->origin.z);
-		outputFile->Write(buffer, strlen(buffer));
+		outputFile->WriteString(buffer);
 	}
 
 	outputFile->WriteString("\n");
@@ -300,11 +334,13 @@ void Engine::WriteOutputFile()
 	// Write the sector visible sector indexes offsets.
 	outputFile->WriteString("sector-visible-sector-indexes-offsets\n");
 
+	int offset = 0;
 	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
 	{
 		Sector* sector = &this->sectors[sectorIndex];
-		sprintf(buffer, "%d ", sector->visibleSectorIndexesOffset);
-		outputFile->Write(buffer, strlen(buffer));
+		sprintf(buffer, "%d ", offset);
+		outputFile->WriteString(buffer);
+		offset += sector->visibleSectorIndexes.GetLength();
 	}
 
 	outputFile->WriteString("\n");
@@ -315,8 +351,34 @@ void Engine::WriteOutputFile()
 	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
 	{
 		Sector* sector = &this->sectors[sectorIndex];
-		sprintf(buffer, "%d ", sector->numberOfVisibleSectors);
-		outputFile->Write(buffer, strlen(buffer));
+		sprintf(buffer, "%d ", sector->visibleSectorIndexes.GetLength());
+		outputFile->WriteString(buffer);
+	}
+
+	outputFile->WriteString("\n");
+
+	// Write the sector resident world mesh chunk indexes offsets.
+	outputFile->WriteString("sector-resident-world-mesh-chunk-indexes-offsets\n");
+
+	offset = 0;
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+		sprintf(buffer, "%d ", offset);
+		outputFile->WriteString(buffer);
+		offset += sector->residentWorldMeshChunkIndexes.GetLength();
+	}
+
+	outputFile->WriteString("\n");
+
+	// Write the sector resident world mesh chunk index quantities.
+	outputFile->WriteString("sector-resident-world-mesh-chunk-index-quantities\n");
+
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+		sprintf(buffer, "%d ", sector->residentWorldMeshChunkIndexes.GetLength());
+		outputFile->WriteString(buffer);
 	}
 
 	outputFile->WriteString("\n");
@@ -326,24 +388,45 @@ void Engine::WriteOutputFile()
 
 	for (int sectorAIndex = 0; sectorAIndex < this->sectorMetrics.numberOfSectors; sectorAIndex++)
 	{
-		Sector* sectorA = &this->sectors[sectorAIndex];
-
-		for (int sectorBIndex = 0; sectorBIndex < this->sectorMetrics.numberOfSectors; sectorBIndex++)
+		Sector* sector = &this->sectors[sectorAIndex];
+		for (int i = 0; i < sector->visibleSectorIndexes.GetLength(); i++)
 		{
-			if (this->sectorVisibilityLookup->GetSectorVisibilityState(sectorAIndex, sectorBIndex) == SectorVisibilityStateVisible)
-			{
-				if (sectorAIndex > 0 || sectorBIndex > 0)
-				{
-					outputFile->WriteString(" ");
-				}
+			int sectorBIndex = sector->visibleSectorIndexes[i];
 
-				sprintf(buffer, "%d", sectorBIndex);
-				outputFile->Write(buffer, strlen(buffer));
+			if (sectorAIndex > 0 || sectorBIndex > 0)
+			{
+				outputFile->WriteString(" ");
 			}
+
+			sprintf(buffer, "%d", sectorBIndex);
+			outputFile->WriteString(buffer);
+		}
+	}
+
+	outputFile->WriteString("\n");
+
+	// Write the resident world mesh chunk indexes.
+	outputFile->WriteString("resident-world-mesh-chunk-indexes\n");
+
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+		for (int i = 0; i < sector->residentWorldMeshChunkIndexes.GetLength(); i++)
+		{
+			int worldMeshChunkIndex = sector->residentWorldMeshChunkIndexes[i];
+
+			if (sectorIndex > 0 || i > 0)
+			{
+				outputFile->WriteString(" ");
+			}
+
+			sprintf(buffer, "%d", worldMeshChunkIndex);
+			outputFile->WriteString(buffer);
 		}
 	}
 
 	// We're done!
+	outputFile->WriteString("\n-- end --");
 	outputFile->Close();
 
 	delete outputFile;

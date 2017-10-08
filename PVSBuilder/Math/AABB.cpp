@@ -106,5 +106,5 @@ bool AABB::CheckIntersectsAABB(AABB* aabb1, AABB* aabb2)
 		intersects = false;
 	}
 
-	return true;
+	return intersects;
 }

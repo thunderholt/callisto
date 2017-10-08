@@ -165,5 +165,8 @@
     <ClInclude Include="..\..\PVSBuilder\Math\AABB.h">
       <Filter>PVSBuilder\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Include\DynamicLengthArray.h">
+      <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

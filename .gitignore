@@ -8,6 +8,6 @@
 /Windows/**/*.user
 /Windows/**/Debug
 /Windows/**/Release
-/Windows/**/bin
-/Windows/**/obj
+/Windows/SpriteFontBuilder/bin
+/Windows/SpriteFontBuilder/obj
 /Emscripten/compiled

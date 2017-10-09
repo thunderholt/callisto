@@ -22,7 +22,9 @@ private:
 	void ComputeSectorInsidePointsOnWorkers();
 	void RunSectorCruncherOnWorkers(SectorCruncherType sectorCruncherType);
 	void WaitForAllWorkersToFinish();
-	void ComputeSectorOutputVariables();
+	//void ComputeSectorOutputVariables();
+	//void BuildSectorResidentWorldMeshChunkIndexes();
+	void BuildSectorVisibleSectors();
 	void WriteOutputFile();
 
 	ILogger* logger;

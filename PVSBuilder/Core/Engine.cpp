@@ -72,7 +72,8 @@ void Engine::BuildPVS(const char* worldMeshAssetFilePath, SectorMetrics sectorMe
 
 		this->RunSectorCruncherOnWorkers(SectorCruncherTypeBruteForce);
 
-		this->ComputeSectorOutputVariables();
+		//this->ComputeSectorOutputVariables();
+		this->BuildSectorVisibleSectors();
 
 		this->WriteOutputFile();
 
@@ -147,6 +148,8 @@ void Engine::InitWorkers()
 
 void Engine::InitSectors()
 {
+	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
+
 	this->sectors = new Sector[this->sectorMetrics.numberOfSectors];
 
 	int sectorIndex = 0;
@@ -171,6 +174,21 @@ void Engine::InitSectors()
 					z * this->sectorMetrics.sectorSize);
 
 				Vec3::Add(&sector->origin, &sector->origin, &this->sectorMetrics.originOffset);
+
+				// Find the resident world mesh chunk indexes for this sector.
+				AABB sectorAabb;
+				sectorAabb.from = sector->origin;
+				Vec3::Add(&sectorAabb.to, &sectorAabb.from, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize);
+
+				for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
+				{
+					CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
+
+					if (AABB::CheckIntersectsAABB(&sectorAabb, &chunk->aabb))
+					{
+						sector->residentWorldMeshChunkIndexes.Push(chunkIndex);
+					}
+				}
 
 				sectorIndex++;
 			}
@@ -236,7 +254,7 @@ void Engine::WaitForAllWorkersToFinish()
 	} while (!allWorkersAreFinished);
 }
 
-void Engine::ComputeSectorOutputVariables()
+/*void Engine::ComputeSectorOutputVariables()
 {
 	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
 	
@@ -265,6 +283,51 @@ void Engine::ComputeSectorOutputVariables()
 			if (AABB::CheckIntersectsAABB(&sectorAabb, &chunk->aabb))
 			{
 				sectorA->residentWorldMeshChunkIndexes.Push(chunkIndex);
+			}
+		}
+	}
+}*/
+
+/*
+void Engine::BuildSectorResidentWorldMeshChunkIndexes()
+{
+	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
+
+	for (int sectorIndex = 0; sectorIndex < this->sectorMetrics.numberOfSectors; sectorIndex++)
+	{
+		Sector* sector = &this->sectors[sectorIndex];
+
+		// Find the resident world mesh chunk indexes for this sector.
+		AABB sectorAabb;
+		sectorAabb.from = sector->origin;
+		Vec3::Add(&sectorAabb.to, &sectorAabb.from, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize);
+
+		for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
+		{
+			CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
+
+			if (AABB::CheckIntersectsAABB(&sectorAabb, &chunk->aabb))
+			{
+				sector->residentWorldMeshChunkIndexes.Push(chunkIndex);
+			}
+		}
+	}
+}*/
+
+void Engine::BuildSectorVisibleSectors()
+{
+	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
+
+	for (int sectorAIndex = 0; sectorAIndex < this->sectorMetrics.numberOfSectors; sectorAIndex++)
+	{
+		Sector* sectorA = &this->sectors[sectorAIndex];
+
+		// Find the visible sector indexes for this sector.
+		for (int sectorBIndex = 0; sectorBIndex < this->sectorMetrics.numberOfSectors; sectorBIndex++)
+		{
+			if (this->sectorVisibilityLookup->GetSectorVisibilityState(sectorAIndex, sectorBIndex) == SectorVisibilityStateVisible)
+			{
+				sectorA->visibleSectorIndexes.Push(sectorBIndex);
 			}
 		}
 	}

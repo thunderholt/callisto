@@ -64,6 +64,8 @@ void Engine::BuildPVS(const char* worldMeshAssetFilePath, SectorMetrics sectorMe
 	}
 	else
 	{
+		this->InitSectorMetrics();
+
 		this->InitSectors();
 
 		//this->pointCompletelyOutsideOfCollisionMeshExtremities = this->worldMeshAsset->GetCollisionMesh()->FindPointCompletelyOutsideOfExtremities();
@@ -147,6 +149,29 @@ Sector* Engine::GetSectors()
 	return &this->pointCompletelyOutsideOfCollisionMeshExtremities;
 }*/
 
+void Engine::InitSectorMetrics()
+{
+	// Build the grid planes.
+	Vec3 planeNormals[3];
+	Vec3::Set(&planeNormals[0], 1.0f, 0.0f, 0.0f);
+	Vec3::Set(&planeNormals[1], 0.0f, 1.0f, 0.0f);
+	Vec3::Set(&planeNormals[2], 0.0f, 0.0f, 1.0f);
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j <= this->sectorMetrics.sectorCounts[i]; j++)
+		{
+			Vec3 pointOnPlane;
+			Vec3::Scale(&pointOnPlane, &planeNormals[i], j * this->sectorMetrics.sectorSize);
+
+			Plane plane;
+			Plane::FromNormalAndPoint(&plane, &planeNormals[i], &pointOnPlane);
+
+			this->sectorMetrics.gridPlanes.Push(plane);
+		}
+	}
+}
+
 void Engine::InitWorkers()
 {
 	int numberOfSectorsToCrunchPerWorker = (int)ceilf(this->sectorMetrics.numberOfSectors / (float)this->workers.GetLength());
@@ -169,6 +194,9 @@ void Engine::InitSectors()
 
 	int sectorIndex = 0;
 
+	//Vec3 sectorSize;
+	//Vec3::Set(&sectorSize, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize, this->sectorMetrics.sectorSize);
+
 	for (int z = 0; z < this->sectorMetrics.sectorCounts[2]; z++) 
 	{
 		for (int y = 0; y < this->sectorMetrics.sectorCounts[1]; y++)
@@ -189,6 +217,10 @@ void Engine::InitSectors()
 					z * this->sectorMetrics.sectorSize);
 
 				Vec3::Add(&sector->origin, &sector->origin, &this->sectorMetrics.originOffset);
+
+				/*// Build the AABB.
+				sector->aabb.from = sector->origin;
+				Vec3::Add(&sector->aabb.to, &sector->aabb.from, &sectorSize);*/
 
 				// Find the resident world mesh chunk indexes for this sector.
 				AABB sectorAabb;

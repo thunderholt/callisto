@@ -14,9 +14,11 @@ int main()
 	sectorMetrics.sectorCounts[0] = 8;
 	sectorMetrics.sectorCounts[1] = 2;
 	sectorMetrics.sectorCounts[2] = 6;
+	
 	/*sectorMetrics.sectorCounts[0] = 2;
 	sectorMetrics.sectorCounts[1] = 2;
 	sectorMetrics.sectorCounts[2] = 2;*/
+	
 	sectorMetrics.numberOfSectors = sectorMetrics.sectorCounts[0] * sectorMetrics.sectorCounts[1] * sectorMetrics.sectorCounts[2];
 	sectorMetrics.sectorSize = 1.0f;
 	engine->BuildPVS("World-Meshes/demo-1.wmesh", sectorMetrics);

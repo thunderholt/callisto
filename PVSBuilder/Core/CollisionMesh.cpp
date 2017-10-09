@@ -102,7 +102,75 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMet
 {
 	bool intersectionFound = false;
 
-	for (int chunkIndex = 0; 
+	workingData->intersectedSectorIndexes.Clear();
+
+	static float epsilon = 0.00001f;
+
+	for (int gridPlaneIndex = 0; gridPlaneIndex < sectorMetrics->gridPlanes.GetLength(); gridPlaneIndex++)
+	{
+		Plane* gridPlane = &sectorMetrics->gridPlanes[gridPlaneIndex];
+
+		Vec3 intersectionPoint;
+		if (Ray3::CalculateIntersectionWithPlane(&intersectionPoint, &line->ray, gridPlane))
+		{
+			Vec3::Sub(&intersectionPoint, &intersectionPoint, &sectorMetrics->originOffset);
+
+			int sectorIndexParts[3];
+			sectorIndexParts[0] = (int)floorf((intersectionPoint.x - epsilon) / sectorMetrics->sectorSize);
+			sectorIndexParts[1] = (int)floorf((intersectionPoint.y - epsilon) / sectorMetrics->sectorSize);
+			sectorIndexParts[2] = (int)floorf((intersectionPoint.z - epsilon) / sectorMetrics->sectorSize);
+
+			for (int i = 0; i < 3; i++)
+			{
+				if (sectorIndexParts[i] < 0)
+				{
+					sectorIndexParts[i] = 0;
+				}
+				else if (sectorIndexParts[i] >= sectorMetrics->sectorCounts[i])
+				{
+					sectorIndexParts[i] = sectorMetrics->sectorCounts[i] - 1;
+				}
+			}
+
+			int sectorIndex = 
+				(sectorIndexParts[2] * sectorMetrics->sectorCounts[1] * sectorMetrics->sectorCounts[0]) +
+				(sectorIndexParts[1] * sectorMetrics->sectorCounts[0]) +
+				sectorIndexParts[0];
+
+			workingData->intersectedSectorIndexes.Push(sectorIndex);
+		}
+	}
+
+	for (int i = 0; i < workingData->intersectedSectorIndexes.GetLength() && !intersectionFound; i++)
+	{
+		int sectorIndex = workingData->intersectedSectorIndexes[i];
+		Sector* sector = &sectors[sectorIndex];
+
+		for (int j = 0; j < sector->residentWorldMeshChunkIndexes.GetLength() && !intersectionFound; j++)
+		{
+			int chunkIndex = sector->residentWorldMeshChunkIndexes[j];
+
+			CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
+
+			for (int faceIndex = chunk->startFaceIndex;
+				faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
+				faceIndex++)
+			{
+				CollisionFace* face = &this->faces[faceIndex];
+
+				Vec3 faceIntersectionPoint;
+				FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
+					&faceIntersectionPoint, line, face);
+
+				if (faceIntersectionType != FaceIntersectionTypeNone)
+				{
+					intersectionFound = true;
+				}
+			}
+		}
+	}
+
+	/*for (int chunkIndex = 0; 
 		chunkIndex < this->numberOfChunks && !intersectionFound; 
 		chunkIndex++)
 	{
@@ -123,7 +191,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMet
 				intersectionFound = true;
 			}
 		}
-	}
+	}*/
 
 	return intersectionFound;
 }

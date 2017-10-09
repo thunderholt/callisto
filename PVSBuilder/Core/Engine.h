@@ -18,6 +18,7 @@ public:
 	//virtual Vec3* GetPointCompletelyOutsideOfCollisionMeshExtremities();
 
 private:
+	void InitSectorMetrics();
 	void InitWorkers();
 	void InitSectors();
 	void ComputeSectorInsidePointsOnWorkers();

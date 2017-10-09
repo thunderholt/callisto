@@ -27,6 +27,7 @@ struct SectorMetrics
 	int sectorCounts[3];
 	int numberOfSectors;
 	float sectorSize;
+	DynamicLengthArray<Plane> gridPlanes;
 };
 
 enum SectorCruncherType
@@ -39,6 +40,7 @@ struct Sector
 	Vec3 origin;
 	Vec3 insidePoints[SectorMaxInsidePoints];
 	int numberOfInsidePoints;
+	//AABB aabb;
 	//int visibleSectorIndexesOffset;
 	//int numberOfVisibleSectors;
 	DynamicLengthArray<int> visibleSectorIndexes;
@@ -65,6 +67,7 @@ struct CollisionMeshIntersectionResult
 
 struct CollisionMeshLineIntersectionDeterminationWorkingData
 {
-	DynamicLengthArray<int> intersectedPvsSectorIndexes;
-	DynamicLengthArray<int> potentiallyIntersectedChunkIndexes;
+	//DynamicLengthArray<Vec3> gridPlaneIntersections;
+	DynamicLengthArray<int> intersectedSectorIndexes;
+	//DynamicLengthArray<int> potentiallyIntersectedChunkIndexes;
 };

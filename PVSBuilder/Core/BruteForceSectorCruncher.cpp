@@ -18,6 +18,7 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 	ICollisionMesh* collisionMesh = worldMeshAsset->GetCollisionMesh();
 	SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
 	Sector* sectors = engine->GetSectors();
+	CollisionMeshLineIntersectionDeterminationWorkingData collisionMeshLineIntersectionDeterminationWorkingData;
 
 	for (int sectorAIndex = startSectorIndex;
 		sectorAIndex < sectorMetrics->numberOfSectors &&
@@ -48,7 +49,7 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 						line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->numberOfInsidePoints - 1)];
 						CollisionLine::FromOwnFromAndToPoints(&line);
 
-						if (!collisionMesh->DetermineIfLineIntersectsMesh(&line))
+						if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors, &collisionMeshLineIntersectionDeterminationWorkingData))
 						{
 							isVisible = true;
 							break;

@@ -29,6 +29,9 @@
     <Filter Include="PVSBuilder\Threading">
       <UniqueIdentifier>{6c4dbf6f-4a71-4d30-bd7e-ddeef4728c88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PVSBuilder\Time">
+      <UniqueIdentifier>{5de1435b-82e8-493e-8429-4a0fcd1a5b41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -87,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="..\..\PVSBuilder\Math\AABB.cpp">
       <Filter>PVSBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.cpp">
+      <Filter>PVSBuilder\Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="..\..\PVSBuilder\Include\DynamicLengthArray.h">
       <Filter>PVSBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.h">
+      <Filter>PVSBuilder\Time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

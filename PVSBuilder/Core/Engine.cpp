@@ -25,6 +25,7 @@ Engine::Engine()
 	this->worldMeshAsset = factory->MakeWorldMeshAsset();
 	this->sectorVisibilityLookup = factory->MakeSectorVisibilityLookup();
 	this->threadManager = factory->MakeThreadManager();
+	this->timestampProvider = factory->MakeTimestampProvider();
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -41,6 +42,7 @@ Engine::~Engine()
 	SafeDeleteAndNull(this->worldMeshAsset);
 	SafeDeleteAndNull(this->sectorVisibilityLookup);
 	SafeDeleteAndNull(this->threadManager);
+	SafeDeleteAndNull(this->timestampProvider);
 	
 	for (int i = 0; i < this->workers.GetLength(); i++)
 	{
@@ -52,6 +54,8 @@ Engine::~Engine()
 
 void Engine::BuildPVS(const char* worldMeshAssetFilePath, SectorMetrics sectorMetrics)
 {
+	double startTime = this->timestampProvider->GetTimestampMillis();
+
 	this->sectorMetrics = sectorMetrics;
 
 	if (!this->worldMeshAsset->Load(worldMeshAssetFilePath))
@@ -95,6 +99,12 @@ void Engine::BuildPVS(const char* worldMeshAssetFilePath, SectorMetrics sectorMe
 		}
 		///////////////////////////////////////////*/
 	}
+
+	double endTime = this->timestampProvider->GetTimestampMillis();
+	double durationMillis = endTime - startTime;
+	double durationSeconds = durationMillis / 1000.0;
+
+	this->logger->Write("Duration: %f seconds.", durationSeconds);
 }
 
 ILogger* Engine::GetLogger()
@@ -120,6 +130,11 @@ SectorMetrics* Engine::GetSectorMetrics()
 IThreadManager* Engine::GetThreadManager()
 {
 	return this->threadManager;
+}
+
+ITimestampProvider* Engine::GetTimestampProvider()
+{
+	return this->timestampProvider;
 }
 
 Sector* Engine::GetSectors()

@@ -13,6 +13,7 @@ public:
 	virtual ISectorVisibilityLookup* GetSectorVisibilityLookup();
 	virtual SectorMetrics* GetSectorMetrics();
 	virtual IThreadManager* GetThreadManager();
+	virtual ITimestampProvider* GetTimestampProvider();
 	virtual Sector* GetSectors();
 	//virtual Vec3* GetPointCompletelyOutsideOfCollisionMeshExtremities();
 
@@ -31,6 +32,7 @@ private:
 	IWorldMeshAsset* worldMeshAsset;
 	ISectorVisibilityLookup* sectorVisibilityLookup;
 	IThreadManager* threadManager;
+	ITimestampProvider* timestampProvider;
 	SectorMetrics sectorMetrics;
 	Sector* sectors;
 	//Vec3 pointCompletelyOutsideOfCollisionMeshExtremities;

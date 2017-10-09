@@ -98,7 +98,7 @@ bool CollisionMesh::DetermineIfPointIsInsideIndoorMesh(Vec3* point)
 	return nearestFaceIntersectionType == FaceIntersectionTypeFrontSide;
 }
 
-bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line)
+bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData)
 {
 	bool intersectionFound = false;
 

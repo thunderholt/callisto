@@ -46,6 +46,13 @@ public:
 	virtual void Sleep(unsigned long duration) = 0;
 };
 
+class ITimestampProvider
+{
+public:
+	virtual ~ITimestampProvider() {}
+	virtual double GetTimestampMillis() = 0;
+};
+
 class ICollisionMesh
 {
 public:
@@ -54,7 +61,7 @@ public:
 	virtual void PushChunk(int startIndex, int numberOfFaces, float* positions, unsigned short* indecies) = 0;
 	virtual void Finish() = 0;
 	virtual bool DetermineIfPointIsInsideIndoorMesh(Vec3* point) = 0;
-	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line) = 0;
+	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData) = 0;
 	//virtual bool FindNearestRayIntersection(CollisionMeshIntersectionResult* out, Ray3* ray) = 0;
 	//virtual bool FindNearestLineIntersection(CollisionMeshIntersectionResult* out, CollisionLine* line) = 0;
 	//virtual Vec3 FindPointCompletelyOutsideOfExtremities() = 0;
@@ -110,6 +117,7 @@ public:
 	virtual ISectorVisibilityLookup* GetSectorVisibilityLookup() = 0;
 	virtual SectorMetrics* GetSectorMetrics() = 0;
 	virtual IThreadManager* GetThreadManager() = 0;
+	virtual ITimestampProvider* GetTimestampProvider() = 0;
 	virtual Sector* GetSectors() = 0;
 	//virtual Vec3* GetPointCompletelyOutsideOfCollisionMeshExtremities() = 0;
 };
@@ -127,4 +135,5 @@ public:
 	virtual ISectorCruncher* MakeBruteForceSectorCruncher() = 0;
 	virtual IWorker* MakeWorker() = 0;
 	virtual IThreadManager* MakeThreadManager() = 0;
+	virtual ITimestampProvider* MakeTimestampProvider() = 0;
 };

@@ -62,3 +62,9 @@ struct CollisionMeshIntersectionResult
 	int faceIndex;
 	float distance;
 };
+
+struct CollisionMeshLineIntersectionDeterminationWorkingData
+{
+	DynamicLengthArray<int> intersectedPvsSectorIndexes;
+	DynamicLengthArray<int> potentiallyIntersectedChunkIndexes;
+};

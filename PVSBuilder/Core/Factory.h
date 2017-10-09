@@ -15,4 +15,5 @@ public:
 	virtual ISectorCruncher* MakeBruteForceSectorCruncher();
 	virtual IWorker* MakeWorker();
 	virtual IThreadManager* MakeThreadManager();
+	virtual ITimestampProvider* MakeTimestampProvider();
 };

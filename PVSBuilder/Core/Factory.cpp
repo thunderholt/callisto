@@ -10,6 +10,7 @@
 #include "Core/BruteForceSectorCruncher.h" 
 #include "Core/Worker.h"
 #include "Threading/WindowsThreadManager.h"
+#include "Time/WindowsTimestampProvider.h"
 #endif
 
 Factory* factory = null;
@@ -81,4 +82,9 @@ IWorker* Factory::MakeWorker()
 IThreadManager* Factory::MakeThreadManager()
 {
 	return new WindowsThreadManager();
+}
+
+ITimestampProvider* Factory::MakeTimestampProvider()
+{
+	return new WindowsTimestampProvider();
 }

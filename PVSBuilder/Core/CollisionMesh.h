@@ -12,7 +12,7 @@ public:
 	virtual bool DetermineIfPointIsInsideIndoorMesh(Vec3* point);
 	//virtual bool FindNearestRayIntersection(CollisionMeshIntersectionResult* out, Ray3* ray);
 	//virtual bool FindNearestLineIntersection(CollisionMeshIntersectionResult* out, CollisionLine* line);
-	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line);
+	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData);
 	virtual CollisionMeshChunk* GetChunk(int chunkIndex);
 	virtual int GetNumberOfChunks();
 	virtual CollisionFace* GetFace(int faceIndex);

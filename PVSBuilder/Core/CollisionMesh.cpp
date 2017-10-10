@@ -101,44 +101,38 @@ bool CollisionMesh::DetermineIfPointIsInsideIndoorMesh(Vec3* point)
 bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData)
 {
 	bool intersectionFound = false;
+	Vec3 epsilon;
+	Vec3::Set(&epsilon, 0.0000001f, 0.0000001f, 0.0000001f);
 
 	workingData->intersectedSectorIndexes.Clear();
 
-	static float epsilon = 0.00001f;
+	int fromSectorIndex = this->GetSectorIndexFromPoint(&line->from, sectorMetrics, true);
+	if (fromSectorIndex != -1)
+	{
+		workingData->intersectedSectorIndexes.Push(fromSectorIndex);
+	}
 
 	for (int gridPlaneIndex = 0; gridPlaneIndex < sectorMetrics->gridPlanes.GetLength(); gridPlaneIndex++)
 	{
 		Plane* gridPlane = &sectorMetrics->gridPlanes[gridPlaneIndex];
 
 		Vec3 intersectionPoint;
-		if (Ray3::CalculateIntersectionWithPlane(&intersectionPoint, &line->ray, gridPlane))
+		if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
 		{
-			Vec3::Sub(&intersectionPoint, &intersectionPoint, &sectorMetrics->originOffset);
+			//Vec3::Add(&intersectionPoint, &intersectionPoint, &epsilon);
 
-			int sectorIndexParts[3];
-			sectorIndexParts[0] = (int)floorf((intersectionPoint.x - epsilon) / sectorMetrics->sectorSize);
-			sectorIndexParts[1] = (int)floorf((intersectionPoint.y - epsilon) / sectorMetrics->sectorSize);
-			sectorIndexParts[2] = (int)floorf((intersectionPoint.z - epsilon) / sectorMetrics->sectorSize);
-
-			for (int i = 0; i < 3; i++)
+			int sectorIndex = this->GetSectorIndexFromPoint(&intersectionPoint, sectorMetrics, true);
+			if (sectorIndex != -1)
 			{
-				if (sectorIndexParts[i] < 0)
-				{
-					sectorIndexParts[i] = 0;
-				}
-				else if (sectorIndexParts[i] >= sectorMetrics->sectorCounts[i])
-				{
-					sectorIndexParts[i] = sectorMetrics->sectorCounts[i] - 1;
-				}
+				workingData->intersectedSectorIndexes.Push(sectorIndex);
 			}
-
-			int sectorIndex = 
-				(sectorIndexParts[2] * sectorMetrics->sectorCounts[1] * sectorMetrics->sectorCounts[0]) +
-				(sectorIndexParts[1] * sectorMetrics->sectorCounts[0]) +
-				sectorIndexParts[0];
-
-			workingData->intersectedSectorIndexes.Push(sectorIndex);
 		}
+	}
+
+	int toSectorIndex = this->GetSectorIndexFromPoint(&line->to, sectorMetrics, true);
+	if (toSectorIndex != -1)
+	{
+		workingData->intersectedSectorIndexes.Push(toSectorIndex);
 	}
 
 	for (int i = 0; i < workingData->intersectedSectorIndexes.GetLength() && !intersectionFound; i++)
@@ -146,28 +140,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMet
 		int sectorIndex = workingData->intersectedSectorIndexes[i];
 		Sector* sector = &sectors[sectorIndex];
 
-		for (int j = 0; j < sector->residentWorldMeshChunkIndexes.GetLength() && !intersectionFound; j++)
-		{
-			int chunkIndex = sector->residentWorldMeshChunkIndexes[j];
-
-			CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
-
-			for (int faceIndex = chunk->startFaceIndex;
-				faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
-				faceIndex++)
-			{
-				CollisionFace* face = &this->faces[faceIndex];
-
-				Vec3 faceIntersectionPoint;
-				FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
-					&faceIntersectionPoint, line, face);
-
-				if (faceIntersectionType != FaceIntersectionTypeNone)
-				{
-					intersectionFound = true;
-				}
-			}
-		}
+		intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, sector);
 	}
 
 	/*for (int chunkIndex = 0; 
@@ -358,4 +331,92 @@ void CollisionMesh::FindPointCompletelyOutsideOfExtremities()
 	Vec3::Add(&max, &max, 10.0f, 10.0f, 10.0f);
 
 	this->pointCompletelyOutsideOfExtremities = max;
+}
+
+int CollisionMesh::GetSectorIndexFromPoint(Vec3* point, SectorMetrics* sectorMetrics, bool clamp)
+{
+	int sectorIndex = -1;
+
+	Vec3 transformedPoint;
+	Vec3::Sub(&transformedPoint, point, &sectorMetrics->originOffset);
+
+	int sectorIndexParts[3];
+	/*sectorIndexParts[0] = (int)floorf(transformedPoint.x / sectorMetrics->sectorSize);
+	sectorIndexParts[1] = (int)floorf(transformedPoint.y / sectorMetrics->sectorSize);
+	sectorIndexParts[2] = (int)floorf(transformedPoint.z / sectorMetrics->sectorSize);*/
+	sectorIndexParts[0] = (int)(transformedPoint.x / sectorMetrics->sectorSize);
+	sectorIndexParts[1] = (int)(transformedPoint.y / sectorMetrics->sectorSize);
+	sectorIndexParts[2] = (int)(transformedPoint.z / sectorMetrics->sectorSize);
+
+	bool pointIsWithinBounds = true;
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (sectorIndexParts[i] < 0)
+		{
+			if (clamp)
+			{
+				sectorIndexParts[i] = 0;
+			}
+			else
+			{
+				pointIsWithinBounds = false;
+			}
+		}
+		else if (sectorIndexParts[i] >= sectorMetrics->sectorCounts[i])
+		{
+			if (clamp)
+			{
+				sectorIndexParts[i] = sectorMetrics->sectorCounts[i] - 1;
+			}
+			else
+			{
+				pointIsWithinBounds = false;
+			}
+		}
+	}
+
+	if (pointIsWithinBounds)
+	{
+		sectorIndex =
+			(sectorIndexParts[2] * sectorMetrics->sectorCounts[1] * sectorMetrics->sectorCounts[0]) +
+			(sectorIndexParts[1] * sectorMetrics->sectorCounts[0]) +
+			sectorIndexParts[0];
+	}
+	else
+	{
+		int t = 1;
+	}
+
+	return sectorIndex;
+}
+
+bool CollisionMesh::DetermineIfLineIntersectsChunksInSector(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sector)
+{
+	bool intersectionFound = false;
+
+	for (int i = 0; i < sector->residentWorldMeshChunkIndexes.GetLength() && !intersectionFound; i++)
+	{
+		int chunkIndex = sector->residentWorldMeshChunkIndexes[i];
+
+		CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
+
+		for (int faceIndex = chunk->startFaceIndex;
+			faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
+			faceIndex++)
+		{
+			CollisionFace* face = &this->faces[faceIndex];
+
+			Vec3 faceIntersectionPoint;
+			FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
+				&faceIntersectionPoint, line, face);
+
+			if (faceIntersectionType != FaceIntersectionTypeNone)
+			{
+				intersectionFound = true;
+			}
+		}
+	}
+
+	return intersectionFound;
 }

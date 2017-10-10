@@ -127,7 +127,7 @@ void DebugVisualisationRenderer::RenderPVSDebugVisualisations(RasterJob* rasterJ
 		PVSSectorMetrics* sectorMetrics = pvsAsset->GetSectorMetrics();
 		int* visibleSectorIndexes = pvsAsset->GetVisibleSectorIndexes();
 
-		for (int sectorIndex = 0; sectorIndex < sectorMetrics->numberOfSectors; sectorIndex++)
+		/*for (int sectorIndex = 0; sectorIndex < sectorMetrics->numberOfSectors; sectorIndex++)
 		{
 			PVSSector* sector = pvsAsset->GetSector(sectorIndex);
 
@@ -136,7 +136,7 @@ void DebugVisualisationRenderer::RenderPVSDebugVisualisations(RasterJob* rasterJ
 			RgbFloat::Set(&rasterJobItem->occludedColour, 0.0f, 0.0f, 1.0f);
 			rasterJobItem->position = sector->origin;
 			Vec3::Set(&rasterJobItem->size, sectorMetrics->sectorSize, sectorMetrics->sectorSize, sectorMetrics->sectorSize);
-		}
+		}*/
 
 		if (rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex != -1)
 		{

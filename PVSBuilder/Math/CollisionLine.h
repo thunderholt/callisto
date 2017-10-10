@@ -11,5 +11,6 @@ struct CollisionLine
 	float length;
 
 	static void FromOwnFromAndToPoints(CollisionLine* out);
+	static bool CalculateIntersectionWithPlane(Vec3* out, CollisionLine* line, Plane* plane);
 	static FaceIntersectionType CalculateIntersectionWithCollisionFace(Vec3* out, CollisionLine* line, CollisionFace* face);
 };

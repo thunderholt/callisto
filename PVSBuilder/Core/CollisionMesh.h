@@ -20,6 +20,8 @@ public:
 
 private:
 	void FindPointCompletelyOutsideOfExtremities();
+	int GetSectorIndexFromPoint(Vec3* point, SectorMetrics* sectorMetrics, bool clamp);
+	bool DetermineIfLineIntersectsChunksInSector(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sector);
 
 	CollisionMeshChunk* chunks;
 	int numberOfChunks;

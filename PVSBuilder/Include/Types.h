@@ -4,7 +4,7 @@
 #include "Include/DynamicLengthArray.h"
 #include "Math/Math.h"
 
-#define SectorMaxInsidePoints 100
+#define SectorMaxInsidePoints 400
 
 typedef void(*ThreadEntryPointFunction)(void*);
 

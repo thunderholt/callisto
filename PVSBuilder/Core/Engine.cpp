@@ -161,8 +161,8 @@ void Engine::InitSectorMetrics()
 	{
 		for (int j = 0; j <= this->sectorMetrics.sectorCounts[i]; j++)
 		{
-			Vec3 pointOnPlane;
-			Vec3::Scale(&pointOnPlane, &planeNormals[i], j * this->sectorMetrics.sectorSize);
+			Vec3 pointOnPlane = this->sectorMetrics.originOffset;
+			Vec3::ScaleAndAdd(&pointOnPlane, &pointOnPlane, &planeNormals[i], j * this->sectorMetrics.sectorSize);
 
 			Plane plane;
 			Plane::FromNormalAndPoint(&plane, &planeNormals[i], &pointOnPlane);

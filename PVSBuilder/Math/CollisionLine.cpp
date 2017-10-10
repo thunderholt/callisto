@@ -11,7 +11,59 @@ void CollisionLine::FromOwnFromAndToPoints(CollisionLine* out)
 	Vec3::Normalize(&out->ray.normal, &out->ray.normal);
 }
 
-FaceIntersectionType CollisionLine::CalculateIntersectionWithCollisionFace(Vec3* out, CollisionLine* line, CollisionFace* face) 
+bool CollisionLine::CalculateIntersectionWithPlane(Vec3* out, CollisionLine* line, Plane* plane)
+{
+	Vec3 intersectionPoint;
+	bool intersectionFound = false;
+
+	bool potentialIntersectionFound = Ray3::CalculateIntersectionWithPlane(&intersectionPoint, &line->ray, plane);
+
+	if (potentialIntersectionFound)
+	{
+		float distanceToFacePlaneIntersectionSqr = Vec3::DistanceSqr(&line->from, &intersectionPoint);
+
+		float lineLengthSqr = line->length * line->length;
+
+		if (distanceToFacePlaneIntersectionSqr <= lineLengthSqr)
+		{
+			if (out != null)
+			{
+				*out = intersectionPoint;
+			}
+
+			intersectionFound = true;
+		}
+	}
+	
+	return intersectionFound;
+}
+
+FaceIntersectionType CollisionLine::CalculateIntersectionWithCollisionFace(Vec3* out, CollisionLine* line, CollisionFace* face)
+{
+	FaceIntersectionType faceIntersectionType = FaceIntersectionTypeNone;
+
+	bool isFrontSideCollision = Plane::CalculatePointDistance(&face->facePlane, &line->from) > 0.0f;
+
+	Vec3 facePlaneIntersection;
+	bool intersectionFound = CollisionLine::CalculateIntersectionWithPlane(&facePlaneIntersection, line, &face->facePlane);
+
+	if (intersectionFound)
+	{
+		if (CollisionFace::DetermineIfPointOnFacePlaneIsWithinCollisionFace(face, &facePlaneIntersection))
+		{
+			if (out != null)
+			{
+				*out = facePlaneIntersection;
+			}
+
+			faceIntersectionType = isFrontSideCollision ? FaceIntersectionTypeFrontSide : FaceIntersectionTypeBackSide;
+		}
+	}
+
+	return faceIntersectionType;
+}
+
+/*FaceIntersectionType CollisionLine::CalculateIntersectionWithCollisionFace(Vec3* out, CollisionLine* line, CollisionFace* face) 
 {
 	FaceIntersectionType faceIntersectionType = FaceIntersectionTypeNone;
 
@@ -41,4 +93,4 @@ FaceIntersectionType CollisionLine::CalculateIntersectionWithCollisionFace(Vec3*
 	}
 
 	return faceIntersectionType;
-}
+}*/

@@ -42,17 +42,20 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 				{
 					bool isVisible = false;
 
-					for (int i = 0; i < 100; i++)
+					if (sectorA->numberOfInsidePoints > 0 && sectorB->numberOfInsidePoints > 0)
 					{
-						CollisionLine line;
-						line.from = sectorA->insidePoints[Math::GenerateRandomInt(0, sectorA->numberOfInsidePoints - 1)];
-						line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->numberOfInsidePoints - 1)];
-						CollisionLine::FromOwnFromAndToPoints(&line);
-
-						if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors, &collisionMeshLineIntersectionDeterminationWorkingData))
+						for (int i = 0; i < 500; i++)
 						{
-							isVisible = true;
-							break;
+							CollisionLine line;
+							line.from = sectorA->insidePoints[Math::GenerateRandomInt(0, sectorA->numberOfInsidePoints - 1)];
+							line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->numberOfInsidePoints - 1)];
+							CollisionLine::FromOwnFromAndToPoints(&line);
+
+							if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors, &collisionMeshLineIntersectionDeterminationWorkingData))
+							{
+								isVisible = true;
+								break;
+							}
 						}
 					}
 

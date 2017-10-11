@@ -101,6 +101,103 @@ bool CollisionMesh::DetermineIfPointIsInsideIndoorMesh(Vec3* point)
 bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData)
 {
 	bool intersectionFound = false;
+	
+	int sectorIndex = this->GetSectorIndexFromPoint(&line->from, sectorMetrics, true);
+	if (sectorIndex != -1)
+	{
+		intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, &sectors[sectorIndex]);
+	}
+
+	if (!intersectionFound)
+	{
+		sectorIndex = this->GetSectorIndexFromPoint(&line->to, sectorMetrics, true);
+		if (sectorIndex != -1)
+		{
+			intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, &sectors[sectorIndex]);
+		}
+
+		if (!intersectionFound)
+		{
+			int lastSectorIndex = -1;
+
+			for (int gridPlaneIndex = 0; gridPlaneIndex < sectorMetrics->gridPlanes.GetLength() && !intersectionFound; gridPlaneIndex++)
+			{
+				Plane* gridPlane = &sectorMetrics->gridPlanes[gridPlaneIndex];
+
+				Vec3 intersectionPoint;
+				if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
+				{
+					Vec3 fudgedIntersectionPoint;
+
+					Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, 0.01f);
+
+					sectorIndex = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
+					if (sectorIndex != -1 && sectorIndex != lastSectorIndex)
+					{
+						intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, &sectors[sectorIndex]);
+					}
+
+					if (!intersectionFound)
+					{
+						Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, -0.01f);
+
+						sectorIndex = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
+						if (sectorIndex != -1)
+						{
+							intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, &sectors[sectorIndex]);
+							lastSectorIndex = sectorIndex;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/*bool intersectionFound = false;
+	bool linePointsChecked = false;
+	int gridPlaneIndex = 0;
+	int sectorIndexesToCheck[2] = { -1, -1 };
+	
+	while ((!linePointsChecked || gridPlaneIndex < sectorMetrics->gridPlanes.GetLength()) && !intersectionFound)
+	{
+		if (!linePointsChecked)
+		{
+			sectorIndexesToCheck[0] = this->GetSectorIndexFromPoint(&line->from, sectorMetrics, true);
+			sectorIndexesToCheck[1] = this->GetSectorIndexFromPoint(&line->to, sectorMetrics, true);
+			linePointsChecked = true;
+		}
+		else
+		{
+			Plane* gridPlane = &sectorMetrics->gridPlanes[gridPlaneIndex];
+
+			Vec3 intersectionPoint;
+			if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
+			{
+				Vec3 fudgedIntersectionPoint;
+
+				Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, 0.01f);
+				sectorIndexesToCheck[0] = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
+
+				Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, -0.01f);
+				sectorIndexesToCheck[1] = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
+			}
+
+			gridPlaneIndex++;
+		}
+
+		for (int i = 0; i < 2 && !intersectionFound; i++)
+		{
+			int sectorIndex = sectorIndexesToCheck[i];
+			if (sectorIndex != -1)
+			{
+				Sector* sector = &sectors[sectorIndex];
+
+				intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, sector);
+			}
+		}
+	}*/
+
+	/*bool intersectionFound = false;
 	Vec3 epsilon;
 	Vec3::Set(&epsilon, 0.0000001f, 0.0000001f, 0.0000001f);
 
@@ -119,9 +216,20 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMet
 		Vec3 intersectionPoint;
 		if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
 		{
-			//Vec3::Add(&intersectionPoint, &intersectionPoint, &epsilon);
+			Vec3 fudgedIntersectionPoint;
 
-			int sectorIndex = this->GetSectorIndexFromPoint(&intersectionPoint, sectorMetrics, true);
+			//Vec3::Add(&intersectionPoint, &intersectionPoint, &epsilon);
+			Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, 0.01f);
+
+			int sectorIndex = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
+			if (sectorIndex != -1)
+			{
+				workingData->intersectedSectorIndexes.Push(sectorIndex);
+			}
+
+			Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, -0.01f);
+
+			sectorIndex = this->GetSectorIndexFromPoint(&fudgedIntersectionPoint, sectorMetrics, true);
 			if (sectorIndex != -1)
 			{
 				workingData->intersectedSectorIndexes.Push(sectorIndex);
@@ -142,8 +250,65 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMet
 
 		intersectionFound = this->DetermineIfLineIntersectsChunksInSector(line, sectorMetrics, sector);
 	}
+	*/
+	///////////////////////////////////////////////////////////////////////////////////////////
 
-	/*for (int chunkIndex = 0; 
+	/*bool intersectionFoundB = false;
+
+	for (int sectorIndex = 0; sectorIndex < sectorMetrics->numberOfSectors && !intersectionFoundB; sectorIndex++)
+	{
+		Sector* sector = &sectors[sectorIndex];
+
+		for (int i = 0;
+			i < sector->residentWorldMeshChunkIndexes.GetLength() && !intersectionFoundB;
+			i++)
+		{
+			int chunkIndex = sector->residentWorldMeshChunkIndexes[i];
+			CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
+
+			for (int faceIndex = chunk->startFaceIndex;
+				faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFoundB;
+				faceIndex++)
+			{
+				CollisionFace* face = &this->faces[faceIndex];
+
+				Vec3 faceIntersectionPoint;
+				FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
+					&faceIntersectionPoint, line, face);
+
+				if (faceIntersectionType != FaceIntersectionTypeNone)
+				{
+					intersectionFoundB = true;
+
+					bool sectorFound = false;
+					for (int j = 0; j < workingData->intersectedSectorIndexes.GetLength(); j++)
+					{
+						if (workingData->intersectedSectorIndexes[j] == sectorIndex)
+						{
+							sectorFound = true;
+						}
+					}
+
+					if (!sectorFound)
+					{
+						int f = 1;
+					}
+
+					if (!intersectionFound)
+					{
+						int g = 1;
+					}
+				}
+			}
+		}
+	}*/
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	/*
+	bool intersectionFound = false;
+
+	for (int chunkIndex = 0; 
 		chunkIndex < this->numberOfChunks && !intersectionFound; 
 		chunkIndex++)
 	{

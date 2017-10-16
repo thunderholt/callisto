@@ -33,7 +33,6 @@ Engine::Engine()
 	}
 
 	this->sectors = null;
-	//Vec3::Zero(&this->pointCompletelyOutsideOfCollisionMeshExtremities);
 }
 
 Engine::~Engine()
@@ -68,38 +67,19 @@ void Engine::BuildPVS(const char* worldMeshAssetFilePath, SectorMetrics sectorMe
 
 		this->InitSectors();
 
-		//this->pointCompletelyOutsideOfCollisionMeshExtremities = this->worldMeshAsset->GetCollisionMesh()->FindPointCompletelyOutsideOfExtremities();
-
 		this->sectorVisibilityLookup->Allocate(this->sectorMetrics.numberOfSectors);
 		
 		this->InitWorkers();
 
 		this->ComputeSectorInsidePointsOnWorkers();
 
+		this->RunSectorCruncherOnWorkers(SectorCruncherTypeOcclusion);
+
 		this->RunSectorCruncherOnWorkers(SectorCruncherTypeBruteForce);
 
-		//this->ComputeSectorOutputVariables();
 		this->BuildSectorVisibleSectors();
 
 		this->WriteOutputFile();
-
-		/*///////////////////// Test code ///////////
-		for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
-		{
-			for (int j = 0; j < this->sectorMetrics.numberOfSectors; j++)
-			{
-				if (this->sectorVisibilityLookup->GetSectorVisibilityState(i, j) != SectorVisibilityStateVisible)
-				{
-					this->logger->Write("Missed sector.");
-				}
-			}
-
-			if (this->sectors[i].numberOfInsidePoints != 100)
-			{
-				this->logger->Write("Bad number of inside points.");
-			}
-		}
-		///////////////////////////////////////////*/
 	}
 
 	double endTime = this->timestampProvider->GetTimestampMillis();

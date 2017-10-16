@@ -45,7 +45,11 @@ void Worker::RunSectorCruncherAsync(SectorCruncherType sectorCruncherType)
 
 	SafeDeleteAndNull(this->sectorCruncher);
 
-	if (sectorCruncherType == SectorCruncherTypeBruteForce)
+	if (sectorCruncherType == SectorCruncherTypeOcclusion)
+	{
+		this->sectorCruncher = factory->MakeOcclusionSectorCruncher();
+	}
+	else if (sectorCruncherType == SectorCruncherTypeBruteForce)
 	{
 		this->sectorCruncher = factory->MakeBruteForceSectorCruncher();
 	}

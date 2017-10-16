@@ -2,6 +2,7 @@
 
 #include "Math/Vec2.h"
 #include "Math/Vec3.h"
+#include "Math/Vec3i.h"
 #include "Math/Ray3.h"
 #include "Math/Plane.h"
 #include "Math/AABB.h"

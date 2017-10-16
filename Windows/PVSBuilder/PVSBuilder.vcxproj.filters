@@ -94,6 +94,9 @@
     <ClCompile Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.cpp">
       <Filter>PVSBuilder\Time</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.cpp">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h">
@@ -176,6 +179,12 @@
     </ClInclude>
     <ClInclude Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.h">
       <Filter>PVSBuilder\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Math\Vec3i.h">
+      <Filter>PVSBuilder\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

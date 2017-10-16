@@ -2,7 +2,7 @@
 
 BruteForceSectorCruncher::BruteForceSectorCruncher()
 {
-	//this->hasFinished = false;
+
 }
 
 BruteForceSectorCruncher::~BruteForceSectorCruncher()
@@ -18,7 +18,7 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 	ICollisionMesh* collisionMesh = worldMeshAsset->GetCollisionMesh();
 	SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
 	Sector* sectors = engine->GetSectors();
-	CollisionMeshLineIntersectionDeterminationWorkingData collisionMeshLineIntersectionDeterminationWorkingData;
+	//CollisionMeshLineIntersectionDeterminationWorkingData collisionMeshLineIntersectionDeterminationWorkingData;
 
 	for (int sectorAIndex = startSectorIndex;
 		sectorAIndex < sectorMetrics->numberOfSectors &&
@@ -44,14 +44,14 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 
 					if (sectorA->numberOfInsidePoints > 0 && sectorB->numberOfInsidePoints > 0)
 					{
-						for (int i = 0; i < 500; i++)
+						for (int i = 0; i < 600; i++)
 						{
 							CollisionLine line;
 							line.from = sectorA->insidePoints[Math::GenerateRandomInt(0, sectorA->numberOfInsidePoints - 1)];
 							line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->numberOfInsidePoints - 1)];
 							CollisionLine::FromOwnFromAndToPoints(&line);
 
-							if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors, &collisionMeshLineIntersectionDeterminationWorkingData))
+							if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors/*, &collisionMeshLineIntersectionDeterminationWorkingData*/))
 							{
 								isVisible = true;
 								break;
@@ -64,11 +64,4 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 			}
 		}
 	}
-
-	//this->hasFinished = true;
 }
-
-/*bool BruteForceSectorCruncher::GetHasFinished()
-{
-	return this->hasFinished;
-}*/

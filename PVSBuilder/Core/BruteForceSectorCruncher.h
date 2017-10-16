@@ -8,8 +8,4 @@ public:
 	BruteForceSectorCruncher();
 	virtual ~BruteForceSectorCruncher();
 	virtual void Run(int startSectorIndex, int numberOfSectorsToCrunch);
-	//virtual bool GetHasFinished();
-
-private:
-	//bool hasFinished;
 };

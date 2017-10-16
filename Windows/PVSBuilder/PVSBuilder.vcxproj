@@ -157,6 +157,7 @@
     <ClCompile Include="..\..\PVSBuilder\Core\CollisionMesh.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Engine.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Factory.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Worker.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\WorldMeshAsset.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="..\..\PVSBuilder\Core\CollisionMesh.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Engine.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Factory.h" />
+    <ClInclude Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Worker.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\WorldMeshAsset.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="..\..\PVSBuilder\Math\Ray3.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\Vec2.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\Vec3.h" />
+    <ClInclude Include="..\..\PVSBuilder\Math\Vec3i.h" />
     <ClInclude Include="..\..\PVSBuilder\Threading\WindowsThreadManager.h" />
     <ClInclude Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.h" />
     <ClInclude Include="..\..\PVSBuilder\Util\Util.h" />

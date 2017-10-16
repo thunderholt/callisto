@@ -32,7 +32,8 @@ struct SectorMetrics
 
 enum SectorCruncherType
 {
-	SectorCruncherTypeBruteForce
+	SectorCruncherTypeBruteForce,
+	SectorCruncherTypeOcclusion
 };
 
 struct Sector
@@ -65,9 +66,10 @@ struct CollisionMeshIntersectionResult
 	float distance;
 };
 
+/*
 struct CollisionMeshLineIntersectionDeterminationWorkingData
 {
 	//DynamicLengthArray<Vec3> gridPlaneIntersections;
 	DynamicLengthArray<int> intersectedSectorIndexes;
 	//DynamicLengthArray<int> potentiallyIntersectedChunkIndexes;
-};
+};*/

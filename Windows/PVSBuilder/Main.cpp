@@ -11,9 +11,9 @@ int main()
 	IEngine* engine = GetEngine();
 	SectorMetrics sectorMetrics;
 	Vec3::Set(&sectorMetrics.originOffset, -5.0f, 0.0f, 0.0f);
-	sectorMetrics.sectorCounts[0] = 8;
+	sectorMetrics.sectorCounts[0] = 10;
 	sectorMetrics.sectorCounts[1] = 2;
-	sectorMetrics.sectorCounts[2] = 6;
+	sectorMetrics.sectorCounts[2] = 10;
 	
 	/*sectorMetrics.sectorCounts[0] = 2;
 	sectorMetrics.sectorCounts[1] = 2;

@@ -61,10 +61,7 @@ public:
 	virtual void PushChunk(int startIndex, int numberOfFaces, float* positions, unsigned short* indecies) = 0;
 	virtual void Finish() = 0;
 	virtual bool DetermineIfPointIsInsideIndoorMesh(Vec3* point) = 0;
-	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors, CollisionMeshLineIntersectionDeterminationWorkingData* workingData) = 0;
-	//virtual bool FindNearestRayIntersection(CollisionMeshIntersectionResult* out, Ray3* ray) = 0;
-	//virtual bool FindNearestLineIntersection(CollisionMeshIntersectionResult* out, CollisionLine* line) = 0;
-	//virtual Vec3 FindPointCompletelyOutsideOfExtremities() = 0;
+	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, SectorMetrics* sectorMetrics, Sector* sectors/*, CollisionMeshLineIntersectionDeterminationWorkingData* workingData*/) = 0;
 	virtual CollisionMeshChunk* GetChunk(int chunkIndex) = 0;
 	virtual int GetNumberOfChunks() = 0;
 	virtual CollisionFace* GetFace(int faceIndex) = 0;
@@ -93,7 +90,6 @@ class ISectorCruncher
 public:
 	virtual ~ISectorCruncher() {}
 	virtual void Run(int startSectorIndex, int numberOfSectorsToCrunch) = 0;
-	//virtual bool GetHasFinished() = 0;
 };
 
 class IWorker
@@ -132,6 +128,7 @@ public:
 	virtual IWorldMeshAsset* MakeWorldMeshAsset() = 0;
 	virtual ICollisionMesh* MakeCollisionMesh() = 0;
 	virtual ISectorVisibilityLookup* MakeSectorVisibilityLookup() = 0;
+	virtual ISectorCruncher* MakeOcclusionSectorCruncher() = 0;
 	virtual ISectorCruncher* MakeBruteForceSectorCruncher() = 0;
 	virtual IWorker* MakeWorker() = 0;
 	virtual IThreadManager* MakeThreadManager() = 0;

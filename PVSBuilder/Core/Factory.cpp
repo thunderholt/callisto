@@ -7,6 +7,7 @@
 #include "Core/WorldMeshAsset.h" 
 #include "Core/CollisionMesh.h" 
 #include "Core/SectorVisibilityLookup.h" 
+#include "Core/OcclusionSectorCruncher.h" 
 #include "Core/BruteForceSectorCruncher.h" 
 #include "Core/Worker.h"
 #include "Threading/WindowsThreadManager.h"
@@ -67,6 +68,11 @@ ICollisionMesh* Factory::MakeCollisionMesh()
 ISectorVisibilityLookup* Factory::MakeSectorVisibilityLookup()
 {
 	return new SectorVisibilityLookup();
+}
+
+ISectorCruncher* Factory::MakeOcclusionSectorCruncher()
+{
+	return new OcclusionSectorCruncher();
 }
 
 ISectorCruncher* Factory::MakeBruteForceSectorCruncher()

@@ -12,6 +12,7 @@ public:
 	virtual IWorldMeshAsset* MakeWorldMeshAsset();
 	virtual ICollisionMesh* MakeCollisionMesh();
 	virtual ISectorVisibilityLookup* MakeSectorVisibilityLookup();
+	virtual ISectorCruncher* MakeOcclusionSectorCruncher();
 	virtual ISectorCruncher* MakeBruteForceSectorCruncher();
 	virtual IWorker* MakeWorker();
 	virtual IThreadManager* MakeThreadManager();

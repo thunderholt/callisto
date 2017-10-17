@@ -16,9 +16,12 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 	ISectorVisibilityLookup* sectorVisibilityLookup = engine->GetSectorVisibilityLookup();
 	IWorldMeshAsset* worldMeshAsset = engine->GetWorldMeshAsset();
 	ICollisionMesh* collisionMesh = worldMeshAsset->GetCollisionMesh();
+	ILogger* logger = engine->GetLogger();
 	SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
 	Sector* sectors = engine->GetSectors();
 	//CollisionMeshLineIntersectionDeterminationWorkingData collisionMeshLineIntersectionDeterminationWorkingData;
+
+	this->numberOfSectorVisibilityChecksMade = 0;
 
 	for (int sectorAIndex = startSectorIndex;
 		sectorAIndex < sectorMetrics->numberOfSectors &&
@@ -60,8 +63,11 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 					}
 
 					sectorVisibilityLookup->SetSectorVisibilityState(sectorAIndex, sectorBIndex, isVisible ? SectorVisibilityStateVisible : SectorVisibilityStateNotVisible);
+					this->numberOfSectorVisibilityChecksMade++;
 				}
 			}
 		}
 	}
+
+	logger->Write("Performed %d sector visibility checks.", this->numberOfSectorVisibilityChecksMade);
 }

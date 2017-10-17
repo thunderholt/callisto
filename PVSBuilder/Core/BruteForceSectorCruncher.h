@@ -8,4 +8,7 @@ public:
 	BruteForceSectorCruncher();
 	virtual ~BruteForceSectorCruncher();
 	virtual void Run(int startSectorIndex, int numberOfSectorsToCrunch);
+
+private:
+	int numberOfSectorVisibilityChecksMade;
 };

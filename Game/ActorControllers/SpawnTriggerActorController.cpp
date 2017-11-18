@@ -27,6 +27,15 @@ void SpawnTriggerActorController::OneTimeInit(IActor* actor, IJsonValue* actorAs
 	}
 }
 
+void SpawnTriggerActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
+
 void SpawnTriggerActorController::Activate(IActor* actor)
 {
 }

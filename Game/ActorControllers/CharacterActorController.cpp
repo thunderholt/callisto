@@ -29,6 +29,14 @@ void CharacterActorController::OneTimeInit(IActor* actor, IJsonValue* actorAsset
 	}
 }
 
+void CharacterActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void CharacterActorController::Activate(IActor* actor)
 {
 	CharacterActorControllerData* controllerData = (CharacterActorControllerData*)actor->GetControllerData();

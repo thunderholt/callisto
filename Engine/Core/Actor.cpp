@@ -124,11 +124,12 @@ void Actor::OneTimeInit(int actorAssetIndex, const char* name, Vec3* worldPositi
 	}
 }
 
-void Actor::ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation)
+void Actor::ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation, IJsonValue* actorInstanceJsonConfig)
 {
 	strcpy(this->name, name);
 	this->baseLocationData.worldPosition = *worldPosition;
 	this->baseLocationData.worldRotation = *worldRotation;
+	this->GetController()->ReInit(this, actorInstanceJsonConfig);
 }
 
 void Actor::Activate()

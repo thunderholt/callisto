@@ -41,7 +41,7 @@ public:
 	Actor(int actorIndex);
 	virtual ~Actor();
 	virtual void OneTimeInit(int actorAssetIndex, const char* name, Vec3* worldPosition, Vec3* worldRotation, IJsonValue* actorInstanceJsonConfig);
-	virtual void ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation);
+	virtual void ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation, IJsonValue* actorInstanceJsonConfig);
 	virtual void Activate();
 	virtual void Deactivate();
 	//virtual void ResolveLocationValues();

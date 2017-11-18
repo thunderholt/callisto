@@ -26,6 +26,14 @@ void SpawnPointActorController::OneTimeInit(IActor* actor, IJsonValue* actorAsse
 	}
 }
 
+void SpawnPointActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void SpawnPointActorController::Activate(IActor* actor)
 {
 }

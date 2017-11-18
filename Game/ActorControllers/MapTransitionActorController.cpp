@@ -28,6 +28,14 @@ void MapTransitionActorController::OneTimeInit(IActor* actor, IJsonValue* actorA
 	}
 }
 
+void MapTransitionActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void MapTransitionActorController::Activate(IActor* actor)
 {
 }

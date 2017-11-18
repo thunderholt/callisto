@@ -401,7 +401,7 @@ class IActor
 public:
 	virtual ~IActor() {}
 	virtual void OneTimeInit(int actorAssetIndex, const char* name, Vec3* worldPosition, Vec3* worldRotation, IJsonValue* actorInstanceJsonConfig) = 0;
-	virtual void ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation) = 0;
+	virtual void ReInit(const char* name, Vec3* worldPosition, Vec3* worldRotation, IJsonValue* actorInstanceJsonConfig) = 0;
 	virtual void Activate() = 0;
 	virtual void Deactivate() = 0;
 	virtual int GetIndex() = 0;
@@ -436,6 +436,7 @@ class IActorController
 public:
 	virtual ~IActorController() {}
 	virtual void OneTimeInit(IActor* actor, IJsonValue* actorAssetJsonConfig, IJsonValue* actorInstanceJsonConfig) = 0;
+	virtual void ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig) = 0;
 	virtual void Activate(IActor* actor) = 0;
 	virtual void Deactivate(IActor* actor) = 0;
 	virtual void Heartbeat(IActor* actor) = 0;

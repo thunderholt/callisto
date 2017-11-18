@@ -29,6 +29,14 @@ void DoorActorController::OneTimeInit(IActor* actor, IJsonValue* actorAssetJsonC
 	}
 }
 
+void DoorActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void DoorActorController::Activate(IActor* actor)
 {
 }

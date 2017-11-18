@@ -36,6 +36,14 @@ void FirstPersonPlayerActorController::OneTimeInit(IActor* actor, IJsonValue* ac
 	}
 }
 
+void FirstPersonPlayerActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void FirstPersonPlayerActorController::Activate(IActor* actor)
 {
 }

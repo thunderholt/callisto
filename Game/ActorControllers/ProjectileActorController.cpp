@@ -17,6 +17,14 @@ void ProjectileActorController::OneTimeInit(IActor* actor, IJsonValue* actorAsse
 	Vec3::Zero(&controllerData->direction);
 }
 
+void ProjectileActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void ProjectileActorController::Activate(IActor* actor)
 {
 }

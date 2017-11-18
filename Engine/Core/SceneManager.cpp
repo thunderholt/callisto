@@ -120,7 +120,7 @@ int SceneManager::CreateActor(int actorAssetIndex, const char* name, Vec3 worldP
 			actor = this->actors[actorIndex];
 
 			// Re-init the existing actor.
-			actor->ReInit(name, &worldPosition, &worldRotation);
+			actor->ReInit(name, &worldPosition, &worldRotation, actorInstanceJsonConfig);
 
 			logger->Write("Re-used existing deactivated actor instance.");
 		}

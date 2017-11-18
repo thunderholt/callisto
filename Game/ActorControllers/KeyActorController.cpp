@@ -27,6 +27,14 @@ void KeyActorController::OneTimeInit(IActor* actor, IJsonValue* actorAssetJsonCo
 	}
 }
 
+void KeyActorController::ReInit(IActor* actor, IJsonValue* actorInstanceJsonConfig)
+{
+	if (actorInstanceJsonConfig != null)
+	{
+		this->ApplyJsonConfig(actor, actorInstanceJsonConfig);
+	}
+}
+
 void KeyActorController::Activate(IActor* actor)
 {
 }

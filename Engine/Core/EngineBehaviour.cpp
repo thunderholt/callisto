@@ -47,7 +47,7 @@ void EngineBehaviour::Run()
 	}
 	else if (engine->GetMapState() == EngineMapStateNotAssigned)
 	{
-		engine->BeginLoadingMap("maps/demo-1.map");
+		engine->BeginLoadingMap(engine->GetStartUpArgs()->startUpMapPath);
 		renderLoadingScreen = true;
 	}
 	else

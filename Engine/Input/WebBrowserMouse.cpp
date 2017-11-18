@@ -12,7 +12,7 @@ EM_BOOL OnMouseEvent(int eventType, const EmscriptenMouseEvent* mouseEvent, void
 	{
 		globalMovementOffset.x = (float)mouseEvent->movementX;
 		globalMovementOffset.y = (float)mouseEvent->movementY;
-		Vec2::Scale(&globalMovementOffset, &globalMovementOffset, 6.5f);
+		Vec2::Scale(&globalMovementOffset, &globalMovementOffset, 1.5f);
 	}
 
 	return true;

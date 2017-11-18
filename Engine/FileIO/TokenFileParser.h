@@ -16,6 +16,7 @@ public:
 	virtual void ReadVec2(Vec2* out);
 	virtual void ReadVec3(Vec3* out);
 	virtual void ReadSphere(Sphere* out);
+	virtual void ReadAABB(AABB* out);
 	virtual void ReadAssetRef(AssetRef* out, AssetType assetType);
 
 private:

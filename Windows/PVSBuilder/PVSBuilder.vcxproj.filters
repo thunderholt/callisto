@@ -32,6 +32,9 @@
     <Filter Include="PVSBuilder\Time">
       <UniqueIdentifier>{5de1435b-82e8-493e-8429-4a0fcd1a5b41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PVSBuilder\Json">
+      <UniqueIdentifier>{77ceb1e3-1757-44f1-a223-5e41f267ab8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -94,8 +97,20 @@
     <ClCompile Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.cpp">
       <Filter>PVSBuilder\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.cpp">
+    <ClCompile Include="..\..\PVSBuilder\Core\MaterialAsset.cpp">
       <Filter>PVSBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonParser.cpp">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonProperty.cpp">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonValue.cpp">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PVSBuilder\Util\StringUtil.cpp">
+      <Filter>PVSBuilder\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -180,11 +195,23 @@
     <ClInclude Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.h">
       <Filter>PVSBuilder\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.h">
-      <Filter>PVSBuilder\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\PVSBuilder\Math\Vec3i.h">
       <Filter>PVSBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Core\MaterialAsset.h">
+      <Filter>PVSBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonParser.h">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonProperty.h">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonValue.h">
+      <Filter>PVSBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PVSBuilder\Util\StringUtil.h">
+      <Filter>PVSBuilder\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

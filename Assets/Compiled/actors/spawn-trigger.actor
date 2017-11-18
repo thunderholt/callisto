@@ -4,6 +4,9 @@
 		"from": [-0.05, 0, -0.05],
 		"to": [0.05, 0.4, 0.05]
 	},
+	"dependency-actor-asset-refs": [
+		"actors/key.actor"
+	],
 	"sub-actors": [
 		{
 			"type": "trigger-sphere",

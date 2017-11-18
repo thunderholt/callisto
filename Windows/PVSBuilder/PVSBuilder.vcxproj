@@ -157,12 +157,15 @@
     <ClCompile Include="..\..\PVSBuilder\Core\CollisionMesh.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Engine.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Factory.cpp" />
-    <ClCompile Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Core\MaterialAsset.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\Worker.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Core\WorldMeshAsset.cpp" />
     <ClCompile Include="..\..\PVSBuilder\FileIO\TokenFileParser.cpp" />
     <ClCompile Include="..\..\PVSBuilder\FileIO\WindowsFile.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonParser.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonProperty.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Json\JsonValue.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Logging\WindowsLogger.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Math\AABB.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Math\CollisionFace.cpp" />
@@ -172,6 +175,7 @@
     <ClCompile Include="..\..\PVSBuilder\Math\Ray3.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Threading\WindowsThreadManager.cpp" />
     <ClCompile Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.cpp" />
+    <ClCompile Include="..\..\PVSBuilder\Util\StringUtil.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +183,7 @@
     <ClInclude Include="..\..\PVSBuilder\Core\CollisionMesh.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Engine.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Factory.h" />
-    <ClInclude Include="..\..\PVSBuilder\Core\OcclusionSectorCruncher.h" />
+    <ClInclude Include="..\..\PVSBuilder\Core\MaterialAsset.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\SectorVisibilityLookup.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\Worker.h" />
     <ClInclude Include="..\..\PVSBuilder\Core\WorldMeshAsset.h" />
@@ -191,6 +195,9 @@
     <ClInclude Include="..\..\PVSBuilder\Include\Interfaces.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\PVSBuilder.h" />
     <ClInclude Include="..\..\PVSBuilder\Include\Types.h" />
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonParser.h" />
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonProperty.h" />
+    <ClInclude Include="..\..\PVSBuilder\Json\JsonValue.h" />
     <ClInclude Include="..\..\PVSBuilder\Logging\WindowsLogger.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\AABB.h" />
     <ClInclude Include="..\..\PVSBuilder\Math\CollisionFace.h" />
@@ -203,6 +210,7 @@
     <ClInclude Include="..\..\PVSBuilder\Math\Vec3i.h" />
     <ClInclude Include="..\..\PVSBuilder\Threading\WindowsThreadManager.h" />
     <ClInclude Include="..\..\PVSBuilder\Time\WindowsTimestampProvider.h" />
+    <ClInclude Include="..\..\PVSBuilder\Util\StringUtil.h" />
     <ClInclude Include="..\..\PVSBuilder\Util\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

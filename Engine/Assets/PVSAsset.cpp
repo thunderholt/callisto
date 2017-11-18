@@ -9,8 +9,9 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 	strcpy(this->filePath, filePath);
 	this->isStayResident = isStayResident;
 
-	memset(&this->sectorMetrics, 0, sizeof(PVSSectorMetrics));
+	//memset(&this->sectorMetrics, 0, sizeof(PVSSectorMetrics));
 	this->sectors = null;
+	this->numberOfSectors = 0;
 	this->visibleSectorIndexes = null;
 
 	char token[256];
@@ -21,7 +22,7 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 	{
 		parser->ReadString(token, 256);
 
-		if (strcmp(token, "sector-size") == 0)
+		/*if (strcmp(token, "sector-size") == 0)
 		{
 			this->sectorMetrics.sectorSize = parser->ReadFloat();
 		}
@@ -35,10 +36,10 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 		{
 			parser->ReadVec3(&this->sectorMetrics.sectorOriginOffset);
 		}
-		else if (strcmp(token, "number-of-sectors") == 0)
+		else */if (strcmp(token, "number-of-sectors") == 0)
 		{
-			this->sectorMetrics.numberOfSectors = parser->ReadInt();
-			this->sectors = new PVSSector[this->sectorMetrics.numberOfSectors];
+			this->numberOfSectors = parser->ReadInt();
+			this->sectors = new PVSSector[this->numberOfSectors];
 		}
 		else if (strcmp(token, "number-of-visible-sector-indexes") == 0)
 		{
@@ -50,17 +51,25 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 			numberOfResidentWorldMeshChunkIndexes = parser->ReadInt();
 			this->residentWorldMeshChunkIndexes = new int[numberOfResidentWorldMeshChunkIndexes];
 		}
-		else if (strcmp(token, "sector-origins") == 0)
+		/*else if (strcmp(token, "sector-origins") == 0)
 		{
 			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
 			{
 				PVSSector* sector = &this->sectors[i];
 				parser->ReadVec3(&sector->origin);
 			}
+		}*/
+		else if (strcmp(token, "sector-aabbs") == 0)
+		{
+			for (int i = 0; i < this->numberOfSectors; i++)
+			{
+				PVSSector* sector = &this->sectors[i];
+				parser->ReadAABB(&sector->aabb);
+			}
 		}
 		else if (strcmp(token, "sector-visible-sector-indexes-offsets") == 0)
 		{
-			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			for (int i = 0; i < this->numberOfSectors; i++)
 			{
 				PVSSector* sector = &this->sectors[i];
 				sector->visibleSectorIndexesOffset = parser->ReadInt();
@@ -68,7 +77,7 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 		}
 		else if (strcmp(token, "sector-visible-sector-index-quantities") == 0)
 		{
-			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			for (int i = 0; i < this->numberOfSectors; i++)
 			{
 				PVSSector* sector = &this->sectors[i];
 				sector->numberOfVisibleSectors = parser->ReadInt();
@@ -76,7 +85,7 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 		}
 		else if (strcmp(token, "sector-resident-world-mesh-chunk-indexes-offsets") == 0)
 		{
-			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			for (int i = 0; i < this->numberOfSectors; i++)
 			{
 				PVSSector* sector = &this->sectors[i];
 				sector->residentWorldMeshChunkIndexesOffset = parser->ReadInt();
@@ -84,7 +93,7 @@ PVSAsset::PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident)
 		}
 		else if (strcmp(token, "sector-resident-world-mesh-chunk-index-quantities") == 0)
 		{
-			for (int i = 0; i < this->sectorMetrics.numberOfSectors; i++)
+			for (int i = 0; i < this->numberOfSectors; i++)
 			{
 				PVSSector* sector = &this->sectors[i];
 				sector->numberOfResidentWorldMeshChunkIndexes = parser->ReadInt();
@@ -148,9 +157,14 @@ void PVSAsset::SetIsEvictable(bool isEvictable)
 	this->isEvictable = isEvictable;
 }
 
-PVSSectorMetrics* PVSAsset::GetSectorMetrics()
+/*PVSSectorMetrics* PVSAsset::GetSectorMetrics()
 {
 	return &this->sectorMetrics;
+}*/
+
+int PVSAsset::GetNumberOfSectors()
+{
+	return this->numberOfSectors;
 }
 
 PVSSector* PVSAsset::GetSector(int sectorIndex)

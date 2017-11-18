@@ -104,6 +104,12 @@ void TokenFileParser::ReadSphere(Sphere* out)
 	out->radius = this->ReadFloat();
 }
 
+void TokenFileParser::ReadAABB(AABB* out)
+{
+	this->ReadVec3(&out->from);
+	this->ReadVec3(&out->to);
+}
+
 void TokenFileParser::ReadAssetRef(AssetRef* out, AssetType assetType)
 {
 	this->ReadString(out->filePath, AssetMaxFilePathLength);

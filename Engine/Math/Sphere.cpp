@@ -135,7 +135,7 @@ bool Sphere::CalculateCollisionWithCollisionFace(FaceCollisionResult* out, Spher
 bool Sphere::CheckIntersectsAABB(Sphere* sphere, AABB* aabb) 
 {
 	Vec3 nearestPointInAABB;
-	AABB::ClampPoint(&nearestPointInAABB, &sphere->position, aabb);
+	AABB::ClampPoint(&nearestPointInAABB, aabb, &sphere->position);
 
 	Vec3 nearestPointInAABBToSpherePosition;
 	Vec3::Sub(&nearestPointInAABBToSpherePosition, &sphere->position, &nearestPointInAABB);

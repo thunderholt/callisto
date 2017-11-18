@@ -129,7 +129,12 @@ int main()
 	printf("Game initialised.\n");
 
 	IEngine* engine = GetEngine();
-	engine->Init();
+
+	EngineStartUpArgs startUpArgs;
+	memset(&startUpArgs, 0, sizeof(EngineStartUpArgs));
+	strcpy(startUpArgs.startUpMapPath, "maps/debug/debug-map-1.map");
+
+	engine->Init(&startUpArgs);
 
 	//emscripten_set_pointerlockchange_callback("canvas", null, false, OnPointerLockChanged);
 	//emscripten_set_pointerlockerror_callback("canvas", null, false, OnPointerLockError);

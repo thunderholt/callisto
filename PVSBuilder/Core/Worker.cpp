@@ -45,11 +45,11 @@ void Worker::RunSectorCruncherAsync(SectorCruncherType sectorCruncherType)
 
 	SafeDeleteAndNull(this->sectorCruncher);
 
-	if (sectorCruncherType == SectorCruncherTypeOcclusion)
+	/*if (sectorCruncherType == SectorCruncherTypeOcclusion)
 	{
 		this->sectorCruncher = factory->MakeOcclusionSectorCruncher();
 	}
-	else if (sectorCruncherType == SectorCruncherTypeBruteForce)
+	else */if (sectorCruncherType == SectorCruncherTypeBruteForce)
 	{
 		this->sectorCruncher = factory->MakeBruteForceSectorCruncher();
 	}
@@ -81,7 +81,7 @@ void Worker::RunThreadEntryPoint()
 
 	this->currentTaskHasFinished = true;
 
-	logger->Write("Worker finished.");
+	//logger->Write("Worker finished.");
 }
 
 void Worker::ComputeSectorInsidePointsInternal()
@@ -89,24 +89,26 @@ void Worker::ComputeSectorInsidePointsInternal()
 	IEngine* engine = GetEngine();
 	IWorldMeshAsset* worldMeshAsset = engine->GetWorldMeshAsset();
 	ICollisionMesh* collisionMesh = worldMeshAsset->GetCollisionMesh();
-	SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
-	Sector* sectors = engine->GetSectors();
+	//SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
+	//Sector* sectors = engine->GetSectors();
+	int numberOfSectors = engine->GetNumberOfSectors();
 
 	for (int sectorIndex = startSectorIndex;
-		sectorIndex < sectorMetrics->numberOfSectors &&
+		sectorIndex < numberOfSectors &&
 		sectorIndex < startSectorIndex + numberOfSectorsToCrunch;
 		sectorIndex++)
 	{
-		Sector* sector = &sectors[sectorIndex];
+		Sector* sector = engine->GetSector(sectorIndex);
 
-		for (int i = 0; i < SectorMaxInsidePoints; i++)
+		for (int i = 0; i < 400; i++)
 		{
 			Vec3 insidePoint;
-			this->CreateRandomPointWithinSector(&insidePoint, sectorMetrics, sector);
+			this->CreateRandomPointWithinSector(&insidePoint, sector);
 
-			if (collisionMesh->DetermineIfPointIsInsideIndoorMesh(&insidePoint))
+			//if (collisionMesh->DetermineIfPointIsInsideIndoorMesh(&insidePoint))
+			if (collisionMesh->DetermineIfPointIsPotentiallyInsideOutdoorMesh(&insidePoint))
 			{
-				sector->insidePoints[sector->numberOfInsidePoints++] = insidePoint;
+				sector->insidePoints.Push(insidePoint);
 			}
 		}
 	}
@@ -117,11 +119,14 @@ void Worker::RunSectorCruncherInternal()
 	this->sectorCruncher->Run(this->startSectorIndex, this->numberOfSectorsToCrunch);
 }
 
-void Worker::CreateRandomPointWithinSector(Vec3* out, SectorMetrics* sectorMetrics, Sector* sector)
+void Worker::CreateRandomPointWithinSector(Vec3* out/*, SectorMetrics* sectorMetrics*/, Sector* sector)
 {
-	*out = sector->origin;
+	*out = sector->aabb.from;
 
-	out->x += Math::GenerateRandomFloat() * sectorMetrics->sectorSize;
-	out->y += Math::GenerateRandomFloat() * sectorMetrics->sectorSize;
-	out->z += Math::GenerateRandomFloat() * sectorMetrics->sectorSize;
+	Vec3 aabbSize;
+	AABB::CalculateSize(&aabbSize, &sector->aabb);
+
+	out->x += Math::GenerateRandomFloat() * aabbSize.x;
+	out->y += Math::GenerateRandomFloat() * aabbSize.y;
+	out->z += Math::GenerateRandomFloat() * aabbSize.z;
 }

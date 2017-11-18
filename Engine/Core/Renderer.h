@@ -27,6 +27,8 @@ private:
 	ISubActor* FindMainCamera();
 	void SetupCamera(ISubActor* cameraSubActor);
 	void DrawWorldMesh();
+	void DrawWorldMeshChunksWithPvsSectors(IWorldMeshAsset* worldMeshAsset, IPVSAsset* pvsAsset);
+	void DrawWorldMeshChunksWithoutPvsSectors(IWorldMeshAsset* worldMeshAsset);
 	void DrawActors();
 	void DrawDebugVisualisations();
 	void DrawHUD();

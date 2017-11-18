@@ -29,5 +29,6 @@ struct AABB
 		Vec3::Add(&out->to, &aabb->to, amount);
 	}
 
-	static void ClampPoint(Vec3* out, Vec3* point, AABB* aabb);
+	static void ClampPoint(Vec3* out, AABB* aabb, Vec3* point);
+	static bool CheckContainsPoint(AABB* aabb, Vec3* point);
 };

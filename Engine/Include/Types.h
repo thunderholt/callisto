@@ -25,6 +25,11 @@
 typedef void(*ThreadEntryPointFunction)(void*);
 typedef unsigned int ProviderId;
 
+struct EngineStartUpArgs
+{
+	char startUpMapPath[AssetMaxFilePathLength];
+};
+
 struct Buffer
 {
 	char* data;
@@ -624,17 +629,17 @@ struct CollisionMeshIntersectionResult
 
 //------ Potential Visibility Sets -----//
 
-struct PVSSectorMetrics
+/*struct PVSSectorMetrics
 {
 	float sectorSize;
 	int numberOfSectors;
 	int sectorCounts[3];
 	Vec3 sectorOriginOffset;
-};
+};*/
 
 struct PVSSector
 {
-	Vec3 origin;
+	AABB aabb;
 	int visibleSectorIndexesOffset;
 	int numberOfVisibleSectors;
 	int residentWorldMeshChunkIndexesOffset;

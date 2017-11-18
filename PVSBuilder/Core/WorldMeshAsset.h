@@ -17,7 +17,11 @@ public:
 
 	virtual bool Load(const char* filePath);
 	virtual ICollisionMesh* GetCollisionMesh();
+	virtual AABB* GetPvsSectorAABB(int index);
+	virtual int GetNumberOfPvsSectorAABBs();
 	
 private:
 	ICollisionMesh* collisionMesh;
+	AABB* pvsSectorAABBs;
+	int numberOfPvsSectorAABBs;
 };

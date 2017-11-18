@@ -23,7 +23,7 @@ public:
 private:
 	void ComputeSectorInsidePointsInternal();
 	void RunSectorCruncherInternal();
-	void CreateRandomPointWithinSector(Vec3* out, SectorMetrics* sectorMetrics, Sector* sector);
+	void CreateRandomPointWithinSector(Vec3* out, /*SectorMetrics* sectorMetrics, */Sector* sector);
 
 	WorkerTaskType currentTaskType;
 	bool currentTaskHasFinished;

@@ -141,6 +141,7 @@ public:
 	virtual void ReadVec2(Vec2* out) = 0;
 	virtual void ReadVec3(Vec3* out) = 0;
 	virtual void ReadSphere(Sphere* out) = 0;
+	virtual void ReadAABB(AABB* out) = 0;
 	virtual void ReadAssetRef(AssetRef* out, AssetType assetType) = 0;
 };
 
@@ -321,7 +322,8 @@ class IPVSAsset : public IAsset
 {
 public:
 	virtual ~IPVSAsset() {}
-	virtual PVSSectorMetrics* GetSectorMetrics() = 0;
+	//virtual PVSSectorMetrics* GetSectorMetrics() = 0;
+	virtual int GetNumberOfSectors() = 0;
 	virtual PVSSector* GetSector(int sectorIndex) = 0;
 	virtual int* GetVisibleSectorIndexes() = 0;
 	virtual int* GetResidentWorldMeshChunkIndexes() = 0;
@@ -621,7 +623,7 @@ class IEngine
 public:
 	virtual ~IEngine() {}
 	virtual void RegisterGameController(IGameController* gameController) = 0;
-	virtual void Init() = 0;
+	virtual void Init(EngineStartUpArgs* startUpArgs) = 0;
 	virtual void BeginLoadingMap(const char* filePath) = 0;
 	virtual void Heartbeat() = 0;
 	virtual IGameController* GetGameController() = 0;
@@ -646,6 +648,7 @@ public:
 	virtual ITouchScreenGamePad* GetTouchScreenGamePad() = 0;
 	virtual IAggregatedGamePad* GetAggregatedGamePad() = 0;
 	virtual ILogger* GetLogger() = 0;
+	virtual EngineStartUpArgs* GetStartUpArgs() = 0;
 	virtual AssetRef* GetMapAssetRef() = 0;
 	virtual bool GetMustTerminate() = 0;
 	virtual EngineMapState GetMapState() = 0;

@@ -9,8 +9,7 @@ public:
 	virtual ~Engine();
 
 	virtual void RegisterGameController(IGameController* gameController);
-	virtual void Init();
-	//virtual void CleanUp();
+	virtual void Init(EngineStartUpArgs* startUpArgs);
 	virtual void BeginLoadingMap(const char* filePath);
 	virtual void Heartbeat();
 	virtual IGameController* GetGameController();
@@ -35,6 +34,7 @@ public:
 	virtual ITouchScreenGamePad* GetTouchScreenGamePad();
 	virtual IAggregatedGamePad* GetAggregatedGamePad();
 	virtual ILogger* GetLogger();
+	virtual EngineStartUpArgs* GetStartUpArgs();
 	virtual AssetRef* GetMapAssetRef();
 	virtual bool GetMustTerminate();
 	//virtual bool GetMapIsAssigned();
@@ -42,6 +42,7 @@ public:
 	virtual int GetFrameId();
 
 private:
+	void SetDefaultsOnStartUpArgs();
 	bool EnsurePostCoreAssetLoadInitHasRun();
 	void BeginLoadingMapInternal();
 
@@ -72,11 +73,12 @@ private:
 	ITouchScreenGamePad* touchScreenGamePad;
 	IAggregatedGamePad* aggregatedGamePad;
 	ILogger* logger;
+
+	EngineStartUpArgs startUpArgs;
 	AssetRef mapAssetRef;
 	char mapToLoadPath[AssetMaxFilePathLength];
 	bool hasMapToLoad;
 	bool mustTerminate;
-	//bool mapIsAssigned;
 	EngineMapState mapState;
 	bool postCoreAssetLoadInitialisationHasRun;
 	int frameId;

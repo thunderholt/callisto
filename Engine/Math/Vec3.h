@@ -38,6 +38,16 @@ struct Vec3
 		return v->x == 0.0f && v->y == 0.0f && v->z == 0.0f;
 	}
 
+	static inline bool IsLessThan(Vec3* a, Vec3* b)
+	{
+		return a->x < b->x || a->y < b->y || a->z < b->z;
+	}
+
+	static inline bool IsGreaterThan(Vec3* a, Vec3* b)
+	{
+		return a->x > b->x || a->y > b->y || a->z > b->z;
+	}
+
 	static inline void Set(Vec3* out, float x, float y, float z)
 	{
 		out->x = x;

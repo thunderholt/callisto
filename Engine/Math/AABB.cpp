@@ -1,6 +1,6 @@
 #include "Math/AABB.h"
 
-void AABB::ClampPoint(Vec3* out, Vec3* point, AABB* aabb) 
+void AABB::ClampPoint(Vec3* out, AABB* aabb, Vec3* point) 
 {
 	*out = *point;
 
@@ -33,4 +33,20 @@ void AABB::ClampPoint(Vec3* out, Vec3* point, AABB* aabb)
 	{
 		out->z = aabb->to.z;
 	}
+}
+
+bool AABB::CheckContainsPoint(AABB* aabb, Vec3* point)
+{
+	bool containsPoint = true;
+
+	if (Vec3::IsLessThan(point, &aabb->from))
+	{
+		containsPoint = false;
+	}
+	else if (Vec3::IsGreaterThan(point, &aabb->to))
+	{
+		containsPoint = false;
+	}
+
+	return containsPoint;
 }

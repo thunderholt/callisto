@@ -1,4 +1,4 @@
 {
 	"diffuse-texture-asset-ref": "textures/static-meshes/door-1-d.png",
-	"emissive-colour": [0.0, 0.0f, 0.0f]
+	"emissive-colour": [0.0, 0.0, 0.0]
 }

@@ -8,7 +8,8 @@ public:
 	PVSAsset(const char* filePath, Buffer* fileData, bool isStayResident);
 	virtual ~PVSAsset();
 
-	virtual PVSSectorMetrics* GetSectorMetrics();
+	//virtual PVSSectorMetrics* GetSectorMetrics();
+	virtual int GetNumberOfSectors();
 	virtual PVSSector* GetSector(int sectorIndex);
 	virtual int* GetVisibleSectorIndexes();
 	virtual int* GetResidentWorldMeshChunkIndexes();
@@ -27,8 +28,9 @@ private:
 	bool loadedSuccessfully;
 	bool isEvictable;
 
-	PVSSectorMetrics sectorMetrics;
+	//PVSSectorMetrics sectorMetrics;
 	PVSSector* sectors;
+	int numberOfSectors;
 	int* visibleSectorIndexes;
 	int* residentWorldMeshChunkIndexes;
 };

@@ -3,11 +3,14 @@
 WorldMeshAsset::WorldMeshAsset()
 {
 	this->collisionMesh = null;
+	this->pvsSectorAABBs = null;
+	this->numberOfPvsSectorAABBs = 0;
 }
 
 WorldMeshAsset::~WorldMeshAsset()
 {
 	SafeDeleteAndNull(this->collisionMesh);
+	SafeDeleteArrayAndNull(this->pvsSectorAABBs);
 }
 
 bool WorldMeshAsset::Load(const char* filePath)
@@ -21,6 +24,11 @@ bool WorldMeshAsset::Load(const char* filePath)
 	float* tempPositions = null;
 	unsigned short* tempIndecies = null;
 	WorldMeshChunk* tempChunks = null;
+	Vec3 gridOrigin;
+	Vec3::Zero(&gridOrigin);
+	Vec3i gridDimensions;
+	Vec3i::Zero(&gridDimensions);
+	float gridCellSize = 0;
 
 	IFile* file = factory->MakeFile();
 	if (!file->OpenForReading(filePath))
@@ -46,6 +54,8 @@ bool WorldMeshAsset::Load(const char* filePath)
 			int numberOfVerts = 0;
 			int numberOfFaces = 0;
 			int numberOfChunks = 0;
+			int numberOfMaterialAssetRefs = 0;
+			DynamicLengthArray<AssetRef> materialAssetRefs;
 
 			while (!parser->GetIsEOF())
 			{
@@ -63,6 +73,26 @@ bool WorldMeshAsset::Load(const char* filePath)
 				else if (strcmp(token, "number-of-chunks") == 0)
 				{
 					numberOfChunks = parser->ReadInt();
+				}
+				else if (strcmp(token, "number-of-material-asset-refs") == 0)
+				{
+					numberOfMaterialAssetRefs = parser->ReadInt();
+				}
+				else if (strcmp(token, "number-of-pvs-sector-aabbs") == 0)
+				{
+					this->numberOfPvsSectorAABBs = parser->ReadInt();
+				}
+				else if (strcmp(token, "grid-origin") == 0)
+				{
+					parser->ReadVec3(&gridOrigin);
+				}
+				else if (strcmp(token, "grid-dimensions") == 0)
+				{
+					parser->ReadVec3i(&gridDimensions);
+				}
+				else if (strcmp(token, "grid-cell-size") == 0)
+				{
+					gridCellSize = parser->ReadFloat();
 				}
 				else if (strcmp(token, "positions") == 0)
 				{
@@ -95,24 +125,75 @@ bool WorldMeshAsset::Load(const char* filePath)
 						chunk->materialAssetRefIndex = parser->ReadInt();
 					}
 				}
+				else if (strcmp(token, "material-asset-refs") == 0)
+				{
+					for (int i = 0; i < numberOfMaterialAssetRefs; i++)
+					{
+						AssetRef* assetRef = &materialAssetRefs.PushAndGet();
+						parser->ReadAssetRef(assetRef);
+					}
+				}
+				else if (strcmp(token, "pvs-sector-aabbs") == 0)
+				{
+					this->pvsSectorAABBs = new AABB[this->numberOfPvsSectorAABBs];
+
+					for (int i = 0; i < this->numberOfPvsSectorAABBs; i++)
+					{
+						AABB* aabb = &this->pvsSectorAABBs[i];
+						parser->ReadVec3(&aabb->from);
+						parser->ReadVec3(&aabb->to);
+					}
+				}
 			}
 
 			SafeDeleteAndNull(parser);
 
+			// Load the materials.
+			IMaterialAsset** materialAssets = new IMaterialAsset*[numberOfMaterialAssetRefs];
+			bool allMaterialsLoadedSuccessfully = true;
+
+			for (int i = 0; i < numberOfMaterialAssetRefs; i++) 
+			{
+				AssetRef* assetRef = &materialAssetRefs[i];
+
+				char fullMaterialAssetPath[512];
+				strcpy(fullMaterialAssetPath, engine->GetAssetsFolderPath());
+				strcat(fullMaterialAssetPath, assetRef->filePath);
+
+				IMaterialAsset* materialAsset = factory->MakeMaterialAsset();
+				allMaterialsLoadedSuccessfully &= materialAsset->Load(fullMaterialAssetPath);
+
+				materialAssets[i] = materialAsset;
+			}
+
 			// Create the collision mesh.
 			this->collisionMesh = factory->MakeCollisionMesh();
-			this->collisionMesh->Allocate(numberOfChunks, numberOfFaces);
+			this->collisionMesh->AllocateGeometry(numberOfChunks, numberOfFaces);
+			this->collisionMesh->AllocateGrid(gridOrigin, gridDimensions, gridCellSize);
 
 			for (int chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++)
 			{
 				WorldMeshChunk* chunk = &tempChunks[chunkIndex];
-				this->collisionMesh->PushChunk(chunk->startIndex, chunk->numberOfFaces, tempPositions, tempIndecies);
+				IMaterialAsset* materialAsset = materialAssets[chunk->materialAssetRefIndex];
+
+				this->collisionMesh->PushChunk(
+					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempIndecies, materialAsset->GetIsVisibilityOcculuder());
 			}
 
 			this->collisionMesh->Finish();
 
+			// Clean up the material assets.
+			for (int i = 0; i < numberOfMaterialAssetRefs; i++) 
+			{
+				SafeDeleteAndNull(materialAssets[i]);
+			}
+			SafeDeleteArrayAndNull(materialAssets);
+			
 			// We're done!
-			success = true;
+			if (allMaterialsLoadedSuccessfully)
+			{
+				success = true;
+			}
 		}
 	}
 
@@ -128,4 +209,14 @@ bool WorldMeshAsset::Load(const char* filePath)
 ICollisionMesh* WorldMeshAsset::GetCollisionMesh()
 {
 	return this->collisionMesh;
+}
+
+AABB* WorldMeshAsset::GetPvsSectorAABB(int index)
+{
+	return &this->pvsSectorAABBs[index];
+}
+
+int WorldMeshAsset::GetNumberOfPvsSectorAABBs()
+{
+	return this->numberOfPvsSectorAABBs;
 }

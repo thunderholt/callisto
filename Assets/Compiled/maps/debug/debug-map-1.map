@@ -1,0 +1,122 @@
+{
+	"world-mesh-asset-refs": ["world-meshes/debug/debug-map-1.wmesh"],
+	"pvs-asset-refs": ["pvs/debug/debug-map-1.pvs"],
+	"static-mesh-asset-refs": ["static-meshes/robot.smesh", "static-meshes/key.smesh", "static-meshes/debug/door-2.smesh", "static-meshes/gun.smesh"],
+	"material-asset-refs": ["materials/debug/floor-1.mat", "materials/debug/wall-1.mat", "materials/debug/wall-2.mat", "materials/static-meshes/robot.mat", "materials/static-meshes/key.mat", "materials/static-meshes/gun.mat"],
+	"texture-asset-refs": ["textures/debug/wall-1-d.png", "textures/debug/wall-2-d.png", "textures/static-meshes/robot-d.png", "textures/sprite-sheets/projectiles/projectiles.png", "textures/static-meshes/key-d.png", "textures/static-meshes/gun-d.png"],
+	"actor-asset-refs": ["actors/spawn-point.actor", "actors/robot.actor", "actors/plasma-ball.actor", "actors/spawn-trigger.actor", "actors/key.actor", "actors/door.actor", "actors/first-person-player.actor"],
+	"sprite-sheet-asset-refs": ["sprite-sheets/projectiles/projectiles.ss"],
+	"world-mesh-asset-ref": "world-meshes/debug/debug-map-1.wmesh",
+	"actor-instances": [
+		{
+			"name": "spawn-point-5",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [9.500000, 0.532279, 8.062643],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "spawn-point-4",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [9.500000, 0.532279, 6.062643],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "trigger-2",
+			"asset-ref": "actors/spawn-trigger.actor",
+			"position": [10.500000, 0.007624, 2.500000],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawn-points": ["spawn-point-4", "spawn-point-5"],
+				"reward-drop-actor-asset-ref": "actors/key.actor",
+				"reward-drop-actor-config": {
+					"key-type": "blue"
+				}
+			}
+		},
+		{
+			"name": "spawn-point-3",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [7.500000, 0.532279, 2.062643],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "spawn-point-2",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [6.500000, 0.532279, 2.500000],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		},
+		{
+			"name": "door-1.001",
+			"asset-ref": "actors/door.actor",
+			"position": [9.000000, 0.000000, 8.000001],
+			"rotation": [0.000000, -1.570796, -0.000000],
+			"config": 	{
+				"is-locked": true,
+				"required-key-type": "blue"
+			}
+		},
+		{
+			"name": "door-1.000",
+			"asset-ref": "actors/door.actor",
+			"position": [10.000000, 0.000000, 4.916667],
+			"rotation": [0.000000, -0.000000, -0.000000],
+			"config": 	{
+				"is-locked": false,
+				"required-key-type": "none"
+			}
+		},
+		{
+			"name": "Suzanne",
+			"asset-ref": "actors/first-person-player.actor",
+			"position": [3.750000, 0.000000, -1.500000],
+			"rotation": [0.000000, 1.570796, -0.000000],
+			"config": 	{
+				"auto-set-as-default-camera": true
+			}
+		},
+		{
+			"name": "door-1.002",
+			"asset-ref": "actors/door.actor",
+			"position": [9.000000, 0.000000, 3.000000],
+			"rotation": [0.000000, 1.570796, -0.000000],
+			"config": 	{
+				"is-locked": true,
+				"required-key-type": "red"
+			}
+		},
+		{
+			"name": "trigger-1",
+			"asset-ref": "actors/spawn-trigger.actor",
+			"position": [0.500000, 0.007624, 0.500000],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawn-points": ["spawn-point-1", "spawn-point-2", "spawn-point-3"],
+				"reward-drop-actor-asset-ref": "actors/key.actor",
+				"reward-drop-actor-config": {
+					"key-type": "red"
+				}
+			}
+		},
+		{
+			"name": "spawn-point-1",
+			"asset-ref": "actors/spawn-point.actor",
+			"position": [6.500000, 0.532279, 1.500000],
+			"rotation": [0.000000, 4.706166, 0.000000],
+			"config": 	{
+				"spawnee-actor-asset-ref": "actors/robot.actor"
+			}
+		}
+	]
+}

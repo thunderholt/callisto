@@ -98,6 +98,18 @@ void TokenFileParser::ReadVec3(Vec3* out)
 	out->z = this->ReadFloat();
 }
 
+void TokenFileParser::ReadVec3i(Vec3i* out)
+{
+	out->x = this->ReadInt();
+	out->y = this->ReadInt();
+	out->z = this->ReadInt();
+}
+
+void TokenFileParser::ReadAssetRef(AssetRef* out)
+{
+	this->ReadString(out->filePath, AssetMaxFilePathLength);
+}
+
 void TokenFileParser::BurnWhiteSpace()
 {
 	while (!this->GetIsEOF())

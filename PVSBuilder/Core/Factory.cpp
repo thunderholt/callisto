@@ -5,13 +5,17 @@
 #include "FileIO/TokenFileParser.h" 
 #include "Logging/WindowsLogger.h" 
 #include "Core/WorldMeshAsset.h" 
+#include "Core/MaterialAsset.h" 
 #include "Core/CollisionMesh.h" 
 #include "Core/SectorVisibilityLookup.h" 
-#include "Core/OcclusionSectorCruncher.h" 
+//#include "Core/OcclusionSectorCruncher.h" 
 #include "Core/BruteForceSectorCruncher.h" 
 #include "Core/Worker.h"
 #include "Threading/WindowsThreadManager.h"
 #include "Time/WindowsTimestampProvider.h"
+#include "Json/JsonValue.h" 
+#include "Json/JsonProperty.h" 
+#include "Json/JsonParser.h" 
 #endif
 
 Factory* factory = null;
@@ -60,6 +64,11 @@ IWorldMeshAsset* Factory::MakeWorldMeshAsset()
 	return new WorldMeshAsset();
 }
 
+IMaterialAsset* Factory::MakeMaterialAsset()
+{
+	return new MaterialAsset();
+}
+
 ICollisionMesh* Factory::MakeCollisionMesh()
 {
 	return new CollisionMesh();
@@ -70,10 +79,10 @@ ISectorVisibilityLookup* Factory::MakeSectorVisibilityLookup()
 	return new SectorVisibilityLookup();
 }
 
-ISectorCruncher* Factory::MakeOcclusionSectorCruncher()
+/*ISectorCruncher* Factory::MakeOcclusionSectorCruncher()
 {
 	return new OcclusionSectorCruncher();
-}
+}*/
 
 ISectorCruncher* Factory::MakeBruteForceSectorCruncher()
 {
@@ -93,4 +102,19 @@ IThreadManager* Factory::MakeThreadManager()
 ITimestampProvider* Factory::MakeTimestampProvider()
 {
 	return new WindowsTimestampProvider();
+}
+
+IJsonValue* Factory::MakeJsonValue()
+{
+	return new JsonValue();
+}
+
+IJsonProperty* Factory::MakeJsonProperty()
+{
+	return new JsonProperty();
+}
+
+IJsonParser* Factory::MakeJsonParser()
+{
+	return new JsonParser();
 }

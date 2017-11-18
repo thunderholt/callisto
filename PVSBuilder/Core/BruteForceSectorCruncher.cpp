@@ -17,20 +17,21 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 	IWorldMeshAsset* worldMeshAsset = engine->GetWorldMeshAsset();
 	ICollisionMesh* collisionMesh = worldMeshAsset->GetCollisionMesh();
 	ILogger* logger = engine->GetLogger();
-	SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
-	Sector* sectors = engine->GetSectors();
+	//SectorMetrics* sectorMetrics = engine->GetSectorMetrics();
+	//Sector* sectors = engine->GetSectors();
+	int numberOfSectors = engine->GetNumberOfSectors();
 	//CollisionMeshLineIntersectionDeterminationWorkingData collisionMeshLineIntersectionDeterminationWorkingData;
 
 	this->numberOfSectorVisibilityChecksMade = 0;
 
 	for (int sectorAIndex = startSectorIndex;
-		sectorAIndex < sectorMetrics->numberOfSectors &&
+		sectorAIndex < numberOfSectors &&
 		sectorAIndex < startSectorIndex + numberOfSectorsToCrunch;
 		sectorAIndex++)
 	{
-		Sector* sectorA = &sectors[sectorAIndex];
+		Sector* sectorA = engine->GetSector(sectorAIndex);
 
-		for (int sectorBIndex = 0; sectorBIndex < sectorMetrics->numberOfSectors; sectorBIndex++)
+		for (int sectorBIndex = 0; sectorBIndex < numberOfSectors; sectorBIndex++)
 		{
 			if (sectorAIndex == sectorBIndex)
 			{
@@ -38,23 +39,23 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 			}
 			else
 			{
-				Sector* sectorB = &sectors[sectorBIndex];
+				Sector* sectorB = engine->GetSector(sectorBIndex);
 
 				SectorVisibilityState currentVisibilityState = sectorVisibilityLookup->GetSectorVisibilityState(sectorAIndex, sectorBIndex);
 				if (currentVisibilityState == SectorVisibilityStateUnknown)
 				{
 					bool isVisible = false;
 
-					if (sectorA->numberOfInsidePoints > 0 && sectorB->numberOfInsidePoints > 0)
+					if (sectorA->insidePoints.GetLength() > 0 && sectorB->insidePoints.GetLength() > 0)
 					{
 						for (int i = 0; i < 600; i++)
 						{
 							CollisionLine line;
-							line.from = sectorA->insidePoints[Math::GenerateRandomInt(0, sectorA->numberOfInsidePoints - 1)];
-							line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->numberOfInsidePoints - 1)];
+							line.from = sectorA->insidePoints[Math::GenerateRandomInt(0, sectorA->insidePoints.GetLength() - 1)];
+							line.to = sectorB->insidePoints[Math::GenerateRandomInt(0, sectorB->insidePoints.GetLength() - 1)];
 							CollisionLine::FromOwnFromAndToPoints(&line);
 
-							if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, sectorMetrics, sectors/*, &collisionMeshLineIntersectionDeterminationWorkingData*/))
+							if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, true))
 							{
 								isVisible = true;
 								break;
@@ -69,5 +70,5 @@ void BruteForceSectorCruncher::Run(int startSectorIndex, int numberOfSectorsToCr
 		}
 	}
 
-	logger->Write("Performed %d sector visibility checks.", this->numberOfSectorVisibilityChecksMade);
+	//logger->Write("Performed %d sector visibility checks.", this->numberOfSectorVisibilityChecksMade);
 }

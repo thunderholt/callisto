@@ -48,10 +48,12 @@ void SpawnTriggerActorController::Heartbeat(IActor* actor)
 	{
 		logger->Write("Player entered spawn trigger.");
 
-		for (int i = 0; i < controllerData->spawnPointActorIndexes.GetLength(); i++)
+		//for (int i = 0; i < controllerData->spawnPointActorIndexes.GetLength(); i++)
+		for (int i = 0; i < controllerData->spawnPointActorNames.GetLength(); i++)
 		{
-			int actorIndex = controllerData->spawnPointActorIndexes[i];
-			IActor* spawnPointActor = sceneManager->GetActor(actorIndex);
+			//int actorIndex = controllerData->spawnPointActorIndexes[i];
+			//IActor* spawnPointActor = sceneManager->GetActor(actorIndex);
+			IActor* spawnPointActor = sceneManager->FindActorByName(controllerData->spawnPointActorNames[i]);
 			if (spawnPointActor != null)
 			{
 				logger->Write("Notifying '%s'.", spawnPointActor->GetName());
@@ -102,11 +104,13 @@ void SpawnTriggerActorController::ApplyJsonConfig(IActor* actor, IJsonValue* jso
 		{
 			for (int i = 0; i < jsonPropertyValue->GetNumberOfArrayElements(); i++)
 			{
-				IActor* spawnPointActor = sceneManager->FindActorByName(jsonPropertyValue->GetArrayElement(i)->GetStringValue());
+				jsonPropertyValue->GetArrayElement(i)->CopyStringValue(controllerData->spawnPointActorNames.PushAndGet(), ActorMaxNameLength);
+
+				/*IActor* spawnPointActor = sceneManager->FindActorByName(jsonPropertyValue->GetArrayElement(i)->GetStringValue());
 				if (spawnPointActor != null)
 				{
 					controllerData->spawnPointActorIndexes.Push(spawnPointActor->GetIndex());
-				}
+				}*/
 			}
 		}
 		else if (strcmp(jsonProperty->GetName(), "reward-drop-actor-asset-ref") == 0)

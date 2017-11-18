@@ -2,7 +2,15 @@
 
 struct Vec3i
 {
-	int x, y, z;
+	union
+	{
+		struct
+		{
+			int x, y, z;
+		};
+
+		int i[3];
+	};
 
 	static inline void Zero(Vec3i* out)
 	{

@@ -44,6 +44,7 @@ Engine::Engine()
 	this->aggregatedGamePad = factory->MakeAggregatedGamePad();
 	this->logger = factory->MakeLogger();
 
+	memset(&this->startUpArgs, 0, sizeof(EngineStartUpArgs));
 	this->gameController = null;
 	this->hasMapToLoad = false;
 	strcpy(this->mapToLoadPath, "");
@@ -109,8 +110,11 @@ void Engine::RegisterGameController(IGameController* gameController)
 	this->gameController = gameController;
 }
 
-void Engine::Init()
+void Engine::Init(EngineStartUpArgs* startUpArgs)
 {
+	this->startUpArgs = *startUpArgs;
+	this->SetDefaultsOnStartUpArgs();
+
 	if (!this->unitTester->RunUnitTests())
 	{
 		this->mustTerminate = true;
@@ -347,6 +351,19 @@ IAggregatedGamePad* Engine::GetAggregatedGamePad()
 ILogger* Engine::GetLogger()
 {
 	return this->logger;
+}
+
+EngineStartUpArgs* Engine::GetStartUpArgs()
+{
+	return &this->startUpArgs;
+}
+
+void Engine::SetDefaultsOnStartUpArgs()
+{
+	if (strlen(this->startUpArgs.startUpMapPath) == 0)
+	{
+		strcpy(this->startUpArgs.startUpMapPath, "/maps/index.map");
+	}
 }
 
 bool Engine::EnsurePostCoreAssetLoadInitHasRun()

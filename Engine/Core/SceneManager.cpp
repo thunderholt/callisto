@@ -94,37 +94,42 @@ int SceneManager::CreateActor(int actorAssetIndex, const char* name, Vec3 worldP
 	IEngine* engine = GetEngine();
 	ILogger* logger = engine->GetLogger();
 
-	IActor* actor = null;
+	int actorIndex = -1;
 
-	// See if we can re-use a suitable deactivated actor.
-	int actorIndex = this->FindDeactivatedActor(actorAssetIndex);
-	if (actorIndex == -1)
+	if (actorAssetIndex != -1)
 	{
-		// Create the actor.
-		actorIndex = this->actors.FindAndOccupyAvailableIndex();
-		actor = factory->MakeActor(actorIndex);
-		this->actors[actorIndex] = actor;
+		IActor* actor = null;
 
-		// One-time init the actor.
-		actor->OneTimeInit(actorAssetIndex, name, &worldPosition, &worldRotation, actorInstanceJsonConfig);
+		// See if we can re-use a suitable deactivated actor.
+		actorIndex = this->FindDeactivatedActor(actorAssetIndex);
+		if (actorIndex == -1)
+		{
+			// Create the actor.
+			actorIndex = this->actors.FindAndOccupyAvailableIndex();
+			actor = factory->MakeActor(actorIndex);
+			this->actors[actorIndex] = actor;
 
-		logger->Write("Created new actor instance.");
+			// One-time init the actor.
+			actor->OneTimeInit(actorAssetIndex, name, &worldPosition, &worldRotation, actorInstanceJsonConfig);
+
+			logger->Write("Created new actor instance.");
+		}
+		else
+		{
+			// Grab the existing actor.
+			actor = this->actors[actorIndex];
+
+			// Re-init the existing actor.
+			actor->ReInit(name, &worldPosition, &worldRotation);
+
+			logger->Write("Re-used existing deactivated actor instance.");
+		}
+
+		// Activate the actor.
+		actor->Activate();
 	}
-	else
-	{
-		// Grab the existing actor.
-		actor = this->actors[actorIndex];
 
-		// Re-init the existing actor.
-		actor->ReInit(name, &worldPosition, &worldRotation);
-
-		logger->Write("Re-used existing deactivated actor instance.");
-	}
-
-	// Activate the actor.
-	actor->Activate();
-
-	return actor->GetIndex();
+	return actorIndex;
 }
 
 void SceneManager::DeleteActor(int actorIndex)

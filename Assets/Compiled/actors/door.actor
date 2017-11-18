@@ -5,7 +5,7 @@
 	 	"to": [0.5, 0.5, 0.1]
  	},
  	"static-mesh-asset-refs": [
-		"static-meshes/door-1.smesh"
+		"static-meshes/debug/door-2.smesh"
 	],
 	"sub-actors": [
 		{

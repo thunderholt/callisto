@@ -97,16 +97,31 @@ void Renderer::DrawWorldMesh()
 	AssetRef*  worldMeshAssetRef = mapAsset->GetWorldMeshAssetRef();
 	IWorldMeshAsset* worldMeshAsset = assetManager->GetWorldMeshAsset(worldMeshAssetRef->index);
 	AssetRef* pvsAssetRef = worldMeshAsset->GetPVSAssetRef();
-	IPVSAsset* pvsAsset = assetManager->GetPVSAsset(pvsAssetRef->index);
+
+	this->rasterJob->worldMeshAssetIndex = worldMeshAssetRef->index;
+	this->stats.numberOfVisibleWorldMeshChunks = 0;
+
+	if (pvsAssetRef->index != -1 && this->rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex != -1)
+	{
+		IPVSAsset* pvsAsset = assetManager->GetPVSAsset(pvsAssetRef->index);
+		
+		this->DrawWorldMeshChunksWithPvsSectors(worldMeshAsset, pvsAsset);
+	}
+	else
+	{
+		this->DrawWorldMeshChunksWithoutPvsSectors(worldMeshAsset);
+	}
+}
+
+void Renderer::DrawWorldMeshChunksWithPvsSectors(IWorldMeshAsset* worldMeshAsset, IPVSAsset* pvsAsset)
+{
+	IEngine* engine = GetEngine();
+
 	int frameId = engine->GetFrameId();
 
-	rasterJob->worldMeshAssetIndex = worldMeshAssetRef->index;
-
-	PVSSector* residentSector = pvsAsset->GetSector(rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex);
+	PVSSector* residentSector = pvsAsset->GetSector(this->rasterJob->commonRasterizationParameters.cameraResidentPvsSectorIndex);
 	int* visibleSectorIndexes = pvsAsset->GetVisibleSectorIndexes();
 	int* residentWorldMeshChunkIndexes = pvsAsset->GetResidentWorldMeshChunkIndexes();
-
-	this->stats.numberOfVisibleWorldMeshChunks = 0;
 
 	// Loop through all of the visible sectors.
 	for (int i = 0; i < residentSector->numberOfVisibleSectors; i++)
@@ -120,26 +135,32 @@ void Renderer::DrawWorldMesh()
 			int chunkIndex = residentWorldMeshChunkIndexes[visibleSector->residentWorldMeshChunkIndexesOffset + j];
 			WorldMeshChunk* chunk = worldMeshAsset->GetChunk(chunkIndex);
 
-			// TODO - Frustum cull.
-
-			// If the chunk hasn't been rendered this frame yet, render it.
-			if (chunk->lastRenderedFrameId != frameId)
+			if (chunk != null)
 			{
-				DrawWorldMeshChunkRasterJobItem* drawWorldMeshChunkRasterJobItem = &rasterJob->drawWorldMeshChunkJobItems.PushAndGet();
-				drawWorldMeshChunkRasterJobItem->chunkIndex = chunkIndex;
-				
-				chunk->lastRenderedFrameId = frameId;
-				this->stats.numberOfVisibleWorldMeshChunks++;
+				// TODO - Frustum cull.
+
+				// If the chunk hasn't been rendered this frame yet, render it.
+				if (chunk->lastRenderedFrameId != frameId)
+				{
+					DrawWorldMeshChunkRasterJobItem* drawWorldMeshChunkRasterJobItem = &this->rasterJob->drawWorldMeshChunkJobItems.PushAndGet();
+					drawWorldMeshChunkRasterJobItem->chunkIndex = chunkIndex;
+
+					chunk->lastRenderedFrameId = frameId;
+					this->stats.numberOfVisibleWorldMeshChunks++;
+				}
 			}
 		}
 	}
+}
 
-	/*// TODO - Use PVS
+void Renderer::DrawWorldMeshChunksWithoutPvsSectors(IWorldMeshAsset* worldMeshAsset)
+{
 	for (int chunkIndex = 0; chunkIndex < worldMeshAsset->GetNumberOfChunks(); chunkIndex++)
 	{
 		DrawWorldMeshChunkRasterJobItem* drawWorldMeshChunkRasterJobItem = &rasterJob->drawWorldMeshChunkJobItems.PushAndGet();
 		drawWorldMeshChunkRasterJobItem->chunkIndex = chunkIndex;
-	}*/
+		this->stats.numberOfVisibleWorldMeshChunks++;
+	}
 }
 
 void Renderer::DrawActors()
@@ -390,7 +411,7 @@ int Renderer::FindResidentSectorIndexFromWorldPosition(Vec3* worldPosition)
 	if (pvsAssetRef->index != -1)
 	{
 		IPVSAsset* pvsAsset = assetManager->GetPVSAsset(pvsAssetRef->index);
-		PVSSectorMetrics* sectorMetrics = pvsAsset->GetSectorMetrics();
+		/*PVSSectorMetrics* sectorMetrics = pvsAsset->GetSectorMetrics();
 
 		int xSectorIndex = (int)floorf((worldPosition->x - sectorMetrics->sectorOriginOffset.x) / sectorMetrics->sectorSize);
 		int ySectorIndex = (int)floorf((worldPosition->y - sectorMetrics->sectorOriginOffset.y) / sectorMetrics->sectorSize);
@@ -404,6 +425,16 @@ int Renderer::FindResidentSectorIndexFromWorldPosition(Vec3* worldPosition)
 				(zSectorIndex * sectorMetrics->sectorCounts[1] * sectorMetrics->sectorCounts[0]) +
 				(ySectorIndex * sectorMetrics->sectorCounts[0]) +
 				xSectorIndex;
+		}*/
+		for (int sectorIndex = 0; sectorIndex < pvsAsset->GetNumberOfSectors(); sectorIndex++)
+		{
+			PVSSector* sector = pvsAsset->GetSector(sectorIndex);
+
+			if (AABB::CheckContainsPoint(&sector->aabb, worldPosition))
+			{
+				residentSectorIndex = sectorIndex;
+				break;
+			}
 		}
 	}
 

@@ -3,25 +3,30 @@
 #include <crtdbg.h> 
 #include "Include/PVSBuilder.h"
 
-int main()
+int main(int argc, char *argv[])
 {
 	CreateFactory();
 	CreateEngine();
 
 	IEngine* engine = GetEngine();
-	SectorMetrics sectorMetrics;
-	Vec3::Set(&sectorMetrics.originOffset, -5.0f, 0.0f, 0.0f);
-	sectorMetrics.sectorCounts[0] = 10;
-	sectorMetrics.sectorCounts[1] = 2;
-	sectorMetrics.sectorCounts[2] = 10;
-	
-	/*sectorMetrics.sectorCounts[0] = 2;
-	sectorMetrics.sectorCounts[1] = 2;
-	sectorMetrics.sectorCounts[2] = 2;*/
-	
-	sectorMetrics.numberOfSectors = sectorMetrics.sectorCounts[0] * sectorMetrics.sectorCounts[1] * sectorMetrics.sectorCounts[2];
-	sectorMetrics.sectorSize = 1.0f;
-	engine->BuildPVS("World-Meshes/demo-1.wmesh", sectorMetrics);
+	ILogger* logger = engine->GetLogger();
+
+	logger->Write("****** Welcome to Callisto PVS Generator ******");
+
+	if (argc != 4)
+	{
+		logger->Write("Incorrect number of arguments.");
+	}
+	else
+	{
+		char* worldMeshAssetFilePath = argv[1];
+		char* assetsFolderPath = argv[2];
+		char* outputFilePath = argv[3];
+
+		engine->BuildPVS(worldMeshAssetFilePath, assetsFolderPath, outputFilePath);
+	}
+
+	logger->Write("Press enter to exit.");
 
 	DestroyEngine();
 	DestroyFactory();
@@ -29,6 +34,8 @@ int main()
 	OutputDebugStringA("Dumping memory leaks...");
 	_CrtDumpMemoryLeaks();
 	OutputDebugStringA("... done.");
+
+	getchar();
 
     return 0;
 }

@@ -17,6 +17,9 @@
 	"texture-asset-refs": [
 		"textures/sprite-sheets/projectiles/projectiles.png"
 	],
+	"dependency-actor-asset-refs": [
+		"actors/plasma-ball.actor"
+	],
 	"sub-actors": [
 		{
 			"type": "camera",

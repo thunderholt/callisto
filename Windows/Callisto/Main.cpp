@@ -33,8 +33,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	msg.wParam = 0;
 
-	
-
 	// enable OpenGL for the window
 	EnableOpenGL(hInstance, &hWnd, &hDC, &hRC);
 
@@ -52,8 +50,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CreateFactory();
 	CreateEngine();
 	InitGame();
+
 	IEngine* engine = GetEngine();
-	engine->Init();
+
+	EngineStartUpArgs startUpArgs;
+	memset(&startUpArgs, 0, sizeof(EngineStartUpArgs));
+
+	if (__argc == 2)
+	{ 
+		StringUtil::CopyString(startUpArgs.startUpMapPath, __argv[1], AssetMaxFilePathLength);
+	}
+
+	engine->Init(&startUpArgs);
 
 	// program main loop
 	while (!quit)
@@ -184,8 +192,8 @@ void EnableOpenGL(HINSTANCE hInstance, HWND* hWnd, HDC* hDC, HGLRC* hRC)
 	*hWnd = CreateWindow(
 		_T("Callisto"), _T("Callisto"),
 		WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
-		0, 0, 1152, 648,
-		//0, 0, 1900, 1000,
+		//0, 0, 1152, 648,
+		0, 0, 1900, 1000,
 		NULL, NULL, hInstance, NULL);
 
 	PIXELFORMATDESCRIPTOR pfd;

@@ -33,7 +33,8 @@ public:
 	EncounterActorFacet encounterFacet;
 
 	int triggerSphereSubActorIndex;
-	DynamicLengthArray<int> spawnPointActorIndexes;
+	//DynamicLengthArray<int> spawnPointActorIndexes;
+	DynamicLengthArray<char[ActorMaxNameLength]> spawnPointActorNames;
 	int rewardDropActorAssetIndex;
 	IJsonValue* jsonRewardDropActorConfig;
 	bool hasBeenTriggered;

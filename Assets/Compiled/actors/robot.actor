@@ -11,13 +11,16 @@
 	"static-mesh-asset-refs": [
 		"static-meshes/robot.smesh"
 	],
+	"dependency-actor-asset-refs": [
+		"actors/plasma-ball.actor"
+	],
 	"sub-actors": [
 		{
 			"type": "static-mesh",
 			"name": "RobotMesh",
 			"parent": -1,
 			"position": [0, 0, 0],
-			"rotation": [0, 3.142, 0],
+			"rotation": [0, 3.14159, 0],
 			"static-mesh-details": {
 				"static-mesh-asset-ref-index": 0,
 				"is-collidable": false

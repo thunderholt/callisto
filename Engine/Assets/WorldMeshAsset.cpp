@@ -30,6 +30,7 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 	this->bufferAreInitialised = false;
 	this->collisionMeshIsInitialised = false;
 	memset(&this->pvsAssetRef, 0, sizeof(AssetRef));
+	this->pvsAssetRef.index = -1;
 
 	while (!parser->GetIsEOF())
 	{
@@ -215,7 +216,14 @@ WorldMeshBuffers* WorldMeshAsset::GetBuffers()
 
 WorldMeshChunk* WorldMeshAsset::GetChunk(int index)
 {
-	return &this->chunks[index];
+	WorldMeshChunk* chunk = null;
+
+	if (index >= 0 && index < this->chunks.GetLength())
+	{
+		chunk = &this->chunks[index];
+	}
+
+	return chunk;
 }
 
 int WorldMeshAsset::GetNumberOfChunks()

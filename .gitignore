@@ -11,3 +11,4 @@
 /Windows/SpriteFontBuilder/bin
 /Windows/SpriteFontBuilder/obj
 /Emscripten/compiled
+*.blend1

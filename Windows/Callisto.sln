@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteFontBuilder", "Sprite
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PVSBuilder", "PVSBuilder\PVSBuilder.vcxproj", "{5437C7D1-0642-480E-B578-14FE76988557}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightAtlasBuilder", "LightAtlasBuilder\LightAtlasBuilder.vcxproj", "{6C632540-7CBE-4A91-9AD5-A97906DFD589}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{5437C7D1-0642-480E-B578-14FE76988557}.Release|x64.Build.0 = Release|x64
 		{5437C7D1-0642-480E-B578-14FE76988557}.Release|x86.ActiveCfg = Release|Win32
 		{5437C7D1-0642-480E-B578-14FE76988557}.Release|x86.Build.0 = Release|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|Any CPU.Build.0 = Debug|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|x64.ActiveCfg = Debug|x64
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|x64.Build.0 = Debug|x64
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|x86.ActiveCfg = Debug|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Debug|x86.Build.0 = Debug|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|Any CPU.ActiveCfg = Release|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|Any CPU.Build.0 = Release|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|x64.ActiveCfg = Release|x64
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|x64.Build.0 = Release|x64
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|x86.ActiveCfg = Release|Win32
+		{6C632540-7CBE-4A91-9AD5-A97906DFD589}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

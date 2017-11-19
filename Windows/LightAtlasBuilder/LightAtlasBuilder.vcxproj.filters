@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{9e8c88e5-7a0d-45bd-96a9-eebc0f5ab284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder">
+      <UniqueIdentifier>{639861fa-a3b5-403b-b528-2578d69eb928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Include">
+      <UniqueIdentifier>{e32ebaa2-3435-4154-a7ae-c3ac8679fc8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Math">
+      <UniqueIdentifier>{1c00d6d5-77a7-4cae-982f-e8f0e48d83f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Core">
+      <UniqueIdentifier>{dcbdb6c5-2ac0-4afa-b5c0-ff6ce6a380ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\FileIO">
+      <UniqueIdentifier>{1d2701aa-a759-4672-b271-c362d72799e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Threading">
+      <UniqueIdentifier>{76c6d925-e179-4124-a51c-896f98d4c0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Time">
+      <UniqueIdentifier>{f9e496b7-1405-415d-ac13-fbefb5628ae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Util">
+      <UniqueIdentifier>{442f7014-3c3b-4f8d-8d5a-15d733a1e986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Logging">
+      <UniqueIdentifier>{451a8e40-a608-4e30-bf1d-9de601def39c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightAtlasBuilder\Json">
+      <UniqueIdentifier>{7cd4a5f6-d3ba-4f35-aa9f-f206743c7ee1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\AABB.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\CollisionFace.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\CollisionLine.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Math.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Plane.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Ray3.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\CollisionMesh.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\Engine.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\Factory.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\MaterialAsset.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\Worker.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\WorldMeshAsset.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\FileIO\TokenFileParser.cpp">
+      <Filter>LightAtlasBuilder\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\FileIO\WindowsFile.cpp">
+      <Filter>LightAtlasBuilder\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Threading\WindowsThreadManager.cpp">
+      <Filter>LightAtlasBuilder\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Time\WindowsTimestampProvider.cpp">
+      <Filter>LightAtlasBuilder\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Util\StringUtil.cpp">
+      <Filter>LightAtlasBuilder\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Logging\WindowsLogger.cpp">
+      <Filter>LightAtlasBuilder\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Json\JsonParser.cpp">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Json\JsonProperty.cpp">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Json\JsonValue.cpp">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\LightAtlas.cpp">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\Common.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\DynamicLengthArray.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\FixedLengthArray.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\Interfaces.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\LightAtlasBuilder.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Include\Types.h">
+      <Filter>LightAtlasBuilder\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\AABB.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\CollisionFace.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\CollisionLine.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Math.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Plane.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Ray3.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec2.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec3.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec3i.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\CollisionMesh.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\Engine.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\Factory.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\MaterialAsset.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\Worker.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\WorldMeshAsset.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\FileIO\TokenFileParser.h">
+      <Filter>LightAtlasBuilder\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\FileIO\WindowsFile.h">
+      <Filter>LightAtlasBuilder\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Threading\WindowsThreadManager.h">
+      <Filter>LightAtlasBuilder\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Time\WindowsTimestampProvider.h">
+      <Filter>LightAtlasBuilder\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Util\StringUtil.h">
+      <Filter>LightAtlasBuilder\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Util\Util.h">
+      <Filter>LightAtlasBuilder\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Logging\WindowsLogger.h">
+      <Filter>LightAtlasBuilder\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Json\JsonParser.h">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Json\JsonProperty.h">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Json\JsonValue.h">
+      <Filter>LightAtlasBuilder\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Colours.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec2i.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\LightAtlas.h">
+      <Filter>LightAtlasBuilder\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

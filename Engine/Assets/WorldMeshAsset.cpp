@@ -94,6 +94,8 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				chunk->startIndex = parser->ReadInt();
 				chunk->numberOfFaces = parser->ReadInt();
 				chunk->materialAssetRefIndex = parser->ReadInt();
+				parser->ReadVec2(&chunk->lightIslandOffset);
+				parser->ReadVec2(&chunk->lightIslandSize);
 				chunk->lastRenderedFrameId = -1;
 			}
 		}

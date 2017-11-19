@@ -1,7 +1,7 @@
 #define WIN32_LEAN_AND_MEAN  
 #include <windows.h> 
 #include <crtdbg.h> 
-#include "Include/PVSBuilder.h"
+#include "Include/LightAtlasBuilder.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 	IEngine* engine = GetEngine();
 	ILogger* logger = engine->GetLogger();
 
-	logger->Write("****** Welcome to Callisto PVS Builder ******");
+	logger->Write("****** Welcome to Callisto Light Atlas Builder ******");
 
-	if (argc != 4)
+	if (argc != 3)
 	{
 		logger->Write("Incorrect number of arguments.");
 	}
@@ -21,9 +21,8 @@ int main(int argc, char *argv[])
 	{
 		char* worldMeshAssetFilePath = argv[1];
 		char* assetsFolderPath = argv[2];
-		char* outputFilePath = argv[3];
 
-		engine->BuildPVS(worldMeshAssetFilePath, assetsFolderPath, outputFilePath);
+		engine->BuildLightAtlases(worldMeshAssetFilePath, assetsFolderPath);
 	}
 
 	logger->Write("Press enter to exit.");
@@ -37,5 +36,5 @@ int main(int argc, char *argv[])
 
 	getchar();
 
-    return 0;
+	return 0;
 }

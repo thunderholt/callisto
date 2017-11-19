@@ -590,6 +590,8 @@ struct WorldMeshChunk
 	int startIndex;
 	int numberOfFaces;
 	int materialAssetRefIndex;
+	Vec2 lightIslandOffset;
+	Vec2 lightIslandSize;
 	int lastRenderedFrameId;
 };
 

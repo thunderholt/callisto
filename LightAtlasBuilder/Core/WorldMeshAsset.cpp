@@ -3,14 +3,11 @@
 WorldMeshAsset::WorldMeshAsset()
 {
 	this->collisionMesh = null;
-	this->pvsSectorAABBs = null;
-	this->numberOfPvsSectorAABBs = 0;
 }
 
 WorldMeshAsset::~WorldMeshAsset()
 {
 	SafeDeleteAndNull(this->collisionMesh);
-	SafeDeleteArrayAndNull(this->pvsSectorAABBs);
 }
 
 bool WorldMeshAsset::Load(const char* filePath)
@@ -78,10 +75,6 @@ bool WorldMeshAsset::Load(const char* filePath)
 				{
 					numberOfMaterialAssetRefs = parser->ReadInt();
 				}
-				else if (strcmp(token, "number-of-pvs-sector-aabbs") == 0)
-				{
-					this->numberOfPvsSectorAABBs = parser->ReadInt();
-				}
 				else if (strcmp(token, "grid-origin") == 0)
 				{
 					parser->ReadVec3(&gridOrigin);
@@ -135,17 +128,6 @@ bool WorldMeshAsset::Load(const char* filePath)
 						parser->ReadAssetRef(assetRef);
 					}
 				}
-				else if (strcmp(token, "pvs-sector-aabbs") == 0)
-				{
-					this->pvsSectorAABBs = new AABB[this->numberOfPvsSectorAABBs];
-
-					for (int i = 0; i < this->numberOfPvsSectorAABBs; i++)
-					{
-						AABB* aabb = &this->pvsSectorAABBs[i];
-						parser->ReadVec3(&aabb->from);
-						parser->ReadVec3(&aabb->to);
-					}
-				}
 			}
 
 			SafeDeleteAndNull(parser);
@@ -179,7 +161,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 				IMaterialAsset* materialAsset = materialAssets[chunk->materialAssetRefIndex];
 
 				this->collisionMesh->PushChunk(
-					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempIndecies, materialAsset->GetIsVisibilityOcculuder());
+					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempIndecies, 0 /* FIXME */, chunk->lightIslandOffset, chunk->lightIslandSize);
 			}
 
 			this->collisionMesh->Finish();
@@ -211,14 +193,4 @@ bool WorldMeshAsset::Load(const char* filePath)
 ICollisionMesh* WorldMeshAsset::GetCollisionMesh()
 {
 	return this->collisionMesh;
-}
-
-AABB* WorldMeshAsset::GetPvsSectorAABB(int index)
-{
-	return &this->pvsSectorAABBs[index];
-}
-
-int WorldMeshAsset::GetNumberOfPvsSectorAABBs()
-{
-	return this->numberOfPvsSectorAABBs;
 }

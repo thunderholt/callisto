@@ -28,6 +28,10 @@ bool UnitTester::RunUnitTests()
 	this->Test_Sphere_CalculateCollisionWithCollisionFace_HitTest2();
 	this->Test_Sphere_CalculateCollisionWithCollisionFace_HitTest3();
 	this->Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPoint();
+	this->Test_Math_CalculateTriangleArea2D();
+	this->Test_Math_CalculateTriangleArea3D();
+	this->Test_Math_CalculateBarycentricCoords2D();
+	this->Test_Math_CalculateBarycentricCoords3D();
 
 	if (this->numberOfFailedSubTests == 0)
 	{
@@ -66,6 +70,18 @@ bool UnitTester::AreNearlyEqual(float v1, float v2)
 {
 	float epsilon = 0.005f;
 	return (v1 > (v2 - epsilon)) && (v1 < (v2 + epsilon));
+}
+
+bool UnitTester::AreNearlyEqual(Vec2* v1, Vec2* v2)
+{
+	float epsilon = 0.005f;
+	return UnitTester::AreNearlyEqual(v1->x, v2->x) && UnitTester::AreNearlyEqual(v1->y, v2->y);
+}
+
+bool UnitTester::AreNearlyEqual(Vec3* v1, Vec3* v2)
+{
+	float epsilon = 0.005f;
+	return UnitTester::AreNearlyEqual(v1->x, v2->x) && UnitTester::AreNearlyEqual(v1->y, v2->y) && UnitTester::AreNearlyEqual(v1->z, v2->z);
 }
 
 void UnitTester::Test_Plane_FromPoints_LookingUpX() 
@@ -630,4 +646,195 @@ void UnitTester::Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPo
 	this->Assert("3.1", this->AreNearlyEqual(result.x, 3));
 	this->Assert("3.2", this->AreNearlyEqual(result.y, 0));
 	this->Assert("3.3", this->AreNearlyEqual(result.z, 3));
+}
+
+void UnitTester::Test_Math_CalculateTriangleArea2D()
+{
+	this->SetTest("Math::CalculateTriangleArea2D");
+
+	// Sub test 1.
+	Vec2 points[3];
+	Vec2::Set(&points[0], 0, 0);
+	Vec2::Set(&points[1], 0, 1);
+	Vec2::Set(&points[2], 1, 0);
+
+	float area = Math::CalculateTriangleArea(points);
+
+	this->Assert("1.1", this->AreNearlyEqual(area, 0.5f));
+
+	// Sub test 2.
+	Vec2::Set(&points[0], 0, 0);
+	Vec2::Set(&points[1], 0, 2);
+	Vec2::Set(&points[2], 1, 0);
+
+	area = Math::CalculateTriangleArea(points);
+
+	this->Assert("2.1", this->AreNearlyEqual(area, 1.0f));
+
+	// Sub test 3.
+	Vec2::Set(&points[0], 0, 0);
+	Vec2::Set(&points[1], 3, 0);
+	Vec2::Set(&points[2], 0, 2);
+
+	area = Math::CalculateTriangleArea(points);
+
+	this->Assert("3.1", this->AreNearlyEqual(area, 3.0f));
+}
+
+void UnitTester::Test_Math_CalculateTriangleArea3D()
+{
+	this->SetTest("Math::CalculateTriangleArea3D");
+
+	// Sub test 1.
+	Vec3 points[3];
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0, 1, 0);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	float area = Math::CalculateTriangleArea(points);
+
+	this->Assert("1.1", this->AreNearlyEqual(area, 0.5f));
+
+	// Sub test 2.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0, 0, 2);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	area = Math::CalculateTriangleArea(points);
+
+	this->Assert("2.1", this->AreNearlyEqual(area, 1.0f));
+
+	// Sub test 3.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0, 3, 0);
+	Vec3::Set(&points[2], 0, 0, 2);
+
+	area = Math::CalculateTriangleArea(points);
+
+	this->Assert("3.1", this->AreNearlyEqual(area, 3.0f));
+
+	// Sub test 4.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 1, 1, 0);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	area = Math::CalculateTriangleArea(points);
+
+	this->Assert("4.1", this->AreNearlyEqual(area, 0.5f));
+}
+
+void UnitTester::Test_Math_CalculateBarycentricCoords2D()
+{
+	this->SetTest("Math::CalculateBarycentricCoords2D");
+
+	Vec2 points[3];
+	Vec2 point;
+	Vec3 barycentricCoords;
+	Vec2 result;
+
+	// Sub test 1.
+	Vec2::Set(&points[0], 0, 0);
+	Vec2::Set(&points[1], 0, 1);
+	Vec2::Set(&points[2], 1, 0);
+
+	Vec2::Set(&point, 0.1f, 0.1f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("1.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("1.2", barycentricCoords.x >= 0.0f);
+	this->Assert("1.3", barycentricCoords.y >= 0.0f);
+	this->Assert("1.4", barycentricCoords.z >= 0.0f);
+	this->Assert("1.5", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
+
+	// Sub test 2.
+	Vec2::Set(&points[0], 0, 0);
+	Vec2::Set(&points[1], 1, 1);
+	Vec2::Set(&points[2], 1, 0);
+
+	Vec2::Set(&point, 1.1f, 0.5f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("2.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("2.2", barycentricCoords.x < 0.0f || barycentricCoords.y < 0.0f || barycentricCoords.z < 0.0f);
+}
+
+void UnitTester::Test_Math_CalculateBarycentricCoords3D()
+{
+	this->SetTest("Math::CalculateBarycentricCoords3D");
+
+	Vec3 points[3];
+	Vec3 point;
+	Vec3 barycentricCoords;
+	Vec3 result;
+
+	// Sub test 1.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0, 1, 0);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	Vec3::Set(&point, 0.1f, 0.1f, 0.0f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("1.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("1.2", barycentricCoords.x >= 0.0f);
+	this->Assert("1.3", barycentricCoords.y >= 0.0f);
+	this->Assert("1.4", barycentricCoords.z >= 0.0f);
+	this->Assert("1.5", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
+
+	// Sub test 2.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0, 2, 0);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	Vec3::Set(&point, 0.0f, 2.0f, 0.0f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("2.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("2.2", barycentricCoords.x >= 0.0f);
+	this->Assert("2.3", barycentricCoords.y >= 0.0f);
+	this->Assert("2.4", barycentricCoords.z >= 0.0f);
+	this->Assert("2.5", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
+
+	// Sub test 3.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0.5, 0, 1);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	Vec3::Set(&point, 0.5f, 0.0f, 0.5f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("3.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("3.2", barycentricCoords.x >= 0.0f);
+	this->Assert("3.3", barycentricCoords.y >= 0.0f);
+	this->Assert("3.4", barycentricCoords.z >= 0.0f);
+	this->Assert("3.5", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
+
+	// Sub test 4.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 0.5, 0, 1);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	Vec3::Set(&point, -0.001f, 0.0f, 0.0f);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("4.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("4.2", barycentricCoords.x < 0.0f || barycentricCoords.y < 0.0f || barycentricCoords.z < 0.0f);
+
+	// Sub test 5.
+	Vec3::Set(&points[0], 0, 0, 0);
+	Vec3::Set(&points[1], 1, 1, 0);
+	Vec3::Set(&points[2], 1, 0, 0);
+
+	Vec3::Set(&point, 1.01f, 0.0f, 0);
+	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
+	Math::BarycentricMix(&result, points, &barycentricCoords);
+
+	this->Assert("5.1", this->AreNearlyEqual(&point, &result));
+	this->Assert("5.2", barycentricCoords.x < 0.0f || barycentricCoords.y < 0.0f || barycentricCoords.z < 0.0f);
 }

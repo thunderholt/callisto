@@ -10,6 +10,8 @@ private:
 	void SetTest(const char* testName);
 	void Assert(const char* subTestName, bool result);
 	bool AreNearlyEqual(float v1, float v2);
+	bool AreNearlyEqual(Vec2* v1, Vec2* v2);
+	bool AreNearlyEqual(Vec3* v1, Vec3* v2);
 
 	void Test_Plane_FromPoints_LookingUpX();
 	void Test_Plane_FromPoints_LookingDownX();
@@ -29,6 +31,10 @@ private:
 	void Test_Sphere_CalculateCollisionWithCollisionFace_HitTest2();
 	void Test_Sphere_CalculateCollisionWithCollisionFace_HitTest3();
 	void Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPoint();
+	void Test_Math_CalculateTriangleArea2D();
+	void Test_Math_CalculateTriangleArea3D();
+	void Test_Math_CalculateBarycentricCoords2D();
+	void Test_Math_CalculateBarycentricCoords3D();
 
 	char testName[64];
 	int numberOfFailedSubTests;

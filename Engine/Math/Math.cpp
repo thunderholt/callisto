@@ -102,10 +102,11 @@ void Math::CalculateBarycentricCoords(Vec3* out, Vec2* trianglePoints, Vec2* poi
 	float areaABC = Math::CalculateTriangleArea(trianglePoints);
 	float areaBCP = Math::CalculateTriangleArea(&trianglePoints[1], &trianglePoints[2], point);
 	float areaCAP = Math::CalculateTriangleArea(&trianglePoints[2], &trianglePoints[0], point);
+	float areaABP = Math::CalculateTriangleArea(&trianglePoints[0], &trianglePoints[1], point);
 
 	out->x = areaBCP / areaABC;
 	out->y = areaCAP / areaABC;
-	out->z = 1.0f - out->x - out->y;
+	out->z = areaABP / areaABC;
 }
 
 void Math::CalculateBarycentricCoords(Vec3* out, Vec3* trianglePoints, Vec3* point)
@@ -117,13 +118,21 @@ void Math::CalculateBarycentricCoords(Vec3* out, Vec3* trianglePoints, Vec3* poi
 	out->x = areaBCP / areaABC;
 	out->y = areaCAP / areaABC;
 	out->z = 1.0f - out->x - out->y;*/
-	float areaABC = Math::CalculateTriangleArea(trianglePoints);
+	/*float areaABC = Math::CalculateTriangleArea(trianglePoints);
 	float areaPBC = Math::CalculateTriangleArea(point, &trianglePoints[1], &trianglePoints[2]);
 	float areaPCA = Math::CalculateTriangleArea(point, &trianglePoints[2], &trianglePoints[0]);
 
 	out->x = areaPBC / areaABC;
 	out->y = areaPCA / areaABC;
-	out->z = 1.0f - out->x - out->y;
+	out->z = 1.0f - out->x - out->y;*/
+	float areaABC = Math::CalculateTriangleArea(trianglePoints);
+	float areaBCP = Math::CalculateTriangleArea(&trianglePoints[1], &trianglePoints[2], point);
+	float areaCAP = Math::CalculateTriangleArea(&trianglePoints[2], &trianglePoints[0], point);
+	float areaABP = Math::CalculateTriangleArea(&trianglePoints[0], &trianglePoints[1], point);
+
+	out->x = areaBCP / areaABC;
+	out->y = areaCAP / areaABC;
+	out->z = areaABP / areaABC;
 }
 
 void Math::BarycentricMix(Vec2* out, Vec2* values, Vec3* barycentricCoords)
@@ -138,4 +147,15 @@ void Math::BarycentricMix(Vec3* out, Vec3* values, Vec3* barycentricCoords)
 	Vec3::Scale(out, &values[0], barycentricCoords->x);
 	Vec3::ScaleAndAdd(out, out, &values[1], barycentricCoords->y);
 	Vec3::ScaleAndAdd(out, out, &values[2], barycentricCoords->z);
+}
+
+bool Math::BarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords)
+{
+	float sum = barycentricCoords->x + barycentricCoords->y + barycentricCoords->z;
+	float epsilon = 0.0000001f;
+
+	return sum >= 1.0f - epsilon && sum <= 1.0f + epsilon;
+		/*barycentricCoords->x >= 0.0f && barycentricCoords->x <= 1.0f &&
+		barycentricCoords->y >= 0.0f && barycentricCoords->y <= 1.0f &&
+		barycentricCoords->z >= 0.0f && barycentricCoords->z <= 1.0f;*/
 }

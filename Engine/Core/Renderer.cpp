@@ -3,7 +3,7 @@
 Renderer::Renderer()
 {
 	this->rasterJob = null;
-	this->drawDebugVisualisations = true;
+	this->drawDebugVisualisations = false;
 	this->drawVolumes = false;
 }
 

@@ -3,7 +3,7 @@
 	"pvs-asset-refs": ["pvs/debug/debug-map-1.pvs"],
 	"static-mesh-asset-refs": ["static-meshes/robot.smesh", "static-meshes/key.smesh", "static-meshes/debug/door-2.smesh", "static-meshes/gun.smesh"],
 	"material-asset-refs": ["materials/debug/floor-1.mat", "materials/debug/wall-1.mat", "materials/debug/wall-2.mat", "materials/static-meshes/robot.mat", "materials/static-meshes/key.mat", "materials/static-meshes/gun.mat"],
-	"texture-asset-refs": ["textures/debug/wall-1-d.png", "textures/debug/wall-2-d.png", "textures/static-meshes/robot-d.png", "textures/sprite-sheets/projectiles/projectiles.png", "textures/static-meshes/key-d.png", "textures/static-meshes/gun-d.png"],
+	"texture-asset-refs": ["textures/debug/wall-1-d.png", "textures/debug/wall-2-d.png", "textures/light-atlases/debug/debug-map-1-1.png", "textures/static-meshes/robot-d.png", "textures/sprite-sheets/projectiles/projectiles.png", "textures/static-meshes/key-d.png", "textures/static-meshes/gun-d.png"],
 	"actor-asset-refs": ["actors/spawn-point.actor", "actors/robot.actor", "actors/plasma-ball.actor", "actors/spawn-trigger.actor", "actors/key.actor", "actors/door.actor", "actors/first-person-player.actor"],
 	"sprite-sheet-asset-refs": ["sprite-sheets/projectiles/projectiles.ss"],
 	"world-mesh-asset-ref": "world-meshes/debug/debug-map-1.wmesh",

@@ -14,7 +14,10 @@ struct WorldMeshChunkProgramAttributeLocations
 struct WorldMeshChunkProgramUniformLocations
 {
 	GLuint viewProjTransform;
+	GLuint lightIslandOffset;
+	GLuint lightIslandSize;
 	GLuint diffuseSampler;
+	GLuint lightAtlasSampler;
 };
 
 struct WorldMeshChunkProgram

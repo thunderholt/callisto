@@ -201,6 +201,7 @@ void OpenGLRasterizer::DrawWorldMeshChunks(RasterJob* rasterJob)
 	// Set the general uniforms.
 	glUniformMatrix4fv(uniformLocations->viewProjTransform, 1, GL_FALSE, rasterJob->commonRasterizationParameters.viewProjTransform.m);
 	glUniform1i(uniformLocations->diffuseSampler, 0);
+	glUniform1i(uniformLocations->lightAtlasSampler, 1);
 
 	// Enable depth test.
 	glEnable(GL_DEPTH_TEST);
@@ -240,12 +241,22 @@ void OpenGLRasterizer::DrawWorldMeshChunks(RasterJob* rasterJob)
 		DrawWorldMeshChunkRasterJobItem* jobItem = &rasterJob->drawWorldMeshChunkJobItems[jobItemIndex];
 		WorldMeshChunk* chunk = worldMeshAsset->GetChunk(jobItem->chunkIndex);
 		AssetRef* materialAssetRef = worldMeshAsset->GetMaterialAssetRef(chunk->materialAssetRefIndex);
+		AssetRef* lightAtlasTextureAssetRef = worldMeshAsset->GetLightAtlasTextureAssetRef(chunk->lightAtlasTextureAssetRefIndex);
 		IMaterialAsset* materialAsset = assetManager->GetMaterialAsset(materialAssetRef->index);
 		ITextureAsset* diffuseTextureAsset = assetManager->GetTextureAsset(materialAsset->GetTextureAssetRef(MaterialTextureTypeDiffuse)->index);
+		ITextureAsset* lightAtlasTextureAsset = assetManager->GetTextureAsset(lightAtlasTextureAssetRef->index);
+
+		// Set the light island uniforms.
+		glUniform2fv(uniformLocations->lightIslandOffset, 1, (GLfloat*)&chunk->lightIslandOffset);
+		glUniform2fv(uniformLocations->lightIslandSize, 1, (GLfloat*)&chunk->lightIslandSize);
 
 		// Bind the diffuse texture.
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseTextureAsset->GetTextureId());
+
+		// Bind the light atlas texture.
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, lightAtlasTextureAsset->GetTextureId());
 
 		// Draw the world mesh chunk.
 		glDrawElements(
@@ -731,7 +742,10 @@ bool OpenGLRasterizer::LoadWorldMeshChunkProgram()
 
 		// Get the uniform locations.
 		success &= OpenGLHelper::FindUniform(this->programs.worldMeshChunk.programId, &this->programs.worldMeshChunk.uniformLocations.viewProjTransform, "viewProjTransform");
+		success &= OpenGLHelper::FindUniform(this->programs.worldMeshChunk.programId, &this->programs.worldMeshChunk.uniformLocations.lightIslandOffset, "lightIslandOffset");
+		success &= OpenGLHelper::FindUniform(this->programs.worldMeshChunk.programId, &this->programs.worldMeshChunk.uniformLocations.lightIslandSize, "lightIslandSize");
 		success &= OpenGLHelper::FindUniform(this->programs.worldMeshChunk.programId, &this->programs.worldMeshChunk.uniformLocations.diffuseSampler, "diffuseSampler");
+		success &= OpenGLHelper::FindUniform(this->programs.worldMeshChunk.programId, &this->programs.worldMeshChunk.uniformLocations.lightAtlasSampler, "lightAtlasSampler");
 	}
 
 	return success;

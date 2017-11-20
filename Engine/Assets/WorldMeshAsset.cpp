@@ -15,9 +15,7 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 	//int numberOfVerts = 0;
 	int numberOfChunks = 0;
 	int numberOfMaterialAssetRefs = 0;
-	//float* tempPositions = null;
-	//float* tempMaterialTexCoords = null;
-	//unsigned short* tempIndecies = null;
+	int numberOfLightAtlasTextureAssetRefs = 0;
 
 	this->numberOfVerts = 0;
 	this->numberOfIndecies = 0;
@@ -52,6 +50,10 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 		else if (strcmp(token, "number-of-material-asset-refs") == 0)
 		{
 			numberOfMaterialAssetRefs = parser->ReadInt();
+		}
+		else if (strcmp(token, "number-of-light-atlas-texture-asset-refs") == 0)
+		{
+			numberOfLightAtlasTextureAssetRefs = parser->ReadInt();
 		}
 		else if (strcmp(token, "pvs-asset-ref") == 0)
 		{
@@ -94,6 +96,7 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				chunk->startIndex = parser->ReadInt();
 				chunk->numberOfFaces = parser->ReadInt();
 				chunk->materialAssetRefIndex = parser->ReadInt();
+				chunk->lightAtlasTextureAssetRefIndex = 0; // FIXME
 				parser->ReadVec2(&chunk->lightIslandOffset);
 				parser->ReadVec2(&chunk->lightIslandSize);
 				chunk->lastRenderedFrameId = -1;
@@ -107,12 +110,17 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				parser->ReadAssetRef(assetRef, AssetTypeMaterial);
 			}
 		}
+		else if (strcmp(token, "light-atlas-texture-asset-refs") == 0)
+		{
+			for (int i = 0; i < numberOfLightAtlasTextureAssetRefs; i++)
+			{
+				AssetRef* assetRef = &this->lightAtlasTextureAssetRefs.PushAndGet();
+				parser->ReadAssetRef(assetRef, AssetTypeTexture);
+			}
+		}
 	}
 
 	SafeDeleteAndNull(parser);
-	//SafeDeleteArrayAndNull(tempPositions);
-	//SafeDeleteArrayAndNull(tempMaterialTexCoords);
-	//SafeDeleteArrayAndNull(tempIndecies);
 
 	this->loadedSuccessfully = true;
 }
@@ -144,6 +152,13 @@ bool WorldMeshAsset::ResolveReferencedAssets()
 	for (int i = 0; i < this->materialAssetRefs.GetLength(); i++)
 	{
 		AssetRef* assetRef = &this->materialAssetRefs[i];
+		success &= assetManager->ResolveAssetRefIndex(assetRef);
+	}
+
+	// Resolve the light atlas texture asset refs.
+	for (int i = 0; i < this->lightAtlasTextureAssetRefs.GetLength(); i++)
+	{
+		AssetRef* assetRef = &this->lightAtlasTextureAssetRefs[i];
 		success &= assetManager->ResolveAssetRefIndex(assetRef);
 	}
 
@@ -241,6 +256,16 @@ AssetRef* WorldMeshAsset::GetMaterialAssetRef(int index)
 int WorldMeshAsset::GetNumberOfMaterialAssetRefs()
 {
 	return this->materialAssetRefs.GetLength();
+}
+
+AssetRef* WorldMeshAsset::GetLightAtlasTextureAssetRef(int index)
+{
+	return &this->lightAtlasTextureAssetRefs[index];
+}
+
+int WorldMeshAsset::GetNumberOfLightAtlasTextureAssetRefs()
+{
+	return this->lightAtlasTextureAssetRefs.GetLength();
 }
 
 AssetRef* WorldMeshAsset::GetPVSAssetRef()

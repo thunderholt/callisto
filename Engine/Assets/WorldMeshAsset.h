@@ -8,7 +8,6 @@ public:
 	WorldMeshAsset(const char* filePath, Buffer* fileData, bool isStayResident);
 	virtual ~WorldMeshAsset();
 
-	//virtual void BeginLoadingReferencedAssets();
 	virtual bool ResolveReferencedAssets();
 
 	virtual char* GetFilePath();
@@ -22,6 +21,8 @@ public:
 	virtual int GetNumberOfChunks();
 	virtual AssetRef* GetMaterialAssetRef(int index);
 	virtual int GetNumberOfMaterialAssetRefs();
+	virtual AssetRef* GetLightAtlasTextureAssetRef(int index);
+	virtual int GetNumberOfLightAtlasTextureAssetRefs();
 	virtual AssetRef* GetPVSAssetRef();
 	virtual ICollisionMesh* GetCollisionMesh();
 	
@@ -45,6 +46,7 @@ private:
 	WorldMeshBuffers buffers;
 	DynamicLengthArray<WorldMeshChunk> chunks;
 	DynamicLengthArray<AssetRef> materialAssetRefs;
+	DynamicLengthArray<AssetRef> lightAtlasTextureAssetRefs;
 	AssetRef pvsAssetRef;
 	ICollisionMesh* collisionMesh;
 };

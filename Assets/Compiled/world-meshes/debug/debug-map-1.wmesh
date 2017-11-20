@@ -2,6 +2,7 @@ number-of-verts 1232
 number-of-indecies 2016
 number-of-chunks 259
 number-of-material-asset-refs 3
+number-of-light-atlas-texture-asset-refs 1
 number-of-pvs-sector-aabbs 16
 grid-origin -1.000000 -1.000000 -4.000000
 grid-dimensions 17 3 19
@@ -4753,6 +4754,8 @@ material-asset-refs
 materials/debug/floor-1.mat
 materials/debug/wall-1.mat
 materials/debug/wall-2.mat
+light-atlas-texture-asset-refs
+textures/light-atlases/debug/debug-map-1-1.png
 pvs-sector-aabbs
 14.000000 0.000000 10.000000 15.000000 1.000000 12.000000
 13.000000 0.000000 -0.000001 16.000000 1.000000 10.000000

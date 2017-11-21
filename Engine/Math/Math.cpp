@@ -149,7 +149,7 @@ void Math::BarycentricMix(Vec3* out, Vec3* values, Vec3* barycentricCoords)
 	Vec3::ScaleAndAdd(out, out, &values[2], barycentricCoords->z);
 }
 
-bool Math::BarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords)
+bool Math::CheckBarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords)
 {
 	float sum = barycentricCoords->x + barycentricCoords->y + barycentricCoords->z;
 	float epsilon = 0.0000001f;
@@ -158,4 +158,18 @@ bool Math::BarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords)
 		/*barycentricCoords->x >= 0.0f && barycentricCoords->x <= 1.0f &&
 		barycentricCoords->y >= 0.0f && barycentricCoords->y <= 1.0f &&
 		barycentricCoords->z >= 0.0f && barycentricCoords->z <= 1.0f;*/
+}
+
+bool Math::CalculateWorldPositionFromUV(Vec3* out, Vec3* positions, Vec2* uvs, Vec2* uv)
+{
+	Vec3 barycentricCoords;
+	Math::CalculateBarycentricCoords(&barycentricCoords, uvs, uv);
+
+	bool uvIsWithinFace = Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords);
+	if (uvIsWithinFace)
+	{
+		Math::BarycentricMix(out, positions, &barycentricCoords);
+	}
+
+	return uvIsWithinFace;
 }

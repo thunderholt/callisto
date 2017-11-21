@@ -42,5 +42,6 @@ public:
 	static void CalculateBarycentricCoords(Vec3* out, Vec3* trianglePoints, Vec3* point);
 	static void BarycentricMix(Vec2* out, Vec2* values, Vec3* barycentricCoords);
 	static void BarycentricMix(Vec3* out, Vec3* values, Vec3* barycentricCoords);
-	static bool BarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords);
+	static bool CheckBarycentricCoordsAreWithinTriangle(Vec3* barycentricCoords);
+	static bool CalculateWorldPositionFromUV(Vec3* out, Vec3* positions, Vec2* uvs, Vec2* uv);
 };

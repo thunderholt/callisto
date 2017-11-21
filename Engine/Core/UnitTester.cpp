@@ -32,6 +32,7 @@ bool UnitTester::RunUnitTests()
 	this->Test_Math_CalculateTriangleArea3D();
 	this->Test_Math_CalculateBarycentricCoords2D();
 	this->Test_Math_CalculateBarycentricCoords3D();
+	this->Test_Math_CalculateWorldPositionFromUV();
 
 	if (this->numberOfFailedSubTests == 0)
 	{
@@ -72,16 +73,16 @@ bool UnitTester::AreNearlyEqual(float v1, float v2)
 	return (v1 > (v2 - epsilon)) && (v1 < (v2 + epsilon));
 }
 
-bool UnitTester::AreNearlyEqual(Vec2* v1, Vec2* v2)
+bool UnitTester::AreNearlyEqual(Vec2 v1, Vec2 v2)
 {
 	float epsilon = 0.005f;
-	return UnitTester::AreNearlyEqual(v1->x, v2->x) && UnitTester::AreNearlyEqual(v1->y, v2->y);
+	return UnitTester::AreNearlyEqual(v1.x, v2.x) && UnitTester::AreNearlyEqual(v1.y, v2.y);
 }
 
-bool UnitTester::AreNearlyEqual(Vec3* v1, Vec3* v2)
+bool UnitTester::AreNearlyEqual(Vec3 v1, Vec3 v2)
 {
 	float epsilon = 0.005f;
-	return UnitTester::AreNearlyEqual(v1->x, v2->x) && UnitTester::AreNearlyEqual(v1->y, v2->y) && UnitTester::AreNearlyEqual(v1->z, v2->z);
+	return UnitTester::AreNearlyEqual(v1.x, v2.x) && UnitTester::AreNearlyEqual(v1.y, v2.y) && UnitTester::AreNearlyEqual(v1.z, v2.z);
 }
 
 void UnitTester::Test_Plane_FromPoints_LookingUpX() 
@@ -741,8 +742,8 @@ void UnitTester::Test_Math_CalculateBarycentricCoords2D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("1.1", this->AreNearlyEqual(&point, &result));
-	this->Assert("1.2", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("1.1", this->AreNearlyEqual(point, result));
+	this->Assert("1.2", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 	this->Assert("1.5", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
 
 	// Sub test 2.
@@ -754,7 +755,7 @@ void UnitTester::Test_Math_CalculateBarycentricCoords2D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("2.1", !Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("2.1", !Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 }
 
 void UnitTester::Test_Math_CalculateBarycentricCoords3D()
@@ -775,8 +776,8 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("1.1", this->AreNearlyEqual(&point, &result));
-	this->Assert("1.2", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("1.1", this->AreNearlyEqual(point, result));
+	this->Assert("1.2", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 	this->Assert("1.3", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
 
 	// Sub test 2.
@@ -788,8 +789,8 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("2.1", this->AreNearlyEqual(&point, &result));
-	this->Assert("2.2", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("2.1", this->AreNearlyEqual(point, result));
+	this->Assert("2.2", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 	this->Assert("2.3", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
 
 	// Sub test 3.
@@ -801,8 +802,8 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("3.1", this->AreNearlyEqual(&point, &result));
-	this->Assert("3.2", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("3.1", this->AreNearlyEqual(point, result));
+	this->Assert("3.2", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 	this->Assert("3.3", this->AreNearlyEqual(barycentricCoords.x + barycentricCoords.y + barycentricCoords.z, 1.0f));
 
 	// Sub test 4.
@@ -814,7 +815,7 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("4.1", !Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("4.1", !Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 
 	// Sub test 5.
 	Vec3::Set(&points[0], 0, 0, 0);
@@ -825,7 +826,7 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("5.1", !Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("5.1", !Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 
 	// Sub test 6.
 	Vec3::Set(&points[0], 0, 0, 0);
@@ -836,7 +837,7 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("6.1", !Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("6.1", !Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 
 	// Sub test 7.
 	Vec3::Set(&points[0], 0, 0, 0);
@@ -847,7 +848,7 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("7.1", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("7.1", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
 
 	// Sub test 8.
 	Vec3::Set(&points[0], 0, 0, 0);
@@ -858,5 +859,58 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 	Math::CalculateBarycentricCoords(&barycentricCoords, points, &point);
 	Math::BarycentricMix(&result, points, &barycentricCoords);
 
-	this->Assert("8.1", Math::BarycentricCoordsAreWithinTriangle(&barycentricCoords));
+	this->Assert("8.1", Math::CheckBarycentricCoordsAreWithinTriangle(&barycentricCoords));
+}
+
+void UnitTester::Test_Math_CalculateWorldPositionFromUV()
+{
+	Vec3 positions[3];
+	Vec2 uvs[3];
+	Vec2 uv;
+	Vec3 worldPosition;
+
+	// Sub test 1.
+	Vec3::Set(&positions[0], 0, 0, 0);
+	Vec3::Set(&positions[1], 0, 10, 0);
+	Vec3::Set(&positions[2], 10, 0, 0);
+
+	Vec2::Set(&uvs[0], 0, 1);
+	Vec2::Set(&uvs[1], 0, 0);
+	Vec2::Set(&uvs[2], 1, 1);
+
+	Vec2::Set(&uv, 0.5f, 1); 
+	bool uvIsWithinFace = Math::CalculateWorldPositionFromUV(&worldPosition, positions, uvs, &uv);
+
+	this->Assert("1.1", uvIsWithinFace);
+	this->Assert("1.2", this->AreNearlyEqual(worldPosition, Vec3::Create(5, 0, 0)));
+
+	// Sub test 2.
+	Vec3::Set(&positions[0], 0, 0, 0);
+	Vec3::Set(&positions[1], 0, 10, 0);
+	Vec3::Set(&positions[2], 10, 0, 0);
+
+	Vec2::Set(&uvs[0], 0, 1);
+	Vec2::Set(&uvs[1], 0, 0);
+	Vec2::Set(&uvs[2], 1, 1);
+
+	Vec2::Set(&uv, 0, 0);
+	uvIsWithinFace = Math::CalculateWorldPositionFromUV(&worldPosition, positions, uvs, &uv);
+
+	this->Assert("2.1", uvIsWithinFace);
+	this->Assert("2.2", this->AreNearlyEqual(worldPosition, Vec3::Create(0, 10, 0)));
+
+	// Sub test 2.
+	Vec3::Set(&positions[0], 0, 0, 0);
+	Vec3::Set(&positions[1], 5, 10, 0);
+	Vec3::Set(&positions[2], 10, 0, 0);
+
+	Vec2::Set(&uvs[0], 0, 1);
+	Vec2::Set(&uvs[1], 0.5, 0);
+	Vec2::Set(&uvs[2], 1, 1);
+
+	Vec2::Set(&uv, 0.5, 0.5);
+	uvIsWithinFace = Math::CalculateWorldPositionFromUV(&worldPosition, positions, uvs, &uv);
+
+	this->Assert("3.1", uvIsWithinFace);
+	this->Assert("3.2", this->AreNearlyEqual(worldPosition, Vec3::Create(5, 5, 0)));
 }

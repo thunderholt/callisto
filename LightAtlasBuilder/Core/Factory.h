@@ -14,6 +14,7 @@ public:
 	virtual ICollisionMesh* MakeCollisionMesh();
 	virtual IWorker* MakeWorker();
 	virtual ILightAtlas* MakeLightAtlas();
+	virtual IRayTracer* MakeRayTracer();
 	virtual IThreadManager* MakeThreadManager();
 	virtual ITimestampProvider* MakeTimestampProvider();
 	virtual IJsonValue* MakeJsonValue();

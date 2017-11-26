@@ -22,9 +22,10 @@ public:
 	virtual ~CollisionMesh();
 	virtual void AllocateGeometry(int numberOfChunks, int numberOfFaces);
 	virtual void AllocateGrid(Vec3 gridOrigin, Vec3i gridDimensions, float gridCellSize);
-	virtual void PushChunk(int startIndex, int numberOfFaces, float* positions, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize);
+	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize);
 	virtual void Finish();
-	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line);
+	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex);
+	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex);
 	virtual CollisionMeshChunk* GetChunk(int chunkIndex);
 	virtual int GetNumberOfChunks();
 	virtual CollisionFace* GetFace(int faceIndex);
@@ -33,7 +34,8 @@ public:
 private:
 	void BuildGridCells();
 	int GetGridCellIndexFromPoint(Vec3* point);
-	bool DetermineIfLineIntersectsChunksInGridCell(CollisionLine* line, int gridCellIndex);
+	bool DetermineIfLineIntersectsChunksInGridCell(CollisionLine* line, int gridCellIndex, int ignoreChunkIndex);
+	bool FindNearestLineIntersectionWithChunksInGridCell(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int gridCellIndex, int ignoreChunkIndex);
 
 	CollisionMeshChunk* chunks;
 	int numberOfChunks;

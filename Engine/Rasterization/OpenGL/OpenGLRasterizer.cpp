@@ -246,6 +246,11 @@ void OpenGLRasterizer::DrawWorldMeshChunks(RasterJob* rasterJob)
 		ITextureAsset* diffuseTextureAsset = assetManager->GetTextureAsset(materialAsset->GetTextureAssetRef(MaterialTextureTypeDiffuse)->index);
 		ITextureAsset* lightAtlasTextureAsset = assetManager->GetTextureAsset(lightAtlasTextureAssetRef->index);
 
+		/*if (jobItem->chunkIndex != 21)
+		{
+			continue;
+		}*/
+
 		// Set the light island uniforms.
 		glUniform2fv(uniformLocations->lightIslandOffset, 1, (GLfloat*)&chunk->lightIslandOffset);
 		glUniform2fv(uniformLocations->lightIslandSize, 1, (GLfloat*)&chunk->lightIslandSize);

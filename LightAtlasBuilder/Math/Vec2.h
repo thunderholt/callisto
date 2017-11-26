@@ -48,6 +48,12 @@ struct Vec2
 		out->y = a->y * scale;
 	}
 
+	static inline void ScaleAndAdd(Vec2* out, Vec2* a, Vec2* b, float scale)
+	{
+		out->x = a->x + b->x * scale;
+		out->y = a->y + b->y * scale;
+	}
+
 	static inline float Length(Vec2* v)
 	{
 		return sqrtf(v->x * v->x + v->y * v->y);

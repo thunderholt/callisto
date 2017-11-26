@@ -74,7 +74,7 @@ void CollisionMesh::AllocateGrid(Vec3 gridOrigin, Vec3i gridDimensions, float gr
 	this->gridCells = new CollisionMeshGridCell[this->gridMetrics.numberOfCells];
 }
 
-void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, float* positions, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize)
+void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize)
 {
 	CollisionMeshChunk* chunk = &this->chunks[this->nextChunkIndex++];
 	chunk->startFaceIndex = this->nextFaceIndex;
@@ -85,17 +85,34 @@ void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, float* position
 
 	for (int i = startIndex; i < startIndex + numberOfFaces * 3; i += 3)
 	{
-		unsigned short vert0StartIndex = indecies[i] * 3;
-		unsigned short vert1StartIndex = indecies[i + 1] * 3;
-		unsigned short vert2StartIndex = indecies[i + 2] * 3;
+		/*unsigned short vert0StartIndex = indecies[i];
+		unsigned short vert1StartIndex = indecies[i + 1];
+		unsigned short vert2StartIndex = indecies[i + 2];*/
+
+		unsigned short vert0Index = indecies[i];
+		unsigned short vert1Index = indecies[i + 1];
+		unsigned short vert2Index = indecies[i + 2];
 
 		Vec3 facePoints[3];
-		Vec3::Set(&facePoints[0], positions[vert0StartIndex], positions[vert0StartIndex + 1], positions[vert0StartIndex + 2]);
+		facePoints[0] = positions[vert0Index];
+		facePoints[1] = positions[vert1Index];
+		facePoints[2] = positions[vert2Index];
+		/*Vec3::Set(&facePoints[0], positions[vert0StartIndex], positions[vert0StartIndex + 1], positions[vert0StartIndex + 2]);
 		Vec3::Set(&facePoints[1], positions[vert1StartIndex], positions[vert1StartIndex + 1], positions[vert1StartIndex + 2]);
-		Vec3::Set(&facePoints[2], positions[vert2StartIndex], positions[vert2StartIndex + 1], positions[vert2StartIndex + 2]);
+		Vec3::Set(&facePoints[2], positions[vert2StartIndex], positions[vert2StartIndex + 1], positions[vert2StartIndex + 2]);*/
+
+		Vec3 faceNormals[3];
+		faceNormals[0] = normals[vert0Index];
+		faceNormals[1] = normals[vert1Index];
+		faceNormals[2] = normals[vert2Index];
+
+		Vec2 faceUVs[3];
+		faceUVs[0] = uvs[vert0Index];
+		faceUVs[1] = uvs[vert1Index];
+		faceUVs[2] = uvs[vert2Index];
 
 		CollisionFace* face = &this->faces[this->nextFaceIndex++];
-		CollisionFace::BuildFromPoints(face, facePoints);
+		CollisionFace::BuildFromPoints(face, facePoints, faceNormals, faceUVs);
 	}
 
 	AABB::CalculateFromCollisionFaces(&chunk->aabb, &this->faces[chunk->startFaceIndex], chunk->numberOfFaces);
@@ -106,14 +123,14 @@ void CollisionMesh::Finish()
 	this->BuildGridCells();
 }
 
-bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line)
+/*bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex)
 {
 	bool intersectionFound = false;
 	
 	int gridCellIndex = this->GetGridCellIndexFromPoint(&line->from);
 	if (gridCellIndex != -1)
 	{
-		intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex);
+		intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
 	}
 
 	if (!intersectionFound)
@@ -121,7 +138,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line)
 		gridCellIndex = this->GetGridCellIndexFromPoint(&line->to);
 		if (gridCellIndex != -1)
 		{
-			intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex);
+			intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
 		}
 
 		if (!intersectionFound)
@@ -142,7 +159,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line)
 					gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
 					if (gridCellIndex != -1 && gridCellIndex != lastGridCellIndex)
 					{
-						intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex);
+						intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
 					}
 
 					if (!intersectionFound)
@@ -152,13 +169,107 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line)
 						gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
 						if (gridCellIndex != -1)
 						{
-							intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex);
+							intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
 							lastGridCellIndex = gridCellIndex;
 						}
 					}
 				}
 			}
 		}
+	}
+
+	return intersectionFound;
+}*/
+
+bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex)
+{
+	bool intersectionFound = false;
+
+	int lastGridCellIndex = -1;
+
+	for (int gridPlaneIndex = 0; gridPlaneIndex < this->gridMetrics.gridPlanes.GetLength() && !intersectionFound; gridPlaneIndex++)
+	{
+		Plane* gridPlane = &this->gridMetrics.gridPlanes[gridPlaneIndex];
+
+		Vec3 intersectionPoint;
+		if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
+		{
+			Vec3 fudgedIntersectionPoint;
+
+			Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, 0.01f);
+
+			int gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
+			if (gridCellIndex != -1 && gridCellIndex != lastGridCellIndex)
+			{
+				intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
+			}
+
+			if (!intersectionFound)
+			{
+				Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, -0.01f);
+
+				gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
+				if (gridCellIndex != -1)
+				{
+					intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, ignoreChunkIndex);
+					lastGridCellIndex = gridCellIndex;
+				}
+			}
+		}
+	}
+		
+	return intersectionFound;
+}
+
+bool CollisionMesh::FindNearestLineIntersectWithMesh(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex)
+{
+	bool intersectionFound = false;
+	Vec3 nearestIntersection;
+	float nearestIntersectionDistanceSqr = -1;
+
+	int lastGridCellIndex = -1;
+
+	// TODO - find grid cell indexes, order by distance, take intersection from first cell that has an intersection.
+
+	for (int gridPlaneIndex = 0; gridPlaneIndex < this->gridMetrics.gridPlanes.GetLength() && !intersectionFound; gridPlaneIndex++)
+	{
+		Plane* gridPlane = &this->gridMetrics.gridPlanes[gridPlaneIndex];
+
+		Vec3 intersectionPoint;
+		if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
+		{
+			Vec3 fudgedIntersectionPoint;
+
+			for (int fudgeIndex = 0; fudgeIndex < 2; fudgeIndex++)
+			{
+				Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, fudgeIndex == 0 ? 0.01f : -0.01f);
+
+				int gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
+				if (gridCellIndex != -1 && gridCellIndex != lastGridCellIndex)
+				{
+					Vec3 intersection;
+					if (this->FindNearestLineIntersectionWithChunksInGridCell(&intersection, outChunkFaceIndex, line, gridCellIndex, ignoreChunkIndex))
+					{
+						float distanceSqr = Vec3::DistanceSqr(&line->from, &intersection);
+
+						if (nearestIntersectionDistanceSqr == -1 || distanceSqr < nearestIntersectionDistanceSqr)
+						{
+							nearestIntersectionDistanceSqr = distanceSqr;
+							nearestIntersection = intersection;
+						}
+
+						intersectionFound = true;
+					}
+
+					lastGridCellIndex = gridCellIndex;
+				}
+			}
+		}
+	}
+
+	if (intersectionFound)
+	{
+		*outIntersection = nearestIntersection;
 	}
 
 	return intersectionFound;
@@ -260,7 +371,7 @@ int CollisionMesh::GetGridCellIndexFromPoint(Vec3* point)
 	return gridCellIndex;
 }
 
-bool CollisionMesh::DetermineIfLineIntersectsChunksInGridCell(CollisionLine* line, int gridCellIndex)
+bool CollisionMesh::DetermineIfLineIntersectsChunksInGridCell(CollisionLine* line, int gridCellIndex, int ignoreChunkIndex)
 {
 	bool intersectionFound = false;
 
@@ -269,24 +380,79 @@ bool CollisionMesh::DetermineIfLineIntersectsChunksInGridCell(CollisionLine* lin
 	for (int i = 0; i < gridCell->residentChunkIndexes.GetLength() && !intersectionFound; i++)
 	{
 		int chunkIndex = gridCell->residentChunkIndexes[i];
-
-		CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
-
-		for (int faceIndex = chunk->startFaceIndex;
-			faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
-			faceIndex++)
+		if (chunkIndex != ignoreChunkIndex)
 		{
-			CollisionFace* face = &this->faces[faceIndex];
+			CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
 
-			Vec3 faceIntersectionPoint;
-			FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
-				&faceIntersectionPoint, line, face);
-
-			if (faceIntersectionType != FaceIntersectionTypeNone)
+			for (int faceIndex = chunk->startFaceIndex;
+				faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
+				faceIndex++)
 			{
-				intersectionFound = true;
+				CollisionFace* face = &this->faces[faceIndex];
+
+				Vec3 faceIntersectionPoint;
+				FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
+					&faceIntersectionPoint, line, face);
+
+				if (faceIntersectionType != FaceIntersectionTypeNone)
+				{
+					intersectionFound = true;
+					break;
+				}
 			}
 		}
+	}
+
+	return intersectionFound;
+}
+
+bool CollisionMesh::FindNearestLineIntersectionWithChunksInGridCell(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int gridCellIndex, int ignoreChunkIndex)
+{
+	bool intersectionFound = false;
+	Vec3 nearestIntersection;
+	float nearestIntersectionDistanceSqr = -1;
+
+	CollisionMeshGridCell* gridCell = &this->gridCells[gridCellIndex];
+
+	for (int i = 0; i < gridCell->residentChunkIndexes.GetLength() && !intersectionFound; i++)
+	{
+		int chunkIndex = gridCell->residentChunkIndexes[i];
+		if (chunkIndex != ignoreChunkIndex)
+		{
+			CollisionMeshChunk* chunk = &this->chunks[chunkIndex];
+
+			for (int faceIndex = chunk->startFaceIndex;
+				faceIndex < (chunk->startFaceIndex + chunk->numberOfFaces) && !intersectionFound;
+				faceIndex++)
+			{
+				CollisionFace* face = &this->faces[faceIndex];
+
+				Vec3 faceIntersectionPoint;
+				FaceIntersectionType faceIntersectionType = CollisionLine::CalculateIntersectionWithCollisionFace(
+					&faceIntersectionPoint, line, face);
+
+				if (faceIntersectionType != FaceIntersectionTypeNone)
+				{
+					float distanceSqr = Vec3::DistanceSqr(&line->from, &faceIntersectionPoint);
+
+					if (nearestIntersectionDistanceSqr == -1 || distanceSqr < nearestIntersectionDistanceSqr)
+					{
+						nearestIntersection = faceIntersectionPoint;
+						nearestIntersectionDistanceSqr = distanceSqr;
+						
+						outChunkFaceIndex->chunkIndex = chunkIndex;
+						outChunkFaceIndex->faceIndex = faceIndex;
+						
+						intersectionFound = true;
+					}
+				}
+			}
+		}
+	}
+
+	if (intersectionFound)
+	{
+		*outIntersection = nearestIntersection;
 	}
 
 	return intersectionFound;

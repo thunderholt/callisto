@@ -80,7 +80,7 @@
 		{
 			"name": "Suzanne",
 			"asset-ref": "actors/first-person-player.actor",
-			"position": [3.750000, 0.000000, -1.500000],
+			"position": [7.269385, 0.000000, 2.588549],
 			"rotation": [0.000000, 1.570796, -0.000000],
 			"config": 	{
 				"auto-set-as-default-camera": true
@@ -92,7 +92,7 @@
 			"position": [9.000000, 0.000000, 3.000000],
 			"rotation": [0.000000, 1.570796, -0.000000],
 			"config": 	{
-				"is-locked": true,
+				"is-locked": false,
 				"required-key-type": "red"
 			}
 		},
@@ -112,7 +112,7 @@
 		{
 			"name": "spawn-point-1",
 			"asset-ref": "actors/spawn-point.actor",
-			"position": [6.500000, 0.532279, 1.500000],
+			"position": [6.500000, 0.532279, 1.732086],
 			"rotation": [0.000000, 4.706166, 0.000000],
 			"config": 	{
 				"spawnee-actor-asset-ref": "actors/robot.actor"

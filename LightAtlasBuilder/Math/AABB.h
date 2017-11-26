@@ -24,7 +24,7 @@ struct AABB
 		Vec3::Add(&out->to, &aabb->to, amount);
 	}
 
-	static void ClampPoint(Vec3* out, Vec3* point, AABB* aabb);
+	static void ClampPoint(Vec3* out, AABB* aabb, Vec3* point);
 	static void CalculateFromCollisionFaces(AABB* out, CollisionFace* collisionFaces, int numberOfCollisionFaces);
 	static bool CheckIntersectsAABB(AABB* aabb1, AABB* aabb2);
 };

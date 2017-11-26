@@ -18,7 +18,9 @@ bool WorldMeshAsset::Load(const char* filePath)
 
 	bool success = false;
 	Buffer fileData = { 0 };
-	float* tempPositions = null;
+	Vec3* tempPositions = null;
+	Vec3* tempNormals = null;
+	Vec2* tempTexCoords = null;
 	unsigned short* tempIndecies = null;
 	WorldMeshChunk* tempChunks = null;
 	Vec3 gridOrigin;
@@ -89,12 +91,29 @@ bool WorldMeshAsset::Load(const char* filePath)
 				}
 				else if (strcmp(token, "positions") == 0)
 				{
-					int numberOfPositonFloats = numberOfVerts * 3;
-					tempPositions = new float[numberOfPositonFloats];
+					tempPositions = new Vec3[numberOfVerts];
 
-					for (int i = 0; i < numberOfPositonFloats; i++)
+					for (int i = 0; i < numberOfVerts; i++)
 					{
-						tempPositions[i] = parser->ReadFloat();
+						parser->ReadVec3(&tempPositions[i]);
+					}
+				}
+				else if (strcmp(token, "normals") == 0)
+				{
+					tempNormals = new Vec3[numberOfVerts];
+
+					for (int i = 0; i < numberOfVerts; i++)
+					{
+						parser->ReadVec3(&tempNormals[i]);
+					}
+				}
+				else if (strcmp(token, "material-tex-coords") == 0)
+				{
+					tempTexCoords = new Vec2[numberOfVerts];
+
+					for (int i = 0; i < numberOfVerts; i++)
+					{
+						parser->ReadVec2(&tempTexCoords[i]);
 					}
 				}
 				else if (strcmp(token, "indecies") == 0)
@@ -161,7 +180,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 				IMaterialAsset* materialAsset = materialAssets[chunk->materialAssetRefIndex];
 
 				this->collisionMesh->PushChunk(
-					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempIndecies, 0 /* FIXME */, chunk->lightIslandOffset, chunk->lightIslandSize);
+					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempNormals, tempTexCoords, tempIndecies, 0 /* FIXME */, chunk->lightIslandOffset, chunk->lightIslandSize);
 			}
 
 			this->collisionMesh->Finish();
@@ -184,6 +203,8 @@ bool WorldMeshAsset::Load(const char* filePath)
 	SafeDeleteAndNull(file);
 	SafeDeleteArrayAndNull(fileData.data);
 	SafeDeleteArrayAndNull(tempPositions);
+	SafeDeleteArrayAndNull(tempNormals);
+	SafeDeleteArrayAndNull(tempTexCoords);
 	SafeDeleteArrayAndNull(tempIndecies);
 	SafeDeleteArrayAndNull(tempChunks);
 

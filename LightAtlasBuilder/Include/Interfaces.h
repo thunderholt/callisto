@@ -61,9 +61,10 @@ public:
 	virtual ~ICollisionMesh() {}
 	virtual void AllocateGeometry(int numberOfChunks, int numberOfFaces) = 0;
 	virtual void AllocateGrid(Vec3 gridOriginOffset, Vec3i gridDimensions, float gridCellSize) = 0;
-	virtual void PushChunk(int startIndex, int numberOfFaces, float* positions, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize) = 0;
+	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize) = 0;
 	virtual void Finish() = 0;
-	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line) = 0;
+	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex) = 0;
+	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex) = 0;
 	virtual CollisionMeshChunk* GetChunk(int chunkIndex) = 0;
 	virtual int GetNumberOfChunks() = 0;
 	virtual CollisionFace* GetFace(int faceIndex) = 0;
@@ -153,6 +154,13 @@ public:
 	virtual void RunThreadEntryPoint() = 0;
 };
 
+class IRayTracer
+{
+public:
+	virtual ~IRayTracer() {}
+	virtual RgbFloat CalculateColourForChunkAtPosition(Vec3* worldPosition, Vec3* normal, int chunkIndex) = 0;
+};
+
 class IEngine
 {
 public:
@@ -161,6 +169,9 @@ public:
 	virtual ILogger* GetLogger() = 0;
 	virtual IWorldMeshAsset* GetWorldMeshAsset() = 0;
 	virtual ILightAtlas* GetLightAtlas(int index) = 0;
+	virtual Light* GetLight(int index) = 0;
+	virtual int GetNumberOfLights() = 0;
+	virtual IRayTracer* GetRayTracer() = 0;
 	virtual IThreadManager* GetThreadManager() = 0;
 	virtual ITimestampProvider* GetTimestampProvider() = 0;
 	virtual const char* GetAssetsFolderPath() = 0;
@@ -178,6 +189,7 @@ public:
 	virtual ICollisionMesh* MakeCollisionMesh() = 0;
 	virtual IWorker* MakeWorker() = 0;
 	virtual ILightAtlas* MakeLightAtlas() = 0;
+	virtual IRayTracer* MakeRayTracer() = 0;
 	virtual IThreadManager* MakeThreadManager() = 0;
 	virtual ITimestampProvider* MakeTimestampProvider() = 0;
 	virtual IJsonValue* MakeJsonValue() = 0;

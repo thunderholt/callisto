@@ -9,6 +9,7 @@
 #include "Core/CollisionMesh.h" 
 #include "Core/Worker.h"
 #include "Core/LightAtlas.h"
+#include "Core/RayTracer.h"
 #include "Threading/WindowsThreadManager.h"
 #include "Time/WindowsTimestampProvider.h"
 #include "Json/JsonValue.h" 
@@ -80,6 +81,11 @@ IWorker* Factory::MakeWorker()
 ILightAtlas* Factory::MakeLightAtlas()
 {
 	return new LightAtlas();
+}
+
+IRayTracer* Factory::MakeRayTracer()
+{
+	return new RayTracer();
 }
 
 IThreadManager* Factory::MakeThreadManager()

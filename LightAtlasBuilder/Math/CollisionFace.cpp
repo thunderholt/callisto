@@ -1,12 +1,22 @@
 #include "Math/CollisionFace.h"
 #include "Math/Ray3.h"
 
-void CollisionFace::BuildFromPoints(CollisionFace* out, Vec3* points)
+void CollisionFace::BuildFromPoints(CollisionFace* out, Vec3* points, Vec3* normals, Vec2* uvs)
 {
 	// Copy over the points;
 	out->points[0] = points[0];
 	out->points[1] = points[1];
 	out->points[2] = points[2];
+
+	// Copy over the normals.
+	out->normals[0] = normals[0];
+	out->normals[1] = normals[1];
+	out->normals[2] = normals[2];
+
+	// Copy over the uvs.
+	out->uvs[0] = uvs[0];
+	out->uvs[1] = uvs[1];
+	out->uvs[2] = uvs[2];
 
 	// Calculate face normal.
 	Vec3 freeEdgeAB, freeEdgeAC, faceNormal;

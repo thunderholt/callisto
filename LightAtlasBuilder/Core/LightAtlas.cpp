@@ -39,9 +39,9 @@ void LightAtlas::WriteToPngFile(const char* filePath)
 			RgbUByte* rgbTexel = &rgbTexels[texelIndex];
 			RgbFloat* texel = &this->texels[texelIndex];
 
-			rgbTexel->r = (unsigned char)(texel->r * 255);
-			rgbTexel->g = (unsigned char)(texel->g * 255);
-			rgbTexel->b = (unsigned char)(texel->b * 255);
+			rgbTexel->r = (unsigned char)(Math::Clamp(texel->r, 0.0f, 1.0f) * 255);
+			rgbTexel->g = (unsigned char)(Math::Clamp(texel->g, 0.0f, 1.0f) * 255);
+			rgbTexel->b = (unsigned char)(Math::Clamp(texel->b, 0.0f, 1.0f) * 255);
 		}
 	}
 

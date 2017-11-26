@@ -19,6 +19,24 @@ struct AssetRef
 	char filePath[AssetMaxFilePathLength];
 };
 
+//------ Lights -----//
+
+struct LightNode
+{
+	Vec3 worldPosition;
+	Vec3 direction;
+	Vec3 invDirection;
+	float distance;
+	float distanceSqr;
+};
+
+struct Light
+{
+	RgbFloat colour;
+	DynamicLengthArray<LightNode> nodes;
+	int numberOfEffectedChunks;
+};
+
 //------ Json -----//
 
 enum JsonValueType
@@ -53,4 +71,11 @@ struct CollisionMeshChunk
 	int lightAtlasIndex;
 	Vec2 lightIslandOffset;
 	Vec2 lightIslandSize;
+	DynamicLengthArray<int> effectiveLightIndexes;
+};
+
+struct CollisionChunkFaceIndex
+{
+	int chunkIndex;
+	int faceIndex;
 };

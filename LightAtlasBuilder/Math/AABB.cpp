@@ -1,6 +1,6 @@
 #include "Math/AABB.h"
 
-void AABB::ClampPoint(Vec3* out, Vec3* point, AABB* aabb) 
+void AABB::ClampPoint(Vec3* out, AABB* aabb, Vec3* point) 
 {
 	*out = *point;
 

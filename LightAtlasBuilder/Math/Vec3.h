@@ -140,9 +140,9 @@ struct Vec3
 		float length = Vec3::Length(v);
 		if (length > 0)
 		{
-			out->x /= length;
-			out->y /= length;
-			out->z /= length;
+			out->x = v->x / length;
+			out->y = v->y / length;
+			out->z = v->z / length;
 		}
 	}
 

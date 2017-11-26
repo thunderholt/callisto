@@ -153,6 +153,7 @@
     <ClCompile Include="..\..\LightAtlasBuilder\Core\Factory.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Core\LightAtlas.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Core\MaterialAsset.cpp" />
+    <ClCompile Include="..\..\LightAtlasBuilder\Core\RayTracer.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Core\Worker.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Core\WorldMeshAsset.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\FileIO\TokenFileParser.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="..\..\LightAtlasBuilder\Math\Math.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Math\Plane.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Math\Ray3.cpp" />
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Sphere.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Threading\WindowsThreadManager.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Time\WindowsTimestampProvider.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Util\StringUtil.cpp" />
@@ -178,6 +180,7 @@
     <ClInclude Include="..\..\LightAtlasBuilder\Core\Factory.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Core\LightAtlas.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Core\MaterialAsset.h" />
+    <ClInclude Include="..\..\LightAtlasBuilder\Core\RayTracer.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Core\Worker.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Core\WorldMeshAsset.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\FileIO\TokenFileParser.h" />
@@ -199,6 +202,7 @@
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Math.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Plane.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Ray3.h" />
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Sphere.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec2.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec2i.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec3.h" />

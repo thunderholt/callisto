@@ -192,6 +192,46 @@ bool CollisionMesh::DetermineIfPointIsPotentiallyInsideOutdoorMesh(Vec3* point)
 bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, bool excludeNonOccludingChunks)
 {
 	bool intersectionFound = false;
+
+	int lastGridCellIndex = -1;
+
+	for (int gridPlaneIndex = 0; gridPlaneIndex < this->gridMetrics.gridPlanes.GetLength() && !intersectionFound; gridPlaneIndex++)
+	{
+		Plane* gridPlane = &this->gridMetrics.gridPlanes[gridPlaneIndex];
+
+		Vec3 intersectionPoint;
+		if (CollisionLine::CalculateIntersectionWithPlane(&intersectionPoint, line, gridPlane))
+		{
+			Vec3 fudgedIntersectionPoint;
+
+			Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, 0.01f);
+
+			int gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
+			if (gridCellIndex != -1 && gridCellIndex != lastGridCellIndex)
+			{
+				intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, excludeNonOccludingChunks);
+			}
+
+			if (!intersectionFound)
+			{
+				Vec3::ScaleAndAdd(&fudgedIntersectionPoint, &intersectionPoint, &gridPlane->normal, -0.01f);
+
+				gridCellIndex = this->GetGridCellIndexFromPoint(&fudgedIntersectionPoint);
+				if (gridCellIndex != -1)
+				{
+					intersectionFound = this->DetermineIfLineIntersectsChunksInGridCell(line, gridCellIndex, excludeNonOccludingChunks);
+					lastGridCellIndex = gridCellIndex;
+				}
+			}
+		}
+	}
+		
+	return intersectionFound;
+}
+
+/*bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, bool excludeNonOccludingChunks)
+{
+	bool intersectionFound = false;
 	
 	int gridCellIndex = this->GetGridCellIndexFromPoint(&line->from);
 	if (gridCellIndex != -1)
@@ -245,7 +285,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, bool excl
 	}
 
 	return intersectionFound;
-}
+}*/
 
 CollisionMeshChunk* CollisionMesh::GetChunk(int chunkIndex)
 {

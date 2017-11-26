@@ -11,6 +11,9 @@ public:
 	virtual ILogger* GetLogger();
 	virtual IWorldMeshAsset* GetWorldMeshAsset();
 	virtual ILightAtlas* GetLightAtlas(int index);
+	virtual Light* GetLight(int index);
+	virtual int GetNumberOfLights();
+	virtual IRayTracer* GetRayTracer();
 	virtual IThreadManager* GetThreadManager();
 	virtual ITimestampProvider* GetTimestampProvider();
 	virtual const char* GetAssetsFolderPath();
@@ -18,6 +21,7 @@ public:
 private:
 	void InitWorkers();
 	void InitLightAtlases();
+	void InitLights();
 	void ComputeLightIslandsOnWorkers();
 	void WaitForAllWorkersToFinish();
 	void WriteOutputFiles();
@@ -25,8 +29,10 @@ private:
 	const char* assetsFolderPath;
 	ILogger* logger;
 	IWorldMeshAsset* worldMeshAsset;
+	IRayTracer* rayTracer;
 	IThreadManager* threadManager;
 	ITimestampProvider* timestampProvider;
 	DynamicLengthArray<ILightAtlas*> lightAtlases;
+	DynamicLengthArray<Light*> lights;
 	FixedLengthArray<IWorker*, 16> workers;
 };

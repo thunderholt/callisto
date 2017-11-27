@@ -12,6 +12,7 @@ Worker::Worker()
 	this->currentTaskHasFinished = false;
 	this->startMeshChunkIndex = 0;
 	this->meshChunkIndexesStride = 0;
+	this->currentLight = null;
 }
 
 Worker::~Worker()
@@ -25,12 +26,13 @@ void Worker::Init(int startMeshChunkIndex, int meshChunkIndexesStride)
 	this->meshChunkIndexesStride = meshChunkIndexesStride;
 }
 
-void Worker::ComputeLightIslandsAsync()
+void Worker::ComputeDirectIlluminationForLightAsync(Light* light)
 {
 	IEngine* engine = GetEngine();
 	IThreadManager* threadManager = engine->GetThreadManager();
 
-	this->currentTaskType = WorkerTaskTypeComputeLightIslands;
+	this->currentTaskType = WorkerTaskTypeComputeDirectIlluminationForLight;
+	this->currentLight = light;
 	this->currentTaskHasFinished = false;
 
 	threadManager->StartThread(WorkerRunSectorCruncherEntryPoint, this);
@@ -46,15 +48,15 @@ void Worker::RunThreadEntryPoint()
 	IEngine* engine = GetEngine();
 	ILogger* logger = engine->GetLogger();
 
-	if (this->currentTaskType == WorkerTaskTypeComputeLightIslands)
+	if (this->currentTaskType == WorkerTaskTypeComputeDirectIlluminationForLight)
 	{
-		this->ComputeLightIslandsInternal();
+		this->ComputeDirectIlluminationForLightInternal();
 	}
 
 	this->currentTaskHasFinished = true;
 }
 
-void Worker::ComputeLightIslandsInternal()
+void Worker::ComputeDirectIlluminationForLightInternal()
 {
 	IEngine* engine = GetEngine();
 	IWorldMeshAsset* worldMeshAsset = engine->GetWorldMeshAsset();
@@ -62,7 +64,7 @@ void Worker::ComputeLightIslandsInternal()
 	IRayTracer* rayTracer = engine->GetRayTracer();
 	ILogger* logger = engine->GetLogger();
 
-	///////// Temp ////////
+	/*///////// Temp ////////
 	Vec3 lightDir;
 	//Vec3::Set(&lightDir, -1.0f, -1.0f, 1.0f);
 	Vec3::Set(&lightDir, 0.0f, -1.0f, 0.0f);
@@ -70,9 +72,9 @@ void Worker::ComputeLightIslandsInternal()
 
 	Vec3 invLightDir;
 	Vec3::Scale(&invLightDir, &lightDir, -1.0f);
-	///////////////////////
+	///////////////////////*/
 
-	///////// Temp ////////
+	/*///////// Temp ////////
 	Vec3 lightPosition;
 	Vec3::Set(&lightPosition, 7.0f, 0.6f, 2.0f);
 
@@ -85,17 +87,17 @@ void Worker::ComputeLightIslandsInternal()
 	}
 	//Vec3::Set(&lightPosition, 9.5f, 0.6f, 8.0f);
 	float lightRadius = 8.0f;
-	///////////////////////
+	///////////////////////*/
 
 	int logCounter = 0;
 
 	for (int chunkIndex = this->startMeshChunkIndex;
-		chunkIndex < /*this->startMeshChunkIndex + this->numberOfMeshChunkIndexes && chunkIndex <*/ collisionMesh->GetNumberOfChunks();
+	chunkIndex < /*this->startMeshChunkIndex + this->numberOfMeshChunkIndexes && chunkIndex <*/ collisionMesh->GetNumberOfChunks();
 		chunkIndex += this->meshChunkIndexesStride)
 	{
 		if (logCounter == 10)
 		{
-			logger->Write("Chunk index: %d/%d", chunkIndex, collisionMesh->GetNumberOfChunks());
+			logger->Write("Chunk index: %d/%d", chunkIndex + 1, collisionMesh->GetNumberOfChunks());
 			logCounter = 0;
 		}
 
@@ -106,7 +108,7 @@ void Worker::ComputeLightIslandsInternal()
 			int h = 1;
 		}*/
 
-		//////// Temp //////
+		/*//////// Temp //////
 		RgbFloat faceColours[200];
 		for (int i = 0; i < 200; i++)
 		{
@@ -115,81 +117,54 @@ void Worker::ComputeLightIslandsInternal()
 			colour->g = Math::GenerateRandomFloat();
 			colour->b = Math::GenerateRandomFloat();
 		}
-		////////////////////
+		////////////////////*/
 
 		CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
-		ILightAtlas* lightAtlas = engine->GetLightAtlas(chunk->lightAtlasIndex);
-		Vec2i lightAtlasSize = lightAtlas->GetSize();
-		RgbFloat* texels = lightAtlas->GetTexels();
-
-		Vec2i startTexelIndex;
-		startTexelIndex.x = (int)roundf(chunk->lightIslandOffset.x * lightAtlasSize.x);
-		startTexelIndex.y = (int)roundf(chunk->lightIslandOffset.y * lightAtlasSize.y);
-
-		Vec2i numberOfTexels;
-		numberOfTexels.x = (int)roundf(chunk->lightIslandSize.x * lightAtlasSize.x);
-		numberOfTexels.y = (int)roundf(chunk->lightIslandSize.y * lightAtlasSize.y);
-
-		RgbFloat randomColour;
-		randomColour.r = 1.0f; // Math::GenerateRandomFloat();
-		randomColour.g = 0.0f; // Math::GenerateRandomFloat();
-		randomColour.b = 0.0f; // Math::GenerateRandomFloat();
-
-		for (int y = startTexelIndex.y; y < startTexelIndex.y + numberOfTexels.y; y++)
+		if (this->CheckIfChunkIsEffectedByLight(chunk, this->currentLight))
 		{
-			for (int x = startTexelIndex.x; x < startTexelIndex.x + numberOfTexels.x; x++)
+			ILightAtlas* lightAtlas = engine->GetLightAtlas(chunk->lightAtlasIndex);
+			Vec2i lightAtlasSize = lightAtlas->GetSize();
+			RgbFloat* texels = lightAtlas->GetTexels();
+
+			Vec2i startTexelIndex;
+			startTexelIndex.x = (int)roundf(chunk->lightIslandOffset.x * lightAtlasSize.x);
+			startTexelIndex.y = (int)roundf(chunk->lightIslandOffset.y * lightAtlasSize.y);
+
+			Vec2i numberOfTexels;
+			numberOfTexels.x = (int)roundf(chunk->lightIslandSize.x * lightAtlasSize.x);
+			numberOfTexels.y = (int)roundf(chunk->lightIslandSize.y * lightAtlasSize.y);
+
+			/*RgbFloat randomColour;
+			randomColour.r = 1.0f; // Math::GenerateRandomFloat();
+			randomColour.g = 0.0f; // Math::GenerateRandomFloat();
+			randomColour.b = 0.0f; // Math::GenerateRandomFloat();*/
+
+			for (int y = startTexelIndex.y; y < startTexelIndex.y + numberOfTexels.y; y++)
 			{
-				int texelIndex = y * lightAtlasSize.x + x;
-
-				Vec2 uv;
-				uv.x = ((x / (float)lightAtlasSize.x) - chunk->lightIslandOffset.x) / chunk->lightIslandSize.x;
-				uv.y = ((y / (float)lightAtlasSize.y) - chunk->lightIslandOffset.y) / chunk->lightIslandSize.y;
-
-				Vec3 worldPosition;
-				Vec3 normal;
-				bool faceFound = this->FindWorldPositionForLightIslandTexel(&worldPosition, &normal, collisionMesh, chunk, uv);
-				if (faceFound)
+				for (int x = startTexelIndex.x; x < startTexelIndex.x + numberOfTexels.x; x++)
 				{
-					texels[texelIndex] = rayTracer->CalculateColourForChunkAtPosition(&worldPosition, &normal, chunkIndex);
+					int texelIndex = y * lightAtlasSize.x + x;
 
-					/*float shadowFactor = 0.0f;
+					Vec2 uv;
+					uv.x = ((x / (float)lightAtlasSize.x) - chunk->lightIslandOffset.x) / chunk->lightIslandSize.x;
+					uv.y = ((y / (float)lightAtlasSize.y) - chunk->lightIslandOffset.y) / chunk->lightIslandSize.y;
 
-					for (int i = 0; i < 128; i++)
+					Vec3 worldPosition;
+					Vec3 normal;
+					bool faceFound = this->FindWorldPositionForLightIslandTexel(&worldPosition, &normal, collisionMesh, chunk, uv);
+					if (faceFound)
 					{
-						int lightPositionIndex = Math::GenerateRandomInt(0, 199);
+						//texels[texelIndex] = rayTracer->CalculateColourForChunkAtPosition(&worldPosition, &normal, chunkIndex);
+						float directIlluminationIntensity = rayTracer->CalculateDirectIlluminationIntensityForChunkAtPosition(this->currentLight, &worldPosition, &normal, collisionMesh, chunkIndex);
 
-						CollisionLine line;
-						line.from = worldPosition;
-						line.to = lightPositions[lightPositionIndex];
-						CollisionLine::FromOwnFromAndToPoints(&line);
+						// Don't do this - store the intensity in the direct illumination intensity cache.
+						RgbFloat lightColour;
+						RgbFloat::Scale(&lightColour, &this->currentLight->colour, directIlluminationIntensity);
 
-						if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, chunkIndex))
-						{
-							shadowFactor += 1.0f;
-						}
+						RgbFloat* texel = &texels[texelIndex];
+						RgbFloat::Add(texel, texel, &lightColour);
 					}
-
-					shadowFactor /= 128.0f;
-
-					Vec3 texelToLight;
-					Vec3::Sub(&texelToLight, &lightPosition, &worldPosition);
-
-					float texelToLightDistanceSqr = Vec3::LengthSqr(&texelToLight);
-
-					Vec3 texelToLightNormal;
-					Vec3::Normalize(&texelToLightNormal, &texelToLight);
-
-					float attentuation = Math::Clamp(1.0f - (texelToLightDistanceSqr / (lightRadius * lightRadius)), 0.0f, 1.0f);
-					float lambert = Math::Clamp(Vec3::Dot(&normal, &texelToLightNormal), 0.0f, 1.0f);
-					float intensity = attentuation * lambert * shadowFactor;
-
-					texels[texelIndex].r = intensity;
-					texels[texelIndex].g = intensity;
-					texels[texelIndex].b = intensity;*/
-					
 				}
-
-				//texels[texelIndex] = randomColour;
 			}
 		}
 	}
@@ -211,6 +186,27 @@ bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* 
 	}
 
 	return faceFound;
+}
+
+bool Worker::CheckIfChunkIsEffectedByLight(CollisionMeshChunk* chunk, Light* light)
+{
+	bool isEffectedByLight = false;
+
+	for (int lightNodeIndex = 0; lightNodeIndex < light->nodes.GetLength(); lightNodeIndex++)
+	{
+		LightNode* lightNode = &light->nodes[lightNodeIndex];
+
+		Sphere lightNodeSphere;
+		Sphere::Set(&lightNodeSphere, &lightNode->worldPosition, lightNode->distance);
+
+		if (Sphere::CheckIntersectsAABB(&lightNodeSphere, &chunk->aabb))
+		{
+			isEffectedByLight = true;
+			break;
+		}
+	}
+
+	return isEffectedByLight;
 }
 
 /*int Worker::FindFaceIndexForLightIslandTexel(ICollisionMesh* collisionMesh, CollisionMeshChunk* chunk, Vec2 uv)

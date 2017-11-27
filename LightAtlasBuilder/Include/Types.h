@@ -34,7 +34,7 @@ struct Light
 {
 	RgbFloat colour;
 	DynamicLengthArray<LightNode> nodes;
-	int numberOfEffectedChunks;
+	//int numberOfEffectedChunks;
 };
 
 //------ Json -----//
@@ -71,7 +71,7 @@ struct CollisionMeshChunk
 	int lightAtlasIndex;
 	Vec2 lightIslandOffset;
 	Vec2 lightIslandSize;
-	DynamicLengthArray<int> effectiveLightIndexes;
+	//DynamicLengthArray<int> effectiveLightIndexes;
 };
 
 struct CollisionChunkFaceIndex

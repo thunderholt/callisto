@@ -149,7 +149,7 @@ class IWorker
 public:
 	virtual ~IWorker() {}
 	virtual void Init(int startMeshChunkIndex, int numberOfMeshChunkIndexes) = 0;
-	virtual void ComputeLightIslandsAsync() = 0;
+	virtual void ComputeDirectIlluminationForLightAsync(Light* light) = 0;
 	virtual bool GetHasFinished() = 0;
 	virtual void RunThreadEntryPoint() = 0;
 };
@@ -158,7 +158,8 @@ class IRayTracer
 {
 public:
 	virtual ~IRayTracer() {}
-	virtual RgbFloat CalculateColourForChunkAtPosition(Vec3* worldPosition, Vec3* normal, int chunkIndex) = 0;
+	//virtual RgbFloat CalculateColourForChunkAtPosition(Vec3* worldPosition, Vec3* normal, int chunkIndex) = 0;
+	virtual float CalculateDirectIlluminationIntensityForChunkAtPosition(Light* light, Vec3* worldPosition, Vec3* normal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex) = 0;
 };
 
 class IEngine

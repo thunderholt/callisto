@@ -502,7 +502,7 @@ struct MouseEvent
 	Vec3 rotation;
 };*/
 
-//------ Json -----//
+//------ JSON -----//
 
 enum JsonValueType
 {

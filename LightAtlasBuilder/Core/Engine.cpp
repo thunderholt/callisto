@@ -103,7 +103,7 @@ void Engine::InitLights()
 	this->lights.Push(light);
 
 	RgbFloat::Set(&light->colour, 10.0f, 10.0f, 10.0f);
-	light->numberOfEffectedChunks = 0;
+	//light->numberOfEffectedChunks = 0;
 
 	Vec3 lightPosition;
 	Vec3::Set(&lightPosition, 5.5f, 0.6f, 2.0f);
@@ -134,7 +134,7 @@ void Engine::InitLights()
 	this->lights.Push(light);
 
 	RgbFloat::Set(&light->colour, 10.0f, 5.0f, 5.0f);
-	light->numberOfEffectedChunks = 0;
+	//light->numberOfEffectedChunks = 0;
 
 	Vec3::Set(&lightPosition, 5.5f, 0.6f, -2.0f);
 
@@ -158,7 +158,7 @@ void Engine::InitLights()
 	}
 	//////////////////////////////////////////////
 
-	for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
+	/*for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
 	{
 		CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
 
@@ -193,7 +193,7 @@ void Engine::InitLights()
 	{
 		Light* light = this->lights[lightIndex];
 		this->logger->Write("Light %d: effected chunks: %d", lightIndex, light->numberOfEffectedChunks);
-	}
+	}*/
 }
 
 ILogger* Engine::GetLogger()
@@ -270,14 +270,23 @@ void Engine::ComputeLightIslandsOnWorkers()
 {
 	this->logger->Write("Computing light islands...");
 
-	for (int i = 0; i < this->workers.GetLength(); i++)
+	for (int lightIndex = 0; lightIndex < this->lights.GetLength(); lightIndex++)
 	{
-		IWorker* worker = this->workers[i];
+		Light* light = this->lights[lightIndex];
 
-		worker->ComputeLightIslandsAsync();
+		this->logger->Write("Computing direct illumination for light %d/%d.", lightIndex + 1, this->lights.GetLength());
+
+		for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+		{
+			IWorker* worker = this->workers[workerIndex];
+
+			worker->ComputeDirectIlluminationForLightAsync(light);
+		}
+
+		// Compute indirect illumination here.
+
+		this->WaitForAllWorkersToFinish();
 	}
-
-	this->WaitForAllWorkersToFinish();
 
 	this->logger->Write("... done.");
 }
@@ -302,7 +311,7 @@ void Engine::WaitForAllWorkersToFinish()
 
 		if (!allWorkersAreFinished)
 		{
-			this->threadManager->Sleep(100);
+			this->threadManager->Sleep(10);
 		}
 
 	} while (!allWorkersAreFinished);
@@ -315,7 +324,8 @@ void Engine::WriteOutputFiles()
 	for (int i = 0; i < this->lightAtlases.GetLength(); i++)
 	{
 		ILightAtlas* lightAtlas = this->lightAtlases[i];
-		lightAtlas->WriteToPngFile("C:/Users/andym/Documents/GitHub/Callisto/Windows/Build/Callisto/Assets/textures/light-atlases/debug/debug-map-1-1.png");
+		//lightAtlas->WriteToPngFile("C:/Users/andym/Documents/GitHub/Callisto/Windows/Build/Callisto/Assets/textures/light-atlases/debug/debug-map-1-1.png");
+		lightAtlas->WriteToPngFile("C:/temp/debug-map-1-1.png");
 	}
 
 	this->logger->Write("... done");

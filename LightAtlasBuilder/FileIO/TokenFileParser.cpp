@@ -91,6 +91,12 @@ void TokenFileParser::ReadVec2(Vec2* out)
 	out->y = this->ReadFloat();
 }
 
+void TokenFileParser::ReadVec2i(Vec2i* out)
+{
+	out->x = this->ReadInt();
+	out->y = this->ReadInt();
+}
+
 void TokenFileParser::ReadVec3(Vec3* out)
 {
 	out->x = this->ReadFloat();

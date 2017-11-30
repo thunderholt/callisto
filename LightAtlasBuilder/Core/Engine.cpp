@@ -47,10 +47,11 @@ Engine::~Engine()
 		SafeDeleteAndNull(this->workers[i]);
 	}
 
-	for (int i = 0; i < this->lightAtlases.GetLength(); i++)
+	/*for (int i = 0; i < this->lightAtlases.GetLength(); i++)
 	{
 		SafeDeleteAndNull(this->lightAtlases[i]);
-	}
+	}*/
+	SafeDeleteAndNull(this->lightAtlas);
 
 	for (int i = 0; i < this->lights.GetLength(); i++)
 	{
@@ -78,7 +79,7 @@ void Engine::BuildLightAtlases(const char* worldMeshAssetFilePath, const char* a
 
 		this->InitWorkers();
 
-		this->InitLightAtlases();
+		this->InitLightAtlas();
 
 		this->InitLights();
 
@@ -102,11 +103,13 @@ void Engine::InitLights()
 	Light* light = new Light();
 	this->lights.Push(light);
 
-	RgbFloat::Set(&light->colour, 10.0f, 10.0f, 10.0f);
+	//RgbFloat::Set(&light->colour, 10.0f, 10.0f, 10.0f);
+	RgbFloat::Set(&light->colour, 5.0f, 5.0f, 5.0f);
 	//light->numberOfEffectedChunks = 0;
 
 	Vec3 lightPosition;
-	Vec3::Set(&lightPosition, 5.5f, 0.6f, 2.0f);
+	//Vec3::Set(&lightPosition, 5.5f, 0.6f, 2.0f);
+	Vec3::Set(&lightPosition, 0.0f, 1.0f, -1.0f);
 
 	for (int i = 0; i < 200; i++)
 	{
@@ -114,26 +117,27 @@ void Engine::InitLights()
 
 		lightNode->worldPosition = lightPosition;
 		lightNode->worldPosition.x += 3.0f * Math::GenerateRandomFloat();
-		lightNode->worldPosition.z += 0.5f * Math::GenerateRandomFloat();
+		lightNode->worldPosition.z += 1.0f * Math::GenerateRandomFloat();
 
 		//RgbFloat::Set(&lightNode->colour, 10.0f, 10.0f, 10.0f);
 
-		lightNode->distance = 4.0f;
+		lightNode->distance = 6.0f;
 		lightNode->distanceSqr = lightNode->distance * lightNode->distance;
 
-		Vec3::Set(&lightNode->direction, 0.0f, -1.0f, -1.0f);
+		//Vec3::Set(&lightNode->direction, 0.0f, -1.0f, 1.0f);
 		//Vec3::Set(&lightNode->direction, -1.0f, -1.0f, 0.0f);
+		Vec3::Set(&lightNode->direction, -0.2f, -1.0f, 1.0f);
 		Vec3::Normalize(&lightNode->direction, &lightNode->direction);
 
 		Vec3::Scale(&lightNode->invDirection, &lightNode->direction, -1.0f);
 	}
 	//////////////////////////////////////////////
 
-	////////////////// Test code /////////////////
+	/*////////////////// Test code /////////////////
 	light = new Light();
 	this->lights.Push(light);
 
-	RgbFloat::Set(&light->colour, 10.0f, 5.0f, 5.0f);
+	RgbFloat::Set(&light->colour, 10.0f, 0.0f, 0.0f);
 	//light->numberOfEffectedChunks = 0;
 
 	Vec3::Set(&lightPosition, 5.5f, 0.6f, -2.0f);
@@ -156,7 +160,7 @@ void Engine::InitLights()
 
 		Vec3::Scale(&lightNode->invDirection, &lightNode->direction, -1.0f);
 	}
-	//////////////////////////////////////////////
+	//////////////////////////////////////////////*/
 
 	/*for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
 	{
@@ -206,9 +210,9 @@ IWorldMeshAsset* Engine::GetWorldMeshAsset()
 	return this->worldMeshAsset;
 }
 
-ILightAtlas* Engine::GetLightAtlas(int index)
+ILightAtlas* Engine::GetLightAtlas()
 {
-	return this->lightAtlases[index];
+	return this->lightAtlas;
 }
 
 Light* Engine::GetLight(int index)
@@ -243,27 +247,27 @@ const char* Engine::GetAssetsFolderPath()
 
 void Engine::InitWorkers()
 {
-	//int numberOfMeshChunksToCrunchPerWorker = (int)ceilf(this->worldMeshAsset->GetCollisionMesh()->GetNumberOfChunks() / (float)this->workers.GetLength());
+	int numberOfLightIslandsToCrunchPerWorker = (int)ceilf(this->worldMeshAsset->GetNumberOfLightIslands() / (float)this->workers.GetLength());
 
 	for (int i = 0; i < this->workers.GetLength(); i++)
 	{
 		IWorker* worker = this->workers[i];
 
-		//int startMeshChunkIndex = numberOfMeshChunksToCrunchPerWorker * i;
+		int startLightIslandIndex = numberOfLightIslandsToCrunchPerWorker * i;
 
-		//worker->Init(startMeshChunkIndex, numberOfMeshChunksToCrunchPerWorker);
-		worker->Init(i, this->workers.GetLength());
+		worker->Init(startLightIslandIndex, numberOfLightIslandsToCrunchPerWorker);
+		//worker->Init(i, this->workers.GetLength());
 	}
 }
 
-void Engine::InitLightAtlases()
+void Engine::InitLightAtlas()
 {
 	IFactory* factory = GetFactory();
 
-	ILightAtlas* lightAtlas = factory->MakeLightAtlas();
-	lightAtlas->Allocate(4096, 4096);
+	this->lightAtlas = factory->MakeLightAtlas();
+	this->lightAtlas->Allocate(4096, 4096);
 
-	this->lightAtlases.Push(lightAtlas);
+	//this->lightAtlases.Push(lightAtlas);
 }
 
 void Engine::ComputeLightIslandsOnWorkers()
@@ -321,12 +325,14 @@ void Engine::WriteOutputFiles()
 {
 	this->logger->Write("Writing output files...");
 
-	for (int i = 0; i < this->lightAtlases.GetLength(); i++)
+	/*for (int i = 0; i < this->lightAtlases.GetLength(); i++)
 	{
 		ILightAtlas* lightAtlas = this->lightAtlases[i];
-		//lightAtlas->WriteToPngFile("C:/Users/andym/Documents/GitHub/Callisto/Windows/Build/Callisto/Assets/textures/light-atlases/debug/debug-map-1-1.png");
-		lightAtlas->WriteToPngFile("C:/temp/debug-map-1-1.png");
-	}
+		lightAtlas->WriteToPngFile("C:/Users/andym/Documents/GitHub/Callisto/Windows/Build/Callisto/Assets/textures/light-atlases/debug/debug-map-3-1.png");
+		//lightAtlas->WriteToPngFile("C:/temp/debug-map-1-1.png");
+	}*/
+
+	this->lightAtlas->WriteToPngFile("C:/Users/andym/Documents/GitHub/Callisto/Windows/Build/Callisto/Assets/textures/light-atlases/debug/debug-map-3.png");
 
 	this->logger->Write("... done");
 }

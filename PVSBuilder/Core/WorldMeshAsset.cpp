@@ -123,8 +123,8 @@ bool WorldMeshAsset::Load(const char* filePath)
 						chunk->startIndex = parser->ReadInt();
 						chunk->numberOfFaces = parser->ReadInt();
 						chunk->materialAssetRefIndex = parser->ReadInt();
-						parser->ReadVec2(&chunk->lightIslandOffset);
-						parser->ReadVec2(&chunk->lightIslandSize);
+						//parser->ReadVec2(&chunk->lightIslandOffset);
+						//parser->ReadVec2(&chunk->lightIslandSize);
 					}
 				}
 				else if (strcmp(token, "material-asset-refs") == 0)

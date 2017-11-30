@@ -627,5 +627,8 @@
     <ClInclude Include="..\..\Engine\Assets\PVSAsset.h">
       <Filter>Engine\Assets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Vec2i.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

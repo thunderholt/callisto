@@ -3,7 +3,7 @@
 Renderer::Renderer()
 {
 	this->rasterJob = null;
-	this->drawDebugVisualisations = true;
+	this->drawDebugVisualisations = false;
 	this->drawVolumes = false;
 }
 
@@ -53,7 +53,7 @@ void Renderer::RenderScene(RasterJob* rasterJob)
 
 void Renderer::ClearScreen()
 {
-	RgbaFloat::SetBlack(&this->rasterJob->clearColour);
+	RgbaFloat::SetRed(&this->rasterJob->clearColour);
 }
 
 ISubActor* Renderer::FindMainCamera()

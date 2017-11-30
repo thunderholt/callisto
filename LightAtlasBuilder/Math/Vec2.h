@@ -36,10 +36,22 @@ struct Vec2
 		return v->x == 0.0f && v->y == 0.0f;
 	}
 
+	static inline void Add(Vec2* out, Vec2* a, Vec2* b)
+	{
+		out->x = a->x + b->x;
+		out->y = a->y + b->y;
+	}
+
 	static inline void Sub(Vec2* out, Vec2* a, Vec2* b)
 	{
 		out->x = a->x - b->x;
 		out->y = a->y - b->y;
+	}
+
+	static inline void Div(Vec2* out, Vec2* a, Vec2* b)
+	{
+		out->x = a->x / b->x;
+		out->y = a->y / b->y;
 	}
 
 	static inline void Scale(Vec2* out, Vec2* a, float scale)

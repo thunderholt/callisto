@@ -3,11 +3,14 @@
 WorldMeshAsset::WorldMeshAsset()
 {
 	this->collisionMesh = null;
+	this->lightIslands = null;
+	this->numberOfLightIslands = 0;
 }
 
 WorldMeshAsset::~WorldMeshAsset()
 {
 	SafeDeleteAndNull(this->collisionMesh);
+	SafeDeleteArrayAndNull(this->lightIslands);
 }
 
 bool WorldMeshAsset::Load(const char* filePath)
@@ -20,7 +23,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 	Buffer fileData = { 0 };
 	Vec3* tempPositions = null;
 	Vec3* tempNormals = null;
-	Vec2* tempTexCoords = null;
+	Vec2* tempLightAtlasTexCoords = null;
 	unsigned short* tempIndecies = null;
 	WorldMeshChunk* tempChunks = null;
 	Vec3 gridOrigin;
@@ -77,6 +80,10 @@ bool WorldMeshAsset::Load(const char* filePath)
 				{
 					numberOfMaterialAssetRefs = parser->ReadInt();
 				}
+				else if (strcmp(token, "number-of-light-islands") == 0)
+				{
+					this->numberOfLightIslands = parser->ReadInt();
+				}
 				else if (strcmp(token, "grid-origin") == 0)
 				{
 					parser->ReadVec3(&gridOrigin);
@@ -107,13 +114,13 @@ bool WorldMeshAsset::Load(const char* filePath)
 						parser->ReadVec3(&tempNormals[i]);
 					}
 				}
-				else if (strcmp(token, "material-tex-coords") == 0)
+				else if (strcmp(token, "light-atlas-tex-coords") == 0)
 				{
-					tempTexCoords = new Vec2[numberOfVerts];
+					tempLightAtlasTexCoords = new Vec2[numberOfVerts];
 
 					for (int i = 0; i < numberOfVerts; i++)
 					{
-						parser->ReadVec2(&tempTexCoords[i]);
+						parser->ReadVec2(&tempLightAtlasTexCoords[i]);
 					}
 				}
 				else if (strcmp(token, "indecies") == 0)
@@ -135,8 +142,8 @@ bool WorldMeshAsset::Load(const char* filePath)
 						chunk->startIndex = parser->ReadInt();
 						chunk->numberOfFaces = parser->ReadInt();
 						chunk->materialAssetRefIndex = parser->ReadInt();
-						parser->ReadVec2(&chunk->lightIslandOffset);
-						parser->ReadVec2(&chunk->lightIslandSize);
+						//parser->ReadVec2i(&chunk->lightIslandOffset);
+						//parser->ReadVec2i(&chunk->lightIslandSize);
 					}
 				}
 				else if (strcmp(token, "material-asset-refs") == 0)
@@ -145,6 +152,19 @@ bool WorldMeshAsset::Load(const char* filePath)
 					{
 						AssetRef* assetRef = &materialAssetRefs.PushAndGet();
 						parser->ReadAssetRef(assetRef);
+					}
+				}
+				else if (strcmp(token, "light-islands") == 0)
+				{
+					this->lightIslands = new WorldMeshLightIsland[this->numberOfLightIslands];
+
+					for (int i = 0; i < this->numberOfLightIslands; i++)
+					{
+						WorldMeshLightIsland* lightIsland = &this->lightIslands[i];
+						parser->ReadVec2i(&lightIsland->offset);
+						parser->ReadVec2i(&lightIsland->size);
+						lightIsland->chunkFaceIndex.chunkIndex = parser->ReadInt();
+						lightIsland->chunkFaceIndex.faceIndex = parser->ReadInt();
 					}
 				}
 			}
@@ -180,7 +200,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 				IMaterialAsset* materialAsset = materialAssets[chunk->materialAssetRefIndex];
 
 				this->collisionMesh->PushChunk(
-					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempNormals, tempTexCoords, tempIndecies, 0 /* FIXME */, chunk->lightIslandOffset, chunk->lightIslandSize);
+					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempNormals, tempLightAtlasTexCoords, tempIndecies/*, , chunk->lightIslandOffset, chunk->lightIslandSize*/);
 			}
 
 			this->collisionMesh->Finish();
@@ -204,7 +224,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 	SafeDeleteArrayAndNull(fileData.data);
 	SafeDeleteArrayAndNull(tempPositions);
 	SafeDeleteArrayAndNull(tempNormals);
-	SafeDeleteArrayAndNull(tempTexCoords);
+	SafeDeleteArrayAndNull(tempLightAtlasTexCoords);
 	SafeDeleteArrayAndNull(tempIndecies);
 	SafeDeleteArrayAndNull(tempChunks);
 
@@ -214,4 +234,14 @@ bool WorldMeshAsset::Load(const char* filePath)
 ICollisionMesh* WorldMeshAsset::GetCollisionMesh()
 {
 	return this->collisionMesh;
+}
+
+WorldMeshLightIsland* WorldMeshAsset::GetLightIsland(int lightIslandIndex)
+{
+	return &this->lightIslands[lightIslandIndex];
+}
+
+int WorldMeshAsset::GetNumberOfLightIslands()
+{
+	return this->numberOfLightIslands;
 }

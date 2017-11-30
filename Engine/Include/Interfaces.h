@@ -139,6 +139,7 @@ public:
 	virtual float ReadFloat() = 0;
 	virtual bool ReadBool() = 0;
 	virtual void ReadVec2(Vec2* out) = 0;
+	virtual void ReadVec2i(Vec2i* out) = 0;
 	virtual void ReadVec3(Vec3* out) = 0;
 	virtual void ReadSphere(Sphere* out) = 0;
 	virtual void ReadAABB(AABB* out) = 0;
@@ -292,8 +293,9 @@ public:
 	virtual int GetNumberOfChunks() = 0;
 	virtual AssetRef* GetMaterialAssetRef(int index) = 0;
 	virtual int GetNumberOfMaterialAssetRefs() = 0;
-	virtual AssetRef* GetLightAtlasTextureAssetRef(int index) = 0;
-	virtual int GetNumberOfLightAtlasTextureAssetRefs() = 0;
+	//virtual AssetRef* GetLightAtlasTextureAssetRef(int index) = 0;
+	//virtual int GetNumberOfLightAtlasTextureAssetRefs() = 0;
+	virtual AssetRef* GetLightAtlasTextureAssetRef() = 0;
 	virtual AssetRef* GetPVSAssetRef() = 0;
 	virtual ICollisionMesh* GetCollisionMesh() = 0;
 };

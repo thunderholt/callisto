@@ -23,10 +23,12 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 
 	this->tempPositions = null;
 	this->tempMaterialTexCoords = null;
+	this->tempLightAtlasTexCoords = null;
 	this->tempIndecies = null;
 
 	this->bufferAreInitialised = false;
 	this->collisionMeshIsInitialised = false;
+	memset(&this->lightAtlasTextureAssetRef, 0, sizeof(AssetRef));
 	memset(&this->pvsAssetRef, 0, sizeof(AssetRef));
 	this->pvsAssetRef.index = -1;
 
@@ -79,6 +81,16 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				tempMaterialTexCoords[i] = parser->ReadFloat();
 			}
 		}
+		else if (strcmp(token, "light-atlas-tex-coords") == 0)
+		{
+			int numberOfLightAtlasTexCoordFloats = this->numberOfVerts * 2;
+			this->tempLightAtlasTexCoords = new float[numberOfLightAtlasTexCoordFloats];
+
+			for (int i = 0; i < numberOfLightAtlasTexCoordFloats; i++)
+			{
+				tempLightAtlasTexCoords[i] = parser->ReadFloat();
+			}
+		}
 		else if (strcmp(token, "indecies") == 0)
 		{
 			this->tempIndecies = new unsigned short[this->numberOfIndecies];
@@ -96,9 +108,9 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				chunk->startIndex = parser->ReadInt();
 				chunk->numberOfFaces = parser->ReadInt();
 				chunk->materialAssetRefIndex = parser->ReadInt();
-				chunk->lightAtlasTextureAssetRefIndex = 0; // FIXME
-				parser->ReadVec2(&chunk->lightIslandOffset);
-				parser->ReadVec2(&chunk->lightIslandSize);
+				//chunk->lightAtlasTextureAssetRefIndex = 0; // FIXME
+				//parser->ReadVec2i(&chunk->lightIslandOffset);
+				//parser->ReadVec2i(&chunk->lightIslandSize);
 				chunk->lastRenderedFrameId = -1;
 			}
 		}
@@ -110,14 +122,18 @@ WorldMeshAsset::WorldMeshAsset(const char* filePath, Buffer* fileData, bool isSt
 				parser->ReadAssetRef(assetRef, AssetTypeMaterial);
 			}
 		}
-		else if (strcmp(token, "light-atlas-texture-asset-refs") == 0)
+		else if (strcmp(token, "light-atlas-texture-asset-ref") == 0)
+		{
+			parser->ReadAssetRef(&this->lightAtlasTextureAssetRef, AssetTypeTexture);
+		}
+		/*else if (strcmp(token, "light-atlas-texture-asset-refs") == 0)
 		{
 			for (int i = 0; i < numberOfLightAtlasTextureAssetRefs; i++)
 			{
 				AssetRef* assetRef = &this->lightAtlasTextureAssetRefs.PushAndGet();
 				parser->ReadAssetRef(assetRef, AssetTypeTexture);
 			}
-		}
+		}*/
 	}
 
 	SafeDeleteAndNull(parser);
@@ -132,10 +148,13 @@ WorldMeshAsset::~WorldMeshAsset()
 
 	rasterizer->DeleteVertexBuffer(&this->buffers.positionBufferId);
 	rasterizer->DeleteVertexBuffer(&this->buffers.materialTexCoordBufferId);
+	rasterizer->DeleteVertexBuffer(&this->buffers.lightAtlasTexCoordBufferId);
+	rasterizer->DeleteIndexBuffer(&this->buffers.indexBuffer);
 
 	SafeDeleteAndNull(this->collisionMesh);
 	SafeDeleteArrayAndNull(this->tempPositions);
 	SafeDeleteArrayAndNull(this->tempMaterialTexCoords);
+	SafeDeleteArrayAndNull(this->tempLightAtlasTexCoords);
 	SafeDeleteArrayAndNull(this->tempIndecies);
 }
 
@@ -155,12 +174,14 @@ bool WorldMeshAsset::ResolveReferencedAssets()
 		success &= assetManager->ResolveAssetRefIndex(assetRef);
 	}
 
-	// Resolve the light atlas texture asset refs.
+	/*// Resolve the light atlas texture asset refs.
 	for (int i = 0; i < this->lightAtlasTextureAssetRefs.GetLength(); i++)
 	{
 		AssetRef* assetRef = &this->lightAtlasTextureAssetRefs[i];
 		success &= assetManager->ResolveAssetRefIndex(assetRef);
-	}
+	}*/
+	// Resolve the light atlas texture asset ref.
+	success &= assetManager->ResolveAssetRefIndex(&this->lightAtlasTextureAssetRef);
 
 	// Resolve the PVS asset ref.
 	if (strlen(this->pvsAssetRef.filePath) > 0)
@@ -173,6 +194,7 @@ bool WorldMeshAsset::ResolveReferencedAssets()
 	{
 		this->buffers.positionBufferId = rasterizer->CreateVertexBuffer(numberOfVerts * 3 * sizeof(float), tempPositions);
 		this->buffers.materialTexCoordBufferId = rasterizer->CreateVertexBuffer(numberOfVerts * 2 * sizeof(float), tempMaterialTexCoords);
+		this->buffers.lightAtlasTexCoordBufferId = rasterizer->CreateVertexBuffer(numberOfVerts * 2 * sizeof(float), tempLightAtlasTexCoords);
 		this->buffers.indexBuffer = rasterizer->CreateIndexBuffer(numberOfIndecies * sizeof(unsigned short), tempIndecies);
 
 		this->bufferAreInitialised = true;
@@ -196,6 +218,7 @@ bool WorldMeshAsset::ResolveReferencedAssets()
 
 	SafeDeleteArrayAndNull(this->tempPositions);
 	SafeDeleteArrayAndNull(this->tempMaterialTexCoords);
+	SafeDeleteArrayAndNull(this->tempLightAtlasTexCoords);
 	SafeDeleteArrayAndNull(this->tempIndecies);
 
 	return success;
@@ -258,7 +281,12 @@ int WorldMeshAsset::GetNumberOfMaterialAssetRefs()
 	return this->materialAssetRefs.GetLength();
 }
 
-AssetRef* WorldMeshAsset::GetLightAtlasTextureAssetRef(int index)
+AssetRef* WorldMeshAsset::GetLightAtlasTextureAssetRef()
+{
+	return &this->lightAtlasTextureAssetRef;
+}
+
+/*AssetRef* WorldMeshAsset::GetLightAtlasTextureAssetRef(int index)
 {
 	return &this->lightAtlasTextureAssetRefs[index];
 }
@@ -266,7 +294,7 @@ AssetRef* WorldMeshAsset::GetLightAtlasTextureAssetRef(int index)
 int WorldMeshAsset::GetNumberOfLightAtlasTextureAssetRefs()
 {
 	return this->lightAtlasTextureAssetRefs.GetLength();
-}
+}*/
 
 AssetRef* WorldMeshAsset::GetPVSAssetRef()
 {

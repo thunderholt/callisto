@@ -9,13 +9,14 @@ struct WorldMeshChunkProgramAttributeLocations
 {
 	GLuint position;
 	GLuint materialTexCoord;
+	GLuint lightAtlasTexCoord;
 };
 
 struct WorldMeshChunkProgramUniformLocations
 {
 	GLuint viewProjTransform;
-	GLuint lightIslandOffset;
-	GLuint lightIslandSize;
+	//GLuint lightIslandOffset;
+	//GLuint lightIslandSize;
 	GLuint diffuseSampler;
 	GLuint lightAtlasSampler;
 };

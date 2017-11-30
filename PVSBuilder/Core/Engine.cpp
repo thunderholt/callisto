@@ -27,7 +27,7 @@ Engine::Engine()
 	this->threadManager = factory->MakeThreadManager();
 	this->timestampProvider = factory->MakeTimestampProvider();
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		this->workers.Push(factory->MakeWorker());
 	}

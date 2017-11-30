@@ -21,8 +21,9 @@ public:
 	virtual int GetNumberOfChunks();
 	virtual AssetRef* GetMaterialAssetRef(int index);
 	virtual int GetNumberOfMaterialAssetRefs();
-	virtual AssetRef* GetLightAtlasTextureAssetRef(int index);
-	virtual int GetNumberOfLightAtlasTextureAssetRefs();
+	//virtual AssetRef* GetLightAtlasTextureAssetRef(int index);
+	//virtual int GetNumberOfLightAtlasTextureAssetRefs();
+	virtual AssetRef* GetLightAtlasTextureAssetRef();
 	virtual AssetRef* GetPVSAssetRef();
 	virtual ICollisionMesh* GetCollisionMesh();
 	
@@ -38,6 +39,7 @@ private:
 
 	float* tempPositions;
 	float* tempMaterialTexCoords;
+	float* tempLightAtlasTexCoords;
 	unsigned short* tempIndecies;
 
 	bool bufferAreInitialised;
@@ -46,7 +48,8 @@ private:
 	WorldMeshBuffers buffers;
 	DynamicLengthArray<WorldMeshChunk> chunks;
 	DynamicLengthArray<AssetRef> materialAssetRefs;
-	DynamicLengthArray<AssetRef> lightAtlasTextureAssetRefs;
+	//DynamicLengthArray<AssetRef> lightAtlasTextureAssetRefs;
+	AssetRef lightAtlasTextureAssetRef;
 	AssetRef pvsAssetRef;
 	ICollisionMesh* collisionMesh;
 };

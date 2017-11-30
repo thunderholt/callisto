@@ -74,14 +74,14 @@ void CollisionMesh::AllocateGrid(Vec3 gridOrigin, Vec3i gridDimensions, float gr
 	this->gridCells = new CollisionMeshGridCell[this->gridMetrics.numberOfCells];
 }
 
-void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize)
+void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies/*, int lightAtlasIndex, Vec2i lightIslandOffset, Vec2i lightIslandSize*/)
 {
 	CollisionMeshChunk* chunk = &this->chunks[this->nextChunkIndex++];
 	chunk->startFaceIndex = this->nextFaceIndex;
 	chunk->numberOfFaces = numberOfFaces;
-	chunk->lightAtlasIndex = lightAtlasIndex;
+	/*chunk->lightAtlasIndex = lightAtlasIndex;
 	chunk->lightIslandOffset = lightIslandOffset;
-	chunk->lightIslandSize = lightIslandSize;
+	chunk->lightIslandSize = lightIslandSize;*/
 
 	for (int i = startIndex; i < startIndex + numberOfFaces * 3; i += 3)
 	{
@@ -221,7 +221,7 @@ bool CollisionMesh::DetermineIfLineIntersectsMesh(CollisionLine* line, int ignor
 	return intersectionFound;
 }
 
-bool CollisionMesh::FindNearestLineIntersectWithMesh(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex)
+bool CollisionMesh::FindNearestLineIntersectWithMesh(Vec3* outIntersection, MeshChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex)
 {
 	bool intersectionFound = false;
 	Vec3 nearestIntersection;
@@ -406,7 +406,7 @@ bool CollisionMesh::DetermineIfLineIntersectsChunksInGridCell(CollisionLine* lin
 	return intersectionFound;
 }
 
-bool CollisionMesh::FindNearestLineIntersectionWithChunksInGridCell(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int gridCellIndex, int ignoreChunkIndex)
+bool CollisionMesh::FindNearestLineIntersectionWithChunksInGridCell(Vec3* outIntersection, MeshChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int gridCellIndex, int ignoreChunkIndex)
 {
 	bool intersectionFound = false;
 	Vec3 nearestIntersection;

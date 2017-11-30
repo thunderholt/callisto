@@ -582,6 +582,7 @@ struct WorldMeshBuffers
 {
 	ProviderId positionBufferId;
 	ProviderId materialTexCoordBufferId;
+	ProviderId lightAtlasTexCoordBufferId;
 	ProviderId indexBuffer;
 };
 
@@ -590,9 +591,9 @@ struct WorldMeshChunk
 	int startIndex;
 	int numberOfFaces;
 	int materialAssetRefIndex;
-	int lightAtlasTextureAssetRefIndex;
-	Vec2 lightIslandOffset;
-	Vec2 lightIslandSize;
+	//int lightAtlasTextureAssetRefIndex;
+	//Vec2i lightIslandOffset;
+	//Vec2i lightIslandSize;
 	int lastRenderedFrameId;
 };
 

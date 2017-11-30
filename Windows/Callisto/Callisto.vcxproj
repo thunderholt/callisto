@@ -321,6 +321,7 @@
     <ClInclude Include="..\..\Engine\Math\Rect.h" />
     <ClInclude Include="..\..\Engine\Math\Sphere.h" />
     <ClInclude Include="..\..\Engine\Math\Vec2.h" />
+    <ClInclude Include="..\..\Engine\Math\Vec2i.h" />
     <ClInclude Include="..\..\Engine\Math\Vec3.h" />
     <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGL.h" />
     <ClInclude Include="..\..\Engine\Rasterization\OpenGL\OpenGLHelper.h" />

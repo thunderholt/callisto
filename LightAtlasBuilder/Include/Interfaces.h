@@ -35,6 +35,7 @@ public:
 	virtual float ReadFloat() = 0;
 	virtual bool ReadBool() = 0;
 	virtual void ReadVec2(Vec2* out) = 0;
+	virtual void ReadVec2i(Vec2i* out) = 0;
 	virtual void ReadVec3(Vec3* out) = 0;
 	virtual void ReadVec3i(Vec3i* out) = 0;
 	virtual void ReadAssetRef(AssetRef* out) = 0;
@@ -61,10 +62,10 @@ public:
 	virtual ~ICollisionMesh() {}
 	virtual void AllocateGeometry(int numberOfChunks, int numberOfFaces) = 0;
 	virtual void AllocateGrid(Vec3 gridOriginOffset, Vec3i gridDimensions, float gridCellSize) = 0;
-	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies, int lightAtlasIndex, Vec2 lightIslandOffset, Vec2 lightIslandSize) = 0;
+	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* uvs, unsigned short* indecies) = 0;
 	virtual void Finish() = 0;
 	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex) = 0;
-	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, CollisionChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex) = 0;
+	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, MeshChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex) = 0;
 	virtual CollisionMeshChunk* GetChunk(int chunkIndex) = 0;
 	virtual int GetNumberOfChunks() = 0;
 	virtual CollisionFace* GetFace(int faceIndex) = 0;
@@ -77,6 +78,8 @@ public:
 	virtual ~IWorldMeshAsset() {}
 	virtual bool Load(const char* filePath) = 0;
 	virtual ICollisionMesh* GetCollisionMesh() = 0;
+	virtual WorldMeshLightIsland* GetLightIsland(int lightIslandIndex) = 0;
+	virtual int GetNumberOfLightIslands() = 0;
 };
 
 class IMaterialAsset
@@ -148,7 +151,7 @@ class IWorker
 {
 public:
 	virtual ~IWorker() {}
-	virtual void Init(int startMeshChunkIndex, int numberOfMeshChunkIndexes) = 0;
+	virtual void Init(int startLightIslandIndex, int numberOfLightIslandIndexes) = 0;
 	virtual void ComputeDirectIlluminationForLightAsync(Light* light) = 0;
 	virtual bool GetHasFinished() = 0;
 	virtual void RunThreadEntryPoint() = 0;
@@ -169,7 +172,7 @@ public:
 	virtual void BuildLightAtlases(const char* worldMeshAssetFilePath, const char* assetsFolderPath) = 0;
 	virtual ILogger* GetLogger() = 0;
 	virtual IWorldMeshAsset* GetWorldMeshAsset() = 0;
-	virtual ILightAtlas* GetLightAtlas(int index) = 0;
+	virtual ILightAtlas* GetLightAtlas() = 0;
 	virtual Light* GetLight(int index) = 0;
 	virtual int GetNumberOfLights() = 0;
 	virtual IRayTracer* GetRayTracer() = 0;

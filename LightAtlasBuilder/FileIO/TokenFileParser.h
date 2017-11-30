@@ -14,6 +14,7 @@ public:
 	virtual float ReadFloat();
 	virtual bool ReadBool();
 	virtual void ReadVec2(Vec2* out);
+	virtual void ReadVec2i(Vec2i* out);
 	virtual void ReadVec3(Vec3* out);
 	virtual void ReadVec3i(Vec3i* out);
 	virtual void ReadAssetRef(AssetRef* out);

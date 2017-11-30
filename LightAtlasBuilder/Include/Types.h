@@ -19,6 +19,12 @@ struct AssetRef
 	char filePath[AssetMaxFilePathLength];
 };
 
+struct MeshChunkFaceIndex
+{
+	int chunkIndex;
+	int faceIndex;
+};
+
 //------ Lights -----//
 
 struct LightNode
@@ -61,6 +67,15 @@ enum JsonParserErrorCode
 	JsonParserErrorUnrecognisedKeyword = 7
 };
 
+//------ World Meshes -----//
+
+struct WorldMeshLightIsland
+{
+	Vec2i offset;
+	Vec2i size;
+	MeshChunkFaceIndex chunkFaceIndex;
+};
+
 //------ Collision Meshes -----//
 
 struct CollisionMeshChunk
@@ -68,14 +83,8 @@ struct CollisionMeshChunk
 	int startFaceIndex;
 	int numberOfFaces;
 	AABB aabb;
-	int lightAtlasIndex;
-	Vec2 lightIslandOffset;
-	Vec2 lightIslandSize;
+	//int lightAtlasIndex;
+	//Vec2i lightIslandOffset;
+	//Vec2i lightIslandSize;
 	//DynamicLengthArray<int> effectiveLightIndexes;
-};
-
-struct CollisionChunkFaceIndex
-{
-	int chunkIndex;
-	int faceIndex;
 };

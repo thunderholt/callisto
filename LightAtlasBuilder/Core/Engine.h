@@ -10,7 +10,7 @@ public:
 	virtual void BuildLightAtlases(const char* worldMeshAssetFilePath, const char* assetsFolderPath);
 	virtual ILogger* GetLogger();
 	virtual IWorldMeshAsset* GetWorldMeshAsset();
-	virtual ILightAtlas* GetLightAtlas(int index);
+	virtual ILightAtlas* GetLightAtlas();
 	virtual Light* GetLight(int index);
 	virtual int GetNumberOfLights();
 	virtual IRayTracer* GetRayTracer();
@@ -20,7 +20,7 @@ public:
 
 private:
 	void InitWorkers();
-	void InitLightAtlases();
+	void InitLightAtlas();
 	void InitLights();
 	void ComputeLightIslandsOnWorkers();
 	void WaitForAllWorkersToFinish();
@@ -32,7 +32,8 @@ private:
 	IRayTracer* rayTracer;
 	IThreadManager* threadManager;
 	ITimestampProvider* timestampProvider;
-	DynamicLengthArray<ILightAtlas*> lightAtlases;
+	//DynamicLengthArray<ILightAtlas*> lightAtlases;
+	ILightAtlas* lightAtlas;
 	DynamicLengthArray<Light*> lights;
 	FixedLengthArray<IWorker*, 16> workers;
 };

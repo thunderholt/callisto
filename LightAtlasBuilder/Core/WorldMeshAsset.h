@@ -7,8 +7,8 @@ struct WorldMeshChunk
 	int startIndex;
 	int numberOfFaces;
 	int materialAssetRefIndex;
-	Vec2 lightIslandOffset;
-	Vec2 lightIslandSize;
+	//Vec2i lightIslandOffset;
+	//Vec2i lightIslandSize;
 };
 
 class WorldMeshAsset : public IWorldMeshAsset
@@ -19,7 +19,11 @@ public:
 
 	virtual bool Load(const char* filePath);
 	virtual ICollisionMesh* GetCollisionMesh();
+	virtual WorldMeshLightIsland* GetLightIsland(int lightIslandIndex);
+	virtual int GetNumberOfLightIslands();
 	
 private:
 	ICollisionMesh* collisionMesh;
+	WorldMeshLightIsland* lightIslands;
+	int numberOfLightIslands;
 };

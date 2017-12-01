@@ -95,7 +95,7 @@ public:
 	virtual ~ILightAtlas() {}
 	virtual void Allocate(int width, int height) = 0;
 	virtual void WriteToPngFile(const char* filePath) = 0;
-	virtual RgbFloat* GetTexels() = 0;
+	virtual Lumel* GetLumels() = 0;
 	virtual Vec2i GetSize() = 0;
 };
 

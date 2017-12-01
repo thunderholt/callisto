@@ -8,10 +8,10 @@ public:
 	virtual ~LightAtlas();
 	virtual void Allocate(int width, int height);
 	virtual void WriteToPngFile(const char* filePath);
-	virtual RgbFloat* GetTexels();
+	virtual Lumel* GetLumels();
 	virtual Vec2i GetSize();
 
 private:
-	RgbFloat* texels;
+	Lumel* lumels;
 	Vec2i size;
 };

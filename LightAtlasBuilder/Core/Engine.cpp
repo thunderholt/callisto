@@ -109,28 +109,56 @@ void Engine::InitLights()
 
 	Vec3 lightPosition;
 	//Vec3::Set(&lightPosition, 5.5f, 0.6f, 2.0f);
-	Vec3::Set(&lightPosition, 0.0f, 1.0f, -1.0f);
+	Vec3::Set(&lightPosition, -3.0f, 2.0f, -1.0f);
 
-	for (int i = 0; i < 200; i++)
+	Vec2 lightSize;
+	Vec2::Set(&lightSize, 4.0f, 4.0f);
+
+	Vec2i blockCounts;
+	Vec2i::Set(&blockCounts, 8, 4);
+
+	Vec2 blockSize;
+	Vec2::Set(&blockSize, lightSize.x / blockCounts.x, lightSize.y / blockCounts.y);
+
+	light->numberOfBlocks = blockCounts.x * blockCounts.y;
+
+	int blockIndex = 0;
+
+	for (int y = 0; y < blockCounts.y; y++)
 	{
-		LightNode* lightNode = &light->nodes.PushAndGet();
+		for (int x = 0; x < blockCounts.x; x++)
+		{
+			LightBlock* lightBlock = &light->blocks[blockIndex];
+			blockIndex++;
 
-		lightNode->worldPosition = lightPosition;
-		lightNode->worldPosition.x += 3.0f * Math::GenerateRandomFloat();
-		lightNode->worldPosition.z += 1.0f * Math::GenerateRandomFloat();
+			lightBlock->numberOfNodes = 100;
 
-		//RgbFloat::Set(&lightNode->colour, 10.0f, 10.0f, 10.0f);
+			for (int i = 0; i < lightBlock->numberOfNodes; i++)
+			{
+				LightNode* lightNode = &lightBlock->nodes[i];
 
-		lightNode->distance = 6.0f;
-		lightNode->distanceSqr = lightNode->distance * lightNode->distance;
+				lightNode->worldPosition = lightPosition;
+				lightNode->worldPosition.x += (x * blockSize.x) + ((blockSize.x / 1.0f) * Math::GenerateRandomFloat());
+				lightNode->worldPosition.z += (y * blockSize.y) + ((blockSize.y / 1.0f) * Math::GenerateRandomFloat());
 
-		//Vec3::Set(&lightNode->direction, 0.0f, -1.0f, 1.0f);
-		//Vec3::Set(&lightNode->direction, -1.0f, -1.0f, 0.0f);
-		Vec3::Set(&lightNode->direction, -0.2f, -1.0f, 1.0f);
-		Vec3::Normalize(&lightNode->direction, &lightNode->direction);
+				//RgbFloat::Set(&lightNode->colour, 10.0f, 10.0f, 10.0f);
 
-		Vec3::Scale(&lightNode->invDirection, &lightNode->direction, -1.0f);
+				lightNode->distance = 12.0f;
+				lightNode->distanceSqr = lightNode->distance * lightNode->distance;
+
+				//Vec3::Set(&lightNode->direction, 0.0f, -1.0f, 1.0f);
+				//Vec3::Set(&lightNode->direction, -1.0f, -1.0f, 0.0f);
+				Vec3::Set(&lightNode->direction, 0.0f, -1.0f, 1.0f);
+				Vec3::Normalize(&lightNode->direction, &lightNode->direction);
+
+				Vec3::Scale(&lightNode->invDirection, &lightNode->direction, -1.0f);
+			}
+		}
 	}
+
+	
+
+	
 	//////////////////////////////////////////////
 
 	/*////////////////// Test code /////////////////

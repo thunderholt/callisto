@@ -375,6 +375,11 @@ bool CollisionMesh::DetermineIfLineIntersectsChunksInGridCell(CollisionLine* lin
 {
 	bool intersectionFound = false;
 
+	if (gridCellIndex >= 100)
+	{
+		int h = 1;
+	}
+
 	CollisionMeshGridCell* gridCell = &this->gridCells[gridCellIndex];
 
 	for (int i = 0; i < gridCell->residentChunkIndexes.GetLength() && !intersectionFound; i++)

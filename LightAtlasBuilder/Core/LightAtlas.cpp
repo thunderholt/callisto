@@ -5,13 +5,13 @@
 
 LightAtlas::LightAtlas()
 {
-	this->texels = null;
+	this->lumels = null;
 	Vec2i::Zero(&this->size);
 }
 
 LightAtlas::~LightAtlas()
 {
-	SafeDeleteArrayAndNull(this->texels);
+	SafeDeleteArrayAndNull(this->lumels);
 }
 
 void LightAtlas::Allocate(int width, int height)
@@ -19,18 +19,19 @@ void LightAtlas::Allocate(int width, int height)
 	this->size.x = width;
 	this->size.y = height;
 
-	SafeDeleteArrayAndNull(this->texels);
+	SafeDeleteArrayAndNull(this->lumels);
 
-	int numberOfTexels = this->size.x * this->size.y;
-	this->texels = new RgbFloat[numberOfTexels];
+	int numberOfLumels = this->size.x * this->size.y;
+	this->lumels = new Lumel[numberOfLumels];
 
-	//memset(this->texels, 0, sizeof(RgbFloat) * numberOfTexels);
-	for (int i = 0; i < numberOfTexels; i++)
+	memset(this->lumels, 0, sizeof(Lumel) * numberOfLumels);
+
+	for (int i = 0; i < numberOfLumels; i++)
 	{
-		RgbFloat* texel = &this->texels[i];
-		texel->r = -1.0f;
-		texel->g = 0.0f;
-		texel->b = 0.0f;
+		Lumel* lumel = &this->lumels[i];
+		lumel->colour.r = 0.0f;
+		lumel->colour.g = 1.0f;
+		lumel->colour.b = 0.0f;
 	}
 }
 
@@ -115,30 +116,31 @@ void LightAtlas::WriteToPngFile(const char* filePath)
 
 	/////////////////////
 
-	RgbUByte* rgbTexels = new RgbUByte[this->size.x * this->size.y];
+	RgbUByte* outputColours = new RgbUByte[this->size.x * this->size.y];
 
 	for (int y = 0; y < this->size.y; y++)
 	{
 		for (int x = 0; x < this->size.x; x++)
 		{
-			int texelIndex = y * this->size.x + x;
-			RgbUByte* rgbTexel = &rgbTexels[texelIndex];
-			RgbFloat* texel = &this->texels[texelIndex];
+			int lumelIndex = y * this->size.x + x;
+			Lumel* lumel = &this->lumels[lumelIndex];
+			RgbFloat* inputColour = &lumel->colour;
+			RgbUByte* outputColour = &outputColours[lumelIndex];
 
-			rgbTexel->r = (unsigned char)(Math::Clamp(texel->r, 0.0f, 1.0f) * 255);
-			rgbTexel->g = (unsigned char)(Math::Clamp(texel->g, 0.0f, 1.0f) * 255);
-			rgbTexel->b = (unsigned char)(Math::Clamp(texel->b, 0.0f, 1.0f) * 255);
+			outputColour->r = (unsigned char)(Math::Clamp(inputColour->r, 0.0f, 1.0f) * 255);
+			outputColour->g = (unsigned char)(Math::Clamp(inputColour->g, 0.0f, 1.0f) * 255);
+			outputColour->b = (unsigned char)(Math::Clamp(inputColour->b, 0.0f, 1.0f) * 255);
 		}
 	}
 
-	stbi_write_png(filePath, this->size.x, this->size.y, 3, rgbTexels, this->size.x * sizeof(RgbUByte));
+	stbi_write_png(filePath, this->size.x, this->size.y, 3, outputColours, this->size.x * sizeof(RgbUByte));
 
-	SafeDeleteArrayAndNull(rgbTexels);
+	SafeDeleteArrayAndNull(outputColours);
 }
 
-RgbFloat* LightAtlas::GetTexels()
+Lumel* LightAtlas::GetLumels()
 {
-	return this->texels;
+	return this->lumels;
 }
 
 Vec2i LightAtlas::GetSize()

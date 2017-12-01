@@ -66,7 +66,7 @@ void Worker::ComputeDirectIlluminationForLightInternal()
 
 	ILightAtlas* lightAtlas = engine->GetLightAtlas();
 	Vec2i lightAtlasSize = lightAtlas->GetSize();
-	RgbFloat* texels = lightAtlas->GetTexels();
+	Lumel* lumels = lightAtlas->GetLumels();
 
 	Vec2 pixelCentre;
 	Vec2::Set(&pixelCentre, 1.0f / lightAtlasSize.x / 2.0f, 1.0f / lightAtlasSize.y / 2.0f);
@@ -104,9 +104,9 @@ void Worker::ComputeDirectIlluminationForLightInternal()
 		{
 			for (int x = lightIsland->offset.x; x < lightIsland->offset.x + lightIsland->size.x; x++)
 			{
-				CollisionMeshChunk* chunk = collisionMesh->GetChunk(lightIsland->chunkFaceIndex.chunkIndex);
+				CollisionMeshChunk* chunk = collisionMesh->GetChunk(lightIsland->chunkIndex);
 
-				int texelIndex = y * lightAtlasSize.x + x;
+				int lumelIndex = y * lightAtlasSize.x + x;
 
 				Vec2 uv;
 				Vec2::Set(&uv, (float)x, (float)y);
@@ -118,33 +118,40 @@ void Worker::ComputeDirectIlluminationForLightInternal()
 
 				Vec3 worldPosition;
 				Vec3 normal;
-				bool faceFound = this->FindWorldPositionForLightIslandTexel(&worldPosition, &normal, collisionMesh, &lightIsland->chunkFaceIndex, uv);
+				int faceIndex;
+				bool faceFound = this->FindWorldPositionForLightIslandTexel(&worldPosition, &normal, &faceIndex, collisionMesh, chunk, uv);
 				if (faceFound)
 				{
-					RgbFloat* texel = &texels[texelIndex];
+					Lumel* lumel = &lumels[lumelIndex];
+
+					if (lumel->state == LumelStateNotSet)
+					{
+						RgbFloat::Set(&lumel->colour, 0.0f, 0.0f, 0.0f);
+						lumel->state = LumelStateSet;
+					}
 
 					//*texel = faceColours[lightIsland->chunkFaceIndex.faceIndex];
 
 					//texels[texelIndex] = rayTracer->CalculateColourForChunkAtPosition(&worldPosition, &normal, chunkIndex);
-					float directIlluminationIntensity = rayTracer->CalculateDirectIlluminationIntensityForChunkAtPosition(this->currentLight, &worldPosition, &normal, collisionMesh, lightIsland->chunkFaceIndex.chunkIndex);
+					float directIlluminationIntensity = rayTracer->CalculateDirectIlluminationIntensityForChunkAtPosition(this->currentLight, &worldPosition, &normal, collisionMesh, lightIsland->chunkIndex);
 
 					// Don't do this - store the intensity in the direct illumination intensity cache.
 					RgbFloat lightColour;
 					RgbFloat::Scale(&lightColour, &this->currentLight->colour, directIlluminationIntensity);
 
 
-					*texel = lightColour;
-					//RgbFloat::Add(texel, texel, &lightColour);*/
+					//lumel->colour = lightColour;
+					RgbFloat::Add(&lumel->colour, &lumel->colour, &lightColour);
 				}
 			}
 		}
 
 		// TODO - don't do this after every light!
-		//this->FillLightIslandBorders(lightIsland);
+		this->FillLightIslandBorders(lightIsland);
 	}
 }
 
-/*bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* outNormal, int* outFaceIndex, ICollisionMesh* collisionMesh, CollisionMeshChunk* chunk, Vec2 uv)
+bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* outNormal, int* outFaceIndex, ICollisionMesh* collisionMesh, CollisionMeshChunk* chunk, Vec2 uv)
 {
 	bool faceFound = false;
 
@@ -161,9 +168,9 @@ void Worker::ComputeDirectIlluminationForLightInternal()
 	}
 
 	return faceFound;
-}*/
+}
 
-bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* outNormal, ICollisionMesh* collisionMesh, MeshChunkFaceIndex* chunkFaceIndex, Vec2 uv)
+/*bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* outNormal, ICollisionMesh* collisionMesh, MeshChunkFaceIndex* chunkFaceIndex, Vec2 uv)
 {
 	bool faceFound = false;
 
@@ -175,13 +182,15 @@ bool Worker::FindWorldPositionForLightIslandTexel(Vec3* outWorldPosition, Vec3* 
 	}
 
 	return faceFound;
-}
+}*/
 
 bool Worker::CheckIfChunkIsEffectedByLight(CollisionMeshChunk* chunk, Light* light)
 {
 	bool isEffectedByLight = false;
 
-	for (int lightNodeIndex = 0; lightNodeIndex < light->nodes.GetLength(); lightNodeIndex++)
+	// FIXME!!
+
+	/*for (int lightNodeIndex = 0; lightNodeIndex < light->nodes.GetLength(); lightNodeIndex++)
 	{
 		LightNode* lightNode = &light->nodes[lightNodeIndex];
 
@@ -193,7 +202,7 @@ bool Worker::CheckIfChunkIsEffectedByLight(CollisionMeshChunk* chunk, Light* lig
 			isEffectedByLight = true;
 			break;
 		}
-	}
+	}*/
 
 	return isEffectedByLight;
 }
@@ -204,7 +213,7 @@ void Worker::FillLightIslandBorders(WorldMeshLightIsland* lightIsland)
 	ILightAtlas* lightAtlas = engine->GetLightAtlas();
 
 	Vec2i lightAtlasSize = lightAtlas->GetSize();
-	RgbFloat* texels = lightAtlas->GetTexels();
+	Lumel* lumels = lightAtlas->GetLumels();
 
 	int xFrom = lightIsland->offset.x;
 	int xTo = lightIsland->offset.x + lightIsland->size.x - 1;
@@ -215,14 +224,14 @@ void Worker::FillLightIslandBorders(WorldMeshLightIsland* lightIsland)
 	{
 		for (int x = xFrom; x <= xTo; x++)
 		{
-			int texelIndex = y * lightAtlasSize.x + x;
+			int lumelIndex = y * lightAtlasSize.x + x;
 
-			RgbFloat* texel = &texels[texelIndex];
-			if (texel->r == -1.0f)
+			Lumel* lumel = &lumels[lumelIndex];
+			if (lumel->state == LumelStateNotSet)
 			{
 				int numberOfSamples = 0;
-				RgbFloat accumulatedSamples;
-				RgbFloat::Zero(&accumulatedSamples);
+				RgbFloat accumulatedColour;
+				RgbFloat::Zero(&accumulatedColour);
 
 				for (int j = -1; j <= 1; j++)
 				{
@@ -248,16 +257,16 @@ void Worker::FillLightIslandBorders(WorldMeshLightIsland* lightIsland)
 							continue;
 						}
 
-						if (j == 1 && y == xTo)
+						if (j == 1 && y == yTo)
 						{
 							continue;
 						}
 
-						int sampleTexelIndex = (y + j) * lightAtlasSize.x + (x + i);
-						RgbFloat* sample = &texels[sampleTexelIndex];
-						if (sample->r >= 0.0f)
+						int sampleLumelIndex = (y + j) * lightAtlasSize.x + (x + i);
+						Lumel* sampleLumel = &lumels[sampleLumelIndex];
+						if (sampleLumel->state == LumelStateSet)
 						{
-							RgbFloat::Add(&accumulatedSamples, &accumulatedSamples, sample);
+							RgbFloat::Add(&accumulatedColour, &accumulatedColour, &sampleLumel->colour);
 							numberOfSamples++;
 						}
 					}
@@ -265,9 +274,10 @@ void Worker::FillLightIslandBorders(WorldMeshLightIsland* lightIsland)
 
 				if (numberOfSamples > 0)
 				{
-					RgbFloat averageSample;
-					RgbFloat::Scale(&averageSample, &accumulatedSamples, -1.0f / (float)numberOfSamples);
-					*texel = averageSample;
+					RgbFloat averageColour;
+					RgbFloat::Scale(&averageColour, &accumulatedColour, 1.0f / (float)numberOfSamples);
+					lumel->colour = averageColour;
+					lumel->state = LumelStateTempFilled;
 				}
 			}
 		}
@@ -277,13 +287,24 @@ void Worker::FillLightIslandBorders(WorldMeshLightIsland* lightIsland)
 	{
 		for (int x = xFrom; x <= xTo; x++)
 		{
-			int texelIndex = y * lightAtlasSize.x + x;
+			int lumelIndex = y * lightAtlasSize.x + x;
+
+			Lumel* lumel = &lumels[lumelIndex];
+			if (lumel->state == LumelStateTempFilled)
+			{
+				lumel->state = LumelStateSet;
+			}
+			/*int texelIndex = y * lightAtlasSize.x + x;
 
 			RgbFloat* texel = &texels[texelIndex];
-			if (texel->r < 0)
+			if (texel->r == -1000.0f)
+			{
+				RgbFloat::Set(texel, 0.0f, 0.0f, 0.0f);
+			}
+			else if (texel->r < 0)
 			{
 				RgbFloat::Scale(texel, texel, -1.0f);
-			}
+			}*/
 		}
 	}
 }

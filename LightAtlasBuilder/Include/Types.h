@@ -25,6 +25,19 @@ struct MeshChunkFaceIndex
 	int faceIndex;
 };
 
+enum LumelState
+{
+	LumelStateNotSet = 0,
+	LumelStateSet = 1,
+	LumelStateTempFilled = 2
+};
+
+struct Lumel
+{
+	char state;
+	RgbFloat colour;
+};
+
 //------ Lights -----//
 
 struct LightNode
@@ -36,10 +49,17 @@ struct LightNode
 	float distanceSqr;
 };
 
+struct LightBlock
+{
+	LightNode nodes[100];
+	int numberOfNodes;
+};
+
 struct Light
 {
 	RgbFloat colour;
-	DynamicLengthArray<LightNode> nodes;
+	LightBlock blocks[100];
+	int numberOfBlocks;
 	//int numberOfEffectedChunks;
 };
 
@@ -73,7 +93,8 @@ struct WorldMeshLightIsland
 {
 	Vec2i offset;
 	Vec2i size;
-	MeshChunkFaceIndex chunkFaceIndex;
+	int chunkIndex;
+	//MeshChunkFaceIndex chunkFaceIndex;
 };
 
 //------ Collision Meshes -----//

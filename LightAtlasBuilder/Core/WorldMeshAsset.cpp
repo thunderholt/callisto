@@ -163,8 +163,9 @@ bool WorldMeshAsset::Load(const char* filePath)
 						WorldMeshLightIsland* lightIsland = &this->lightIslands[i];
 						parser->ReadVec2i(&lightIsland->offset);
 						parser->ReadVec2i(&lightIsland->size);
-						lightIsland->chunkFaceIndex.chunkIndex = parser->ReadInt();
-						lightIsland->chunkFaceIndex.faceIndex = parser->ReadInt();
+						lightIsland->chunkIndex = parser->ReadInt();
+						//lightIsland->chunkFaceIndex.chunkIndex = parser->ReadInt();
+						//lightIsland->chunkFaceIndex.faceIndex = parser->ReadInt();
 					}
 				}
 			}

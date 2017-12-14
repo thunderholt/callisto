@@ -111,6 +111,12 @@
     <ClCompile Include="..\..\LightAtlasBuilder\Math\Sphere.cpp">
       <Filter>LightAtlasBuilder\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Mat4.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LightAtlasBuilder\Math\Vec3.cpp">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\LightAtlasBuilder\Include\Common.h">
@@ -219,6 +225,12 @@
       <Filter>LightAtlasBuilder\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Sphere.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Quat.h">
+      <Filter>LightAtlasBuilder\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LightAtlasBuilder\Math\Mat4.h">
       <Filter>LightAtlasBuilder\Math</Filter>
     </ClInclude>
   </ItemGroup>

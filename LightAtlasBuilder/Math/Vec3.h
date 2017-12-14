@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+struct Mat4;
+
 struct Vec3
 {
 	float x, y, z;
@@ -167,4 +169,6 @@ struct Vec3
 			v1->y == v2->y &&
 			v1->z == v2->z;
 	}
+
+	static void TransformMat4(Vec3* out, const Vec3* v, const Mat4* transform);
 };

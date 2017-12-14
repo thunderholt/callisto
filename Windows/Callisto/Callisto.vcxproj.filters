@@ -630,5 +630,8 @@
     <ClInclude Include="..\..\Engine\Math\Vec2i.h">
       <Filter>Engine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Engine\Math\Quat.h">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

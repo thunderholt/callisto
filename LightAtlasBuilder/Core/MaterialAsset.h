@@ -9,6 +9,10 @@ public:
 	virtual ~MaterialAsset();
 
 	virtual bool Load(const char* filePath);
+	virtual MaterialStaticLightingDetails* GetStaticLightingDetails();
 
 private:
+	void LoadStaticLightingDetailsFromJsonValue(IJsonValue* jsonStaticLightingDetails);
+
+	MaterialStaticLightingDetails staticLightingDetails;
 };

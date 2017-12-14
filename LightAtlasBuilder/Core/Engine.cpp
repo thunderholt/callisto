@@ -28,7 +28,17 @@ Engine::Engine()
 	this->threadManager = factory->MakeThreadManager();
 	this->timestampProvider = factory->MakeTimestampProvider();
 
-	for (int i = 0; i < 4; i++)
+	this->config.indirectIlluminationHemispehereCircleCount = 16;
+	//this->config.indirectIlluminationHemispehereSegmentCount = 16;
+
+#ifdef _DEBUG
+	int numberOfWorkers = 1;
+#endif
+#ifndef _DEBUG
+	int numberOfWorkers = 4;
+#endif
+
+	for (int i = 0; i < numberOfWorkers; i++)
 	{
 		this->workers.Push(factory->MakeWorker());
 	}
@@ -85,6 +95,8 @@ void Engine::BuildLightAtlases(const char* worldMeshAssetFilePath, const char* a
 
 		this->ComputeLightIslandsOnWorkers();
 
+		this->FillBordersOnWorkers();
+
 		this->WriteOutputFiles();
 	}
 
@@ -99,7 +111,87 @@ void Engine::InitLights()
 {
 	ICollisionMesh* collisionMesh = this->worldMeshAsset->GetCollisionMesh();
 
-	////////////////// Test code /////////////////
+	for (int chunkIndex = 0; chunkIndex < collisionMesh->GetNumberOfChunks(); chunkIndex++)
+	{
+		CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
+
+		if (chunk->staticLightingDetails.emitsLight)
+		{
+			Light* light = new Light();
+			this->lights.Push(light);
+
+			light->ownerChunkIndex = chunkIndex;
+			light->minConeAngle = chunk->staticLightingDetails.minConeAngle;
+			light->distance = chunk->staticLightingDetails.distance;
+			light->distanceSqr = light->distance * light->distance;
+
+			light->colour = chunk->staticLightingDetails.colour;
+			RgbFloat::Scale(&light->colour, &light->colour, chunk->staticLightingDetails.power);
+
+			Vec2 blockCentre;
+			Vec2::Set(&blockCentre, 1.0f / chunk->staticLightingDetails.gridDimensions.x / 2.0f, 1.0f / chunk->staticLightingDetails.gridDimensions.y / 2.0f);
+
+			int blockIndex = 0;
+			for (int y = 0; y < chunk->staticLightingDetails.gridDimensions.y; y++)
+			{
+				for (int x = 0; x < chunk->staticLightingDetails.gridDimensions.x; x++)
+				{
+					Vec2 uv;
+					Vec2::Set(&uv, (float)x, (float)y);
+					uv.x /= (float)chunk->staticLightingDetails.gridDimensions.x;
+					uv.y /= (float)chunk->staticLightingDetails.gridDimensions.y;
+					Vec2::Add(&uv, &uv, &blockCentre);
+
+					CollisionFace* face = null;
+					Vec3 worldPosition;
+					Vec3 normal;
+
+					for (int faceIndex = chunk->startFaceIndex; faceIndex < chunk->startFaceIndex + chunk->numberOfFaces; faceIndex++)
+					{
+						CollisionFace* possibleFace = collisionMesh->GetFace(faceIndex);
+
+						if (Math::CalculateWorldPositionAndNormalFromUV(&worldPosition, &normal, possibleFace->points, possibleFace->normals, possibleFace->materialUVs, &uv))
+						{
+							face = possibleFace;
+							break;
+						}
+					}
+
+					if (face)
+					{
+						LightBlock* lightBlock = &light->blocks[blockIndex];
+						light->numberOfBlocks++;
+						blockIndex++;
+
+						lightBlock->numberOfNodes = 4;
+
+						Vec3 purturbationNormals[2];
+						purturbationNormals[0] = face->freeNormalisedEdges[0];
+						Vec3::Cross(&purturbationNormals[1], &face->facePlane.normal, &face->freeNormalisedEdges[0]);
+
+						for (int nodeIndex = 0; nodeIndex < lightBlock->numberOfNodes; nodeIndex++)
+						{
+							LightNode* lightNode = &lightBlock->nodes[nodeIndex];
+
+							lightNode->worldPosition = worldPosition;
+
+							float maxPurturbationDistance = 0.2f;
+							for (int i = 0; i < 2; i++)
+							{ 
+								float purturbationDistance = (maxPurturbationDistance * 2 * Math::GenerateRandomFloat()) - maxPurturbationDistance;
+								Vec3::ScaleAndAdd(&lightNode->worldPosition, &lightNode->worldPosition, &purturbationNormals[i], purturbationDistance);
+							}
+
+							lightNode->direction = normal;
+							Vec3::Scale(&lightNode->invDirection, &lightNode->direction, -1.0f);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/*////////////////// Test code /////////////////
 	Light* light = new Light();
 	this->lights.Push(light);
 
@@ -159,7 +251,7 @@ void Engine::InitLights()
 	
 
 	
-	//////////////////////////////////////////////
+	//////////////////////////////////////////////*/
 
 	/*////////////////// Test code /////////////////
 	light = new Light();
@@ -273,6 +365,11 @@ const char* Engine::GetAssetsFolderPath()
 	return this->assetsFolderPath;
 }
 
+const Config* Engine::GetConfig()
+{
+	return &this->config;
+}
+
 void Engine::InitWorkers()
 {
 	int numberOfLightIslandsToCrunchPerWorker = (int)ceilf(this->worldMeshAsset->GetNumberOfLightIslands() / (float)this->workers.GetLength());
@@ -302,23 +399,117 @@ void Engine::ComputeLightIslandsOnWorkers()
 {
 	this->logger->Write("Computing light islands...");
 
+	// Compute the basic lumel data on each of the workers.
+	for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+	{
+		IWorker* worker = this->workers[workerIndex];
+
+		worker->ComputeBasicLumelDataAsync();
+	}
+
+	this->WaitForAllWorkersToFinish();
+
 	for (int lightIndex = 0; lightIndex < this->lights.GetLength(); lightIndex++)
 	{
 		Light* light = this->lights[lightIndex];
 
+		// Set the current light on each of the workers.
+		for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+		{
+			IWorker* worker = this->workers[workerIndex];
+
+			worker->SetCurrentLight(light);
+		}
+
+		// Compute the direct illumination for the current light.
 		this->logger->Write("Computing direct illumination for light %d/%d.", lightIndex + 1, this->lights.GetLength());
 
 		for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
 		{
 			IWorker* worker = this->workers[workerIndex];
 
-			worker->ComputeDirectIlluminationForLightAsync(light);
+			worker->ComputeDirectIlluminationIntensitiesForCurrentLightAsync();
 		}
 
-		// Compute indirect illumination here.
+		this->WaitForAllWorkersToFinish();
+
+		// Compute the indirect illumination for the current light.
+		NormalWithinHemisphereCalculationMetrics normalWithinHemisphereCalculationMetrics;
+		Math::BuildNormalWithinHemisphereCalculationMetrics(&normalWithinHemisphereCalculationMetrics, this->config.indirectIlluminationHemispehereCircleCount, PI * 0.45f, 100);
+
+		for (int circleIndex = 0; circleIndex < normalWithinHemisphereCalculationMetrics.numberOfCircles; circleIndex++)
+		{
+			int numberOfSegmentsForCircle = normalWithinHemisphereCalculationMetrics.segmentCountsByCircleIndex[circleIndex];
+
+			for (int segmentIndex = 0; segmentIndex < numberOfSegmentsForCircle; segmentIndex++)
+			{
+				this->logger->Write(
+					"Computing indirect illumination bounce targets for light %d/%d. Circle %d/%d. Segment: %d/%d", 
+					lightIndex + 1, this->lights.GetLength(), 
+					circleIndex + 1, normalWithinHemisphereCalculationMetrics.numberOfCircles,
+					segmentIndex + 1, numberOfSegmentsForCircle);
+
+				for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+				{
+					IWorker* worker = this->workers[workerIndex];
+
+					worker->ComputeIndirectIlluminationBouncesTargetsForCurrentLightAsync(&normalWithinHemisphereCalculationMetrics, circleIndex, segmentIndex);
+				}
+
+				this->WaitForAllWorkersToFinish();
+
+				for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+				{
+					IWorker* worker = this->workers[workerIndex];
+
+					worker->AccumulateIndirectIlluminationIntensitiesForCurrentLightAsync();
+				}
+
+				this->WaitForAllWorkersToFinish();
+			}
+		}
+
+		// Composite the colour for the current light.
+		this->logger->Write("Compositing colour for light %d/%d.", lightIndex + 1, this->lights.GetLength());
+
+		for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+		{
+			IWorker* worker = this->workers[workerIndex];
+
+			worker->CompositeColourForCurrentLightAsync();
+		}
 
 		this->WaitForAllWorkersToFinish();
 	}
+
+	this->logger->Write("... done.");
+
+	//////////////
+	int totalFailures = 0;
+	for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+	{
+		IWorker* worker = this->workers[workerIndex];
+
+		worker->DumpStats();
+		totalFailures += worker->GetTotalFailures();
+	}
+	//////////////
+
+	logger->Write("Total failures: %d", totalFailures);
+}
+
+void Engine::FillBordersOnWorkers()
+{
+	this->logger->Write("Filling borders...");
+
+	for (int workerIndex = 0; workerIndex < this->workers.GetLength(); workerIndex++)
+	{
+		IWorker* worker = this->workers[workerIndex];
+
+		worker->FillBordersAsync();
+	}
+
+	this->WaitForAllWorkersToFinish();
 
 	this->logger->Write("... done.");
 }

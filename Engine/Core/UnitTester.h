@@ -31,11 +31,13 @@ private:
 	void Test_Sphere_CalculateCollisionWithCollisionFace_HitTest2();
 	void Test_Sphere_CalculateCollisionWithCollisionFace_HitTest3();
 	void Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPoint();
+	void Test_Mat4_FromQuat();
 	void Test_Math_CalculateTriangleArea2D();
 	void Test_Math_CalculateTriangleArea3D();
 	void Test_Math_CalculateBarycentricCoords2D();
 	void Test_Math_CalculateBarycentricCoords3D();
 	void Test_Math_CalculateWorldPositionFromUV();
+	void Test_Math_CalculateNormalWithinHemisphere();
 
 	char testName[64];
 	int numberOfFailedSubTests;

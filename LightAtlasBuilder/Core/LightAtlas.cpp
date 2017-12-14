@@ -29,6 +29,11 @@ void LightAtlas::Allocate(int width, int height)
 	for (int i = 0; i < numberOfLumels; i++)
 	{
 		Lumel* lumel = &this->lumels[i];
+
+		lumel->state = LumelStateNotSet;
+		lumel->chunkIndex = -1;
+		lumel->faceIndex = -1;
+
 		lumel->colour.r = 0.0f;
 		lumel->colour.g = 1.0f;
 		lumel->colour.b = 0.0f;

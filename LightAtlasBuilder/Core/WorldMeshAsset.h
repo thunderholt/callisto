@@ -20,6 +20,7 @@ public:
 	virtual bool Load(const char* filePath);
 	virtual ICollisionMesh* GetCollisionMesh();
 	virtual WorldMeshLightIsland* GetLightIsland(int lightIslandIndex);
+	virtual WorldMeshLightIsland* FindLightIslandForChunk(int chunkIndex);
 	virtual int GetNumberOfLightIslands();
 	
 private:

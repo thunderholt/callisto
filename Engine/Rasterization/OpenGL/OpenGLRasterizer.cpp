@@ -244,6 +244,8 @@ void OpenGLRasterizer::DrawWorldMeshChunks(RasterJob* rasterJob)
 	// Active the index buffer.
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, worldMeshBuffers->indexBuffer);
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	// Draw each of the chunks.
 	for (int jobItemIndex = 0; jobItemIndex < rasterJob->drawWorldMeshChunkJobItems.GetLength(); jobItemIndex++)
 	{

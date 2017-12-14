@@ -17,15 +17,18 @@ public:
 	virtual IThreadManager* GetThreadManager();
 	virtual ITimestampProvider* GetTimestampProvider();
 	virtual const char* GetAssetsFolderPath();
+	virtual const Config* GetConfig();
 
 private:
 	void InitWorkers();
 	void InitLightAtlas();
 	void InitLights();
 	void ComputeLightIslandsOnWorkers();
+	void FillBordersOnWorkers();
 	void WaitForAllWorkersToFinish();
 	void WriteOutputFiles();
 
+	Config config;
 	const char* assetsFolderPath;
 	ILogger* logger;
 	IWorldMeshAsset* worldMeshAsset;

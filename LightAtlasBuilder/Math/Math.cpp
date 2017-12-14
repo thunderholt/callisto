@@ -164,3 +164,87 @@ float Math::Max(float f1, float f2)
 {
 	return f1 > f2 ? f1 : f2;
 }
+
+/*void Math::CalculateNormalWithinHemisphere(Vec3* out, Vec3* normal, Vec3* binormal, int numberOfCircles, int numberOfSegments, int circleNumber, int segmentNumber, float maxCircleRotation)
+{
+	assert(Math::AreAlmostEqual(Vec3::Dot(normal, binormal), 0.0f, 0.0001f));
+
+	*out = *normal;
+
+	// Perform the circle rotation.
+	Quat circleQuat;
+	float maxCirclePurturbation = maxCircleRotation / numberOfCircles;
+	Quat::FromAxisRotation(&circleQuat, binormal, ((circleNumber + 1) / (float)numberOfCircles) * maxCircleRotation - (Math::GenerateRandomFloat() * maxCirclePurturbation));
+
+	Mat4 circleRotationTransform;
+	Mat4::FromQuat(&circleRotationTransform, &circleQuat);
+
+	Vec3::TransformMat4(out, out, &circleRotationTransform);
+
+	// Perform the segment rotation.
+	Quat segmentQuat;
+	float maxSegmentPurturbation = (PI * 2.0f) / numberOfSegments;
+	Quat::FromAxisRotation(&segmentQuat, normal, (segmentNumber / (float)numberOfSegments) * (PI * 2.0f) - (Math::GenerateRandomFloat() * maxSegmentPurturbation));
+
+	Mat4 segmentRotationTransform;
+	Mat4::FromQuat(&segmentRotationTransform, &segmentQuat);
+
+	Vec3::TransformMat4(out, out, &segmentRotationTransform);
+
+	assert(Vec3::Dot(normal, out) >= 0);
+}*/
+
+void Math::BuildNormalWithinHemisphereCalculationMetrics(NormalWithinHemisphereCalculationMetrics* out, int numberOfCircles, float maxCircleRotation, int numberOfOutputNormals)
+{
+	out->numberOfCircles = numberOfCircles;
+	out->maxCircleRotation = maxCircleRotation;
+	out->outputNormalCount = 0;
+
+	float circleRadiuses[NormalWithinHemisphereCalculationMaxCircles];
+	float totalRadius = 0.0f;
+
+	for (int circleIndex = 0; circleIndex < numberOfCircles; circleIndex++)
+	{
+		float radius = sinf(((circleIndex + 1) / (float)numberOfCircles) * maxCircleRotation);
+		circleRadiuses[circleIndex] = radius;
+		totalRadius += radius;
+	}
+
+	for (int circleIndex = 0; circleIndex < numberOfCircles; circleIndex++)
+	{
+		float radius = circleRadiuses[circleIndex];
+		float segmentShareFraction = radius / totalRadius;
+		int numberOfSegmentsForCircle = (int)floorf(segmentShareFraction * numberOfOutputNormals);
+		float segmentStep = (PI * 2) / (float)numberOfSegmentsForCircle;
+
+		out->segmentCountsByCircleIndex[circleIndex] = numberOfSegmentsForCircle;
+		out->segmentStepsByCircleIndex[circleIndex] = segmentStep;
+
+		out->outputNormalCount += numberOfSegmentsForCircle;
+	}
+}
+
+void Math::CalculateNormalWithinHemisphere(Vec3* out, Vec3* normal, Vec3* binormal, NormalWithinHemisphereCalculationMetrics* metrics, int circleIndex, int segmentIndex)
+{
+	*out = *normal;
+
+	// Perform the circle rotation.
+	Quat circleQuat;
+	float maxCirclePurturbation = metrics->maxCircleRotation / (float)metrics->numberOfCircles/* / 2.0f*/;
+	Quat::FromAxisRotation(&circleQuat, binormal, ((circleIndex + 1) / (float)metrics->numberOfCircles) * metrics->maxCircleRotation - (Math::GenerateRandomFloat() * maxCirclePurturbation));
+
+	Mat4 circleRotationTransform;
+	Mat4::FromQuat(&circleRotationTransform, &circleQuat);
+
+	Vec3::TransformMat4(out, out, &circleRotationTransform);
+
+	// Perform the segment rotation.
+	Quat segmentQuat;
+	float maxSegmentPurturbation = metrics->segmentStepsByCircleIndex[circleIndex]/* / 2.0f*/;
+	Quat::FromAxisRotation(&segmentQuat, normal, metrics->segmentStepsByCircleIndex[circleIndex] * segmentIndex  - (Math::GenerateRandomFloat() * maxSegmentPurturbation));
+
+	Mat4 segmentRotationTransform;
+	Mat4::FromQuat(&segmentRotationTransform, &segmentQuat);
+
+	Vec3::TransformMat4(out, out, &segmentRotationTransform);
+}

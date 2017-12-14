@@ -1,7 +1,7 @@
 #include "Math/CollisionFace.h"
 #include "Math/Ray3.h"
 
-void CollisionFace::BuildFromPoints(CollisionFace* out, Vec3* points, Vec3* normals, Vec2* uvs)
+void CollisionFace::BuildFromPoints(CollisionFace* out, Vec3* points, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs)
 {
 	// Copy over the points;
 	out->points[0] = points[0];
@@ -13,10 +13,15 @@ void CollisionFace::BuildFromPoints(CollisionFace* out, Vec3* points, Vec3* norm
 	out->normals[1] = normals[1];
 	out->normals[2] = normals[2];
 
-	// Copy over the uvs.
-	out->uvs[0] = uvs[0];
-	out->uvs[1] = uvs[1];
-	out->uvs[2] = uvs[2];
+	// Copy over the material UVs.
+	out->materialUVs[0] = materialUVs[0];
+	out->materialUVs[1] = materialUVs[1];
+	out->materialUVs[2] = materialUVs[2];
+
+	// Copy over the light atlas UVs.
+	out->lightAtlasUVs[0] = lightAtlasUVs[0];
+	out->lightAtlasUVs[1] = lightAtlasUVs[1];
+	out->lightAtlasUVs[2] = lightAtlasUVs[2];
 
 	// Calculate face normal.
 	Vec3 freeEdgeAB, freeEdgeAC, faceNormal;
@@ -54,9 +59,11 @@ bool CollisionFace::DetermineIfPointOnFacePlaneIsWithinCollisionFace(CollisionFa
 {
 	bool isWithin = false;
 
-	if (Plane::CalculatePointDistance(&face->edgePlanes[0], point) < 0 &&
-		Plane::CalculatePointDistance(&face->edgePlanes[1], point) < 0 &&
-		Plane::CalculatePointDistance(&face->edgePlanes[2], point) < 0)
+	float epsilon = 0.000001f;
+
+	if (Plane::CalculatePointDistance(&face->edgePlanes[0], point) <= 0 + epsilon &&
+		Plane::CalculatePointDistance(&face->edgePlanes[1], point) <= 0 + epsilon &&
+		Plane::CalculatePointDistance(&face->edgePlanes[2], point) <= 0 + epsilon)
 	{
 		isWithin = true;
 	}

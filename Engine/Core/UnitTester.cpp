@@ -28,11 +28,13 @@ bool UnitTester::RunUnitTests()
 	this->Test_Sphere_CalculateCollisionWithCollisionFace_HitTest2();
 	this->Test_Sphere_CalculateCollisionWithCollisionFace_HitTest3();
 	this->Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPoint();
+	this->Test_Mat4_FromQuat();
 	this->Test_Math_CalculateTriangleArea2D();
 	this->Test_Math_CalculateTriangleArea3D();
 	this->Test_Math_CalculateBarycentricCoords2D();
 	this->Test_Math_CalculateBarycentricCoords3D();
 	this->Test_Math_CalculateWorldPositionFromUV();
+	//this->Test_Math_CalculateNormalWithinHemisphere();
 
 	if (this->numberOfFailedSubTests == 0)
 	{
@@ -649,6 +651,45 @@ void UnitTester::Test_CollisionFace_FindNearestPointOnCollisionFacePerimeterToPo
 	this->Assert("3.3", this->AreNearlyEqual(result.z, 3));
 }
 
+void UnitTester::Test_Mat4_FromQuat()
+{
+	this->SetTest("Mat4::FromQuat");
+
+	Vec3 axis;
+	Quat q;
+	Mat4 m;
+	Vec3 v;
+	Vec3 result;
+
+	// Sub test 1.
+	Vec3::Set(&axis, 0.0f, 1.0f, 0.0f);
+	Quat::FromAxisRotation(&q, &axis, PI / 2.0f);
+	Mat4::FromQuat(&m, &q);
+	Vec3::Set(&v, 1.0f, 0.0f, 0.0f);
+	
+	Vec3::TransformMat4(&result, &v, &m);
+	this->Assert("1.1", this->AreNearlyEqual(result, Vec3::Create(0.0f, 0.0f, -1.0f)));
+
+	// Sub test 2.
+	Vec3::Set(&axis, 1.0f, 0.0f, 0.0f);
+	Quat::FromAxisRotation(&q, &axis, PI);
+	Mat4::FromQuat(&m, &q);
+	Vec3::Set(&v, 0.0f, 0.0f, 1.0f);
+
+	Vec3::TransformMat4(&result, &v, &m);
+	this->Assert("2.1", this->AreNearlyEqual(result, Vec3::Create(0.0f, 0.0f, -1.0f)));
+
+	// Sub test 3.
+	Vec3::Set(&axis, 0.0f, 1.0f, 1.0f);
+	Vec3::Normalize(&axis, &axis);
+	Quat::FromAxisRotation(&q, &axis, PI);
+	Mat4::FromQuat(&m, &q);
+	Vec3::Set(&v, 1.0f, 0.0f, 0.0f);
+
+	Vec3::TransformMat4(&result, &v, &m);
+	this->Assert("3.1", this->AreNearlyEqual(result, Vec3::Create(-1.0f, 0.0f, 0.0f)));
+}
+
 void UnitTester::Test_Math_CalculateTriangleArea2D()
 {
 	this->SetTest("Math::CalculateTriangleArea2D");
@@ -864,6 +905,8 @@ void UnitTester::Test_Math_CalculateBarycentricCoords3D()
 
 void UnitTester::Test_Math_CalculateWorldPositionFromUV()
 {
+	this->SetTest("Math::CalculateWorldPositionFromUV");
+
 	Vec3 positions[3];
 	Vec2 uvs[3];
 	Vec2 uv;
@@ -913,4 +956,36 @@ void UnitTester::Test_Math_CalculateWorldPositionFromUV()
 
 	this->Assert("3.1", uvIsWithinFace);
 	this->Assert("3.2", this->AreNearlyEqual(worldPosition, Vec3::Create(5, 5, 0)));
+}
+
+void UnitTester::Test_Math_CalculateNormalWithinHemisphere()
+{
+	/*this->SetTest("Math::CalculateNormalWithinHemisphere");
+
+	Vec3 normal;
+	Vec3 binormal;
+	Vec3 result;
+
+	// Sub test 1.
+	Vec3::Set(&normal, 0.0f, 1.0f, 0.0f);
+	Vec3::Set(&binormal, 1.0f, 0.0f, 0.0f);
+	
+	Math::CalculateNormalWithinHemisphere(&result, &normal, &binormal, 4, 4, 3, 3, PI / 2.0f);
+	this->Assert("1.1", this->AreNearlyEqual(result, Vec3::Create(-1.0f, 0, 0.0f)));
+
+	// Sub test 2.
+	bool allResultsWereWithinHemisphere = true;
+	for (int circleNumber = 0; circleNumber < 4; circleNumber++)
+	{
+		for (int segmentNumber = 0; segmentNumber < 4; segmentNumber++)
+		{
+			Vec3::Set(&normal, Math::GenerateRandomFloat(), Math::GenerateRandomFloat(), Math::GenerateRandomFloat());
+			Vec3::Normalize(&normal, &normal);
+
+			Math::CalculateNormalWithinHemisphere(&result, &normal, &binormal, 4, 4, circleNumber, segmentNumber, PI / 2.0f);
+			allResultsWereWithinHemisphere = Vec3::Dot(&normal, &result) >= 0;
+		}
+	}
+
+	this->Assert("1.2", allResultsWereWithinHemisphere);*/
 }

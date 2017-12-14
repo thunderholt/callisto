@@ -111,6 +111,43 @@ void Renderer::DrawWorldMesh()
 	{
 		this->DrawWorldMeshChunksWithoutPvsSectors(worldMeshAsset);
 	}
+
+	////////////////////
+
+	Vec3 testPos;
+	Vec3::Set(&testPos, 0.0f, 0.6f, 0.0f);
+
+	DrawLineSphereRasterJobItem* rasterJobItem = &rasterJob->drawLineSphereJobItems.PushAndGet();
+	rasterJobItem->position = testPos;
+	rasterJobItem->radius = 0.01f;
+
+	Vec3 normal;
+	Vec3::Set(&normal, 0.0f, 0.0f, 1.0f);
+
+	Vec3 binormal;
+	Vec3::Set(&binormal, 1.0f, 0.0f, 0.0f);
+	Vec3::Normalize(&binormal, &binormal);
+
+	NormalWithinHemisphereCalculationMetrics normalWithinHemisphereCalculationMetrics;
+	Math::BuildNormalWithinHemisphereCalculationMetrics(&normalWithinHemisphereCalculationMetrics, 8, PI * 0.45f, 64);
+
+	for (int circleIndex = 0; circleIndex < 8; circleIndex++)
+	{
+		for (int segmentIndex = 0; segmentIndex < normalWithinHemisphereCalculationMetrics.segmentCountsByCircleIndex[circleIndex]; segmentIndex++)
+		{
+			Vec3 hemiNormal;
+			Math::CalculateNormalWithinHemisphere(&hemiNormal, &normal, &binormal, &normalWithinHemisphereCalculationMetrics, circleIndex, segmentIndex);
+
+			Vec3 testPos2;
+			Vec3::ScaleAndAdd(&testPos2, &testPos, &hemiNormal, 0.5f);
+
+			DrawLineSphereRasterJobItem* rasterJobItem = &rasterJob->drawLineSphereJobItems.PushAndGet();
+			rasterJobItem->position = testPos2;
+			rasterJobItem->radius = 0.01f;
+		}
+	}
+
+	////////////////////
 }
 
 void Renderer::DrawWorldMeshChunksWithPvsSectors(IWorldMeshAsset* worldMeshAsset, IPVSAsset* pvsAsset)

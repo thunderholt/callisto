@@ -23,6 +23,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 	Buffer fileData = { 0 };
 	Vec3* tempPositions = null;
 	Vec3* tempNormals = null;
+	Vec2* tempMaterialTexCoords = null;
 	Vec2* tempLightAtlasTexCoords = null;
 	unsigned short* tempIndecies = null;
 	WorldMeshChunk* tempChunks = null;
@@ -114,6 +115,15 @@ bool WorldMeshAsset::Load(const char* filePath)
 						parser->ReadVec3(&tempNormals[i]);
 					}
 				}
+				else if (strcmp(token, "material-tex-coords") == 0)
+				{
+					tempMaterialTexCoords = new Vec2[numberOfVerts];
+
+					for (int i = 0; i < numberOfVerts; i++)
+					{
+						parser->ReadVec2(&tempMaterialTexCoords[i]);
+					}
+				}
 				else if (strcmp(token, "light-atlas-tex-coords") == 0)
 				{
 					tempLightAtlasTexCoords = new Vec2[numberOfVerts];
@@ -201,7 +211,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 				IMaterialAsset* materialAsset = materialAssets[chunk->materialAssetRefIndex];
 
 				this->collisionMesh->PushChunk(
-					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempNormals, tempLightAtlasTexCoords, tempIndecies/*, , chunk->lightIslandOffset, chunk->lightIslandSize*/);
+					chunk->startIndex, chunk->numberOfFaces, tempPositions, tempNormals, tempMaterialTexCoords, tempLightAtlasTexCoords, tempIndecies, materialAsset->GetStaticLightingDetails()/*, , chunk->lightIslandOffset, chunk->lightIslandSize*/);
 			}
 
 			this->collisionMesh->Finish();
@@ -225,6 +235,7 @@ bool WorldMeshAsset::Load(const char* filePath)
 	SafeDeleteArrayAndNull(fileData.data);
 	SafeDeleteArrayAndNull(tempPositions);
 	SafeDeleteArrayAndNull(tempNormals);
+	SafeDeleteArrayAndNull(tempMaterialTexCoords);
 	SafeDeleteArrayAndNull(tempLightAtlasTexCoords);
 	SafeDeleteArrayAndNull(tempIndecies);
 	SafeDeleteArrayAndNull(tempChunks);
@@ -240,6 +251,22 @@ ICollisionMesh* WorldMeshAsset::GetCollisionMesh()
 WorldMeshLightIsland* WorldMeshAsset::GetLightIsland(int lightIslandIndex)
 {
 	return &this->lightIslands[lightIslandIndex];
+}
+
+WorldMeshLightIsland* WorldMeshAsset::FindLightIslandForChunk(int chunkIndex)
+{
+	WorldMeshLightIsland* lightIsland = null;
+
+	for (int lightIslandIndex = 0; lightIslandIndex < this->numberOfLightIslands; lightIslandIndex++)
+	{
+		WorldMeshLightIsland* potentialLightIsland = &this->lightIslands[lightIslandIndex];
+		if (potentialLightIsland->chunkIndex == chunkIndex)
+		{
+			lightIsland = potentialLightIsland;
+		}
+	}
+
+	return lightIsland;
 }
 
 int WorldMeshAsset::GetNumberOfLightIslands()

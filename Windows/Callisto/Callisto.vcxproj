@@ -317,6 +317,7 @@
     <ClInclude Include="..\..\Engine\Math\Math.h" />
     <ClInclude Include="..\..\Engine\Math\Mat4.h" />
     <ClInclude Include="..\..\Engine\Math\Plane.h" />
+    <ClInclude Include="..\..\Engine\Math\Quat.h" />
     <ClInclude Include="..\..\Engine\Math\Ray3.h" />
     <ClInclude Include="..\..\Engine\Math\Rect.h" />
     <ClInclude Include="..\..\Engine\Math\Sphere.h" />

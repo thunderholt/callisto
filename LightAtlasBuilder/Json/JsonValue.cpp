@@ -177,6 +177,22 @@ void JsonValue::CopyVec2Value(Vec2* out)
 	}
 }
 
+void JsonValue::CopyVec2iValue(Vec2i* out)
+{
+	if (this->type == JsonValueTypeArray && this->arrayElements.GetLength() == 2)
+	{
+		out->x = this->arrayElements[0]->GetIntValue();
+		out->y = this->arrayElements[1]->GetIntValue();
+	}
+}
+
+void JsonValue::CopyRgbFloatValue(RgbFloat* out)
+{
+	out->r = this->arrayElements[0]->GetFloatValue();
+	out->g = this->arrayElements[1]->GetFloatValue();
+	out->b = this->arrayElements[2]->GetFloatValue();
+}
+
 void JsonValue::CopyAABBValue(AABB* out)
 {
 	if (this->type == JsonValueTypeObject)

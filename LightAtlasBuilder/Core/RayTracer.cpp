@@ -38,15 +38,16 @@ RayTracer::~RayTracer()
 	return lightColour;
 }*/
 
-float RayTracer::CalculateDirectIlluminationIntensityForChunkAtPosition(Light* light, Vec3* worldPosition, Vec3* normal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex)
+void RayTracer::CalculateDirectIlluminationIntensityForLumel(float* outAverageIntensity, float* outAverageDistanceToLightSqr, Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex)
 {
 	int numberOfSamplesPerBlock = 4;
 	int numberOfSamples = 0;
 
 	float accumulatedIntensity = 0.0f;
+	float accumulatedDistanceToLightSqr = 0.0f;
 
 	CollisionLine line;
-	line.from = *worldPosition;
+	line.from = *lumelWorldPosition;
 
 	for (int lightBlockIndex = 0; lightBlockIndex < light->numberOfBlocks; lightBlockIndex++)
 	{
@@ -57,33 +58,36 @@ float RayTracer::CalculateDirectIlluminationIntensityForChunkAtPosition(Light* l
 			int lightNodeIndex = Math::GenerateRandomInt(0, lightBlock->numberOfNodes - 1);
 			LightNode* lightNode = &lightBlock->nodes[lightNodeIndex];
 
-			Vec3 texelToLight;
-			Vec3::Sub(&texelToLight, &lightNode->worldPosition, worldPosition);
+			Vec3 lumelToLight;
+			Vec3::Sub(&lumelToLight, &lightNode->worldPosition, lumelWorldPosition);
 
-			Vec3 texelToLightNormal;
-			Vec3::Normalize(&texelToLightNormal, &texelToLight);
+			Vec3 lumelToLightNormal;
+			Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
 
-			float coneAngle = Math::Clamp(Vec3::Dot(&texelToLightNormal, &lightNode->invDirection), 0.0f, 1.0f); // Is clamp needed?
+			float texelToLightDistanceSqr = Vec3::LengthSqr(&lumelToLight);
+			accumulatedDistanceToLightSqr += texelToLightDistanceSqr;
 
-			float minConeAngle = 0.8f;
-			if (coneAngle >= minConeAngle)
+			float coneAngle = Math::Clamp(Vec3::Dot(&lumelToLightNormal, &lightNode->invDirection), 0.0f, 1.0f); // Is clamp needed?
+
+			if (coneAngle >= light->minConeAngle)
 			{
-				line.to = lightNode->worldPosition;
-				CollisionLine::FromOwnFromAndToPoints(&line);
+				float attentuation = Math::Clamp(1.0f - (texelToLightDistanceSqr / light->distanceSqr), 0.0f, 1.0f);
 
-				if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, chunkIndex))
+				float lambert = Math::Clamp(Vec3::Dot(lumelNormal, &lumelToLightNormal), 0.0f, 1.0f);
+
+				float coneFactor = Math::InverseLerp(coneAngle, light->minConeAngle, 1.0f);
+
+				float intensity = attentuation * lambert * coneFactor;
+
+				if (intensity > 0.0f)
 				{
-					float texelToLightDistanceSqr = /*baseDistanceToLightSqr + */Vec3::LengthSqr(&texelToLight);
+					line.to = lightNode->worldPosition;
+					CollisionLine::FromOwnFromAndToPoints(&line);
 
-					float attentuation = Math::Clamp(1.0f - (texelToLightDistanceSqr / lightNode->distanceSqr), 0.0f, 1.0f);
-
-					float lambert = Math::Clamp(Vec3::Dot(normal, &lightNode->invDirection), 0.0f, 1.0f);
-
-					float coneFactor = Math::InverseLerp(coneAngle, minConeAngle, 1.0f);
-
-					float intensity = attentuation * lambert * coneFactor;
-
-					accumulatedIntensity += intensity;
+					if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, light->ownerChunkIndex, chunkIndex))
+					{
+						accumulatedIntensity += intensity;
+					}
 				}
 			}
 
@@ -91,9 +95,8 @@ float RayTracer::CalculateDirectIlluminationIntensityForChunkAtPosition(Light* l
 		}
 	}
 
-	float averageIntensity = accumulatedIntensity / numberOfSamples;
-
-	return averageIntensity;
+	*outAverageIntensity = accumulatedIntensity / numberOfSamples;
+	*outAverageDistanceToLightSqr = accumulatedDistanceToLightSqr / numberOfSamples;
 }
 
 float RayTracer::CalculateIndirectIlluminationIntensityForChunkAtPosition(Light* light, Vec3* worldPosition, Vec3* normal, ICollisionMesh* collisionMesh, int chunkIndex, int numberOfSamples, int recursionDepth)

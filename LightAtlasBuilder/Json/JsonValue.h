@@ -26,6 +26,8 @@ public:
 	virtual void SetBoolValue(bool value);
 	virtual void CopyVec3Value(Vec3* out);
 	virtual void CopyVec2Value(Vec2* out);
+	virtual void CopyVec2iValue(Vec2i* out);
+	virtual void CopyRgbFloatValue(RgbFloat* out);
 	virtual void CopyAABBValue(AABB* out);
 	virtual void CopyStringValue(char* out, int bufferSize);
 	virtual IJsonValue* Clone();

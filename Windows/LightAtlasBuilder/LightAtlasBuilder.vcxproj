@@ -173,6 +173,7 @@
     <ClCompile Include="..\..\LightAtlasBuilder\Math\Vec3.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Threading\WindowsThreadManager.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Time\WindowsTimestampProvider.cpp" />
+    <ClCompile Include="..\..\LightAtlasBuilder\Util\BitField.cpp" />
     <ClCompile Include="..\..\LightAtlasBuilder\Util\StringUtil.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
@@ -213,6 +214,7 @@
     <ClInclude Include="..\..\LightAtlasBuilder\Math\Vec3i.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Threading\WindowsThreadManager.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Time\WindowsTimestampProvider.h" />
+    <ClInclude Include="..\..\LightAtlasBuilder\Util\BitField.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Util\StringUtil.h" />
     <ClInclude Include="..\..\LightAtlasBuilder\Util\Util.h" />
   </ItemGroup>

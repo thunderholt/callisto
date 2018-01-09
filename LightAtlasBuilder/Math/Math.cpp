@@ -1,6 +1,18 @@
 #include <stdlib.h>
 #include "Math/Math.h"
 
+void Math::CreateTransformFromEulerRotationXYZ(Mat4* out, Vec3* rotation)
+{
+	Mat4 xRotationTransform, yRotationTransform, zRotationTransform;
+
+	Mat4::CreateXRotation(&xRotationTransform, rotation->x);
+	Mat4::CreateYRotation(&yRotationTransform, rotation->y);
+	Mat4::CreateZRotation(&zRotationTransform, rotation->z);
+
+	Mat4::Multiply(out, &zRotationTransform, &yRotationTransform);
+	Mat4::Multiply(out, out, &xRotationTransform);
+}
+
 int Math::GenerateRandomInt(int from, int to)
 {
 	float f = Math::GenerateRandomFloat();
@@ -247,4 +259,34 @@ void Math::CalculateNormalWithinHemisphere(Vec3* out, Vec3* normal, Vec3* binorm
 	Mat4::FromQuat(&segmentRotationTransform, &segmentQuat);
 
 	Vec3::TransformMat4(out, out, &segmentRotationTransform);
+}
+
+void Math::CalculateGridCounts(Vec2i* out, int maxNumberOfPoints, Vec2* gridSize, int minCount)
+{
+	float maxNumberOfPointsRoot = sqrtf((float)maxNumberOfPoints);
+
+	if (gridSize->x < gridSize->y)
+	{
+		float aspectRatio = gridSize->x / gridSize->y;
+		out->x = (int)floorf(maxNumberOfPointsRoot / aspectRatio);
+		out->y = (int)floorf(maxNumberOfPointsRoot * aspectRatio);
+	}
+	else
+	{
+		float aspectRatio = gridSize->x / gridSize->y;
+		out->x = (int)floorf(maxNumberOfPointsRoot * aspectRatio);
+		out->y = (int)floorf(maxNumberOfPointsRoot / aspectRatio);
+	}
+
+	if (out->x < minCount)
+	{
+		out->x = minCount;
+		out->y = (int)floorf(maxNumberOfPointsRoot / out->x);
+	}
+
+	if (out->y < minCount)
+	{
+		out->y = minCount;
+		out->x = (int)floorf(maxNumberOfPointsRoot / out->y);
+	}
 }

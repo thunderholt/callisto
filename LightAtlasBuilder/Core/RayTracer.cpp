@@ -4,41 +4,273 @@ RayTracer::~RayTracer()
 {
 }
 
-/*RgbFloat RayTracer::CalculateColourForChunkAtPosition(Vec3* worldPosition, Vec3* normal, int chunkIndex)
+float RayTracer::CalculateDirectIlluminationIntensityForLumel(ExpandedLight* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex)
 {
-	IEngine* engine = GetEngine();
-	IWorldMeshAsset* worldMesh = engine->GetWorldMeshAsset();
-	ICollisionMesh* collisionMesh = worldMesh->GetCollisionMesh();
+	// Calculate the max intensity.
+	float maxIntensity = 0.0f;
 
-	RgbFloat accumulatedColour;
-	RgbFloat::Zero(&accumulatedColour);
-
-	CollisionMeshChunk* chunk = collisionMesh->GetChunk(chunkIndex);
-
-	for (int i = 0; i < chunk->effectiveLightIndexes.GetLength(); i++)
+	for (int lightPointIndex = 0; lightPointIndex < light->numberOfIntensityPoints; lightPointIndex++)
 	{
-		int lightIndex = chunk->effectiveLightIndexes[i];
-		Light* light = engine->GetLight(lightIndex);
-		RgbFloat lightColour = this->CalculateLightColourForChunkAtPosition(light, worldPosition, normal, collisionMesh, chunkIndex);
-		RgbFloat::Add(&accumulatedColour, &accumulatedColour, &lightColour);
+		Vec3* lightPoint = &light->intensityPoints[lightPointIndex];
+
+		Vec3 lumelToLight;
+		Vec3::Sub(&lumelToLight, lightPoint, lumelWorldPosition);
+
+		Vec3 lumelToLightNormal;
+		Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
+
+		float lumelToLightDistanceSqr = Vec3::LengthSqr(&lumelToLight);
+
+		float attentuation = Math::Clamp(1.0f - (lumelToLightDistanceSqr / light->distanceSqr), 0.0f, 1.0f);
+
+		float lambert = Math::Clamp(Vec3::Dot(lumelNormal, &lumelToLightNormal), 0.0f, 1.0f);
+
+		float coneFactor = 1.0f;
+
+		if (light->type == LightTypeArea)
+		{
+			float coneAngle = Math::Clamp(Vec3::Dot(&lumelToLightNormal, &light->invDirection), 0.0f, 1.0f); // Is clamp needed?
+
+			coneFactor = Math::InverseLerp(coneAngle, light->minConeAngle, 1.0f);
+		}
+
+		float intensity = attentuation * lambert * coneFactor;
+
+		if (intensity > maxIntensity)
+		{
+			maxIntensity = intensity;
+		}
 	}
 
-	return accumulatedColour;
-}*/
+	// Calculate the shadow factor.
+	float shadowFactor = 0.0f;
 
-/*RgbFloat RayTracer::CalculateLightColourForChunkAtPosition(Light* light, Vec3* worldPosition, Vec3* normal, ICollisionMesh* collisionMesh, int chunkIndex)
+	if (maxIntensity > 0.0f)
+	{
+		int accumulatedShadowSamples = 0;
+
+		for (int shadowPointIndex = 0; shadowPointIndex < light->numberOfShadowPoints; shadowPointIndex++)
+		{
+			Vec3* shadowPoint = &light->shadowPoints[shadowPointIndex];
+
+			Vec3 lumelToLight;
+			Vec3::Sub(&lumelToLight, shadowPoint, lumelWorldPosition);
+
+			Vec3 lumelToLightNormal;
+			Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
+
+			CollisionLine line;
+			line.from = *lumelWorldPosition;
+			line.to = *shadowPoint;
+			CollisionLine::FromOwnFromAndToPoints(&line);
+
+			if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, chunkIndex, -1))
+			{
+				accumulatedShadowSamples++;
+			}
+		}
+
+		shadowFactor = accumulatedShadowSamples / (float)light->numberOfShadowPoints;
+	}
+
+	float finalIntensity = maxIntensity * shadowFactor;
+
+	return finalIntensity;
+}
+
+/*
+float RayTracer::CalculateDirectIlluminationIntensityForLumel(Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex)
 {
-	float directLightIntensity = this->CalculateDirectLightIntensityForChunkAtPosition(light, worldPosition, normal, 0, collisionMesh, chunkIndex, 40);
-	float indirectLightIntensity = this->CalculateIndirectLightIntensityForChunkAtPosition(light, worldPosition, normal, collisionMesh, chunkIndex, 22, 0);
-	float totalLightIntensity = directLightIntensity + indirectLightIntensity;
+	float maxIntensity = 0.0f;
 
-	RgbFloat lightColour;
-	RgbFloat::Scale(&lightColour, &light->colour, totalLightIntensity);
+	CollisionMeshChunk* chunk = collisionMesh->GetChunk(light->ownerChunkIndex);
 
-	return lightColour;
+	for (int faceIndex = chunk->startFaceIndex; faceIndex < chunk->startFaceIndex + chunk->numberOfFaces; faceIndex++)
+	{
+		CollisionFace* face = collisionMesh->GetFace(faceIndex);
+
+		Vec3 invFaceNormal;
+		Vec3::Scale(&invFaceNormal, &face->facePlane.normal, -1.0f);
+
+		Ray3 ray;
+		ray.origin = *lumelWorldPosition;
+		ray.normal = invFaceNormal;
+
+		Vec3 facePlaneIntersection;
+		if (Ray3::CalculateIntersectionWithPlane(&facePlaneIntersection, &ray, &face->facePlane))
+		{
+			Vec3 nearestPointOnFace;
+
+			if (CollisionFace::DetermineIfPointOnFacePlaneIsWithinCollisionFace(face, &facePlaneIntersection))
+			{
+				nearestPointOnFace = facePlaneIntersection;
+			}
+			else
+			{
+				CollisionFace::FindNearestPointOnCollisionFacePerimeterToPoint(&nearestPointOnFace, face, &facePlaneIntersection);
+			}
+
+			Vec3 lumelToLight;
+			Vec3::Sub(&lumelToLight, &nearestPointOnFace, lumelWorldPosition);
+
+			Vec3 lumelToLightNormal;
+			Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
+
+			float lumelToLightDistanceSqr = Vec3::LengthSqr(&lumelToLight);
+
+			float attentuation = Math::Clamp(1.0f - (lumelToLightDistanceSqr / light->distanceSqr), 0.0f, 1.0f);
+
+			float lambert = Math::Clamp(Vec3::Dot(lumelNormal, &lumelToLightNormal), 0.0f, 1.0f);
+
+			float coneAngle = Math::Clamp(Vec3::Dot(&lumelToLightNormal, &invFaceNormal), 0.0f, 1.0f); // Is clamp needed?
+
+			float coneFactor = Math::InverseLerp(coneAngle, light->minConeAngle, 1.0f);
+
+			float intensity = attentuation * lambert * coneFactor;
+
+			if (intensity > maxIntensity)
+			{
+				maxIntensity = intensity;
+			}
+		}
+	}
+
+	////////////// Calculate shadow factor /////////////
+
+	float shadowFactor = 0.0f;
+
+	if (maxIntensity > 0.0f)
+	{
+		int numberOfSamplesPerBlock = 4;
+		int numberOfShadowSamples = 0;
+		int accumulatedShadowSamples = 0;
+		//int numberOfShadowSamples = 0;
+
+		for (int lightBlockIndex = 0; lightBlockIndex < light->numberOfBlocks; lightBlockIndex++)
+		{
+			LightBlock* lightBlock = &light->blocks[lightBlockIndex];
+
+			for (int i = 0; i < numberOfSamplesPerBlock; i++)
+			{
+				int lightNodeIndex = Math::GenerateRandomInt(0, lightBlock->numberOfNodes - 1);
+				LightNode* lightNode = &lightBlock->nodes[lightNodeIndex];
+
+				Vec3 lumelToLight;
+				Vec3::Sub(&lumelToLight, &lightNode->worldPosition, lumelWorldPosition);
+
+				Vec3 lumelToLightNormal;
+				Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
+
+				//float coneAngle = Math::Clamp(Vec3::Dot(&lumelToLightNormal, &lightNode->invDirection), 0.0f, 1.0f); // Is clamp needed?
+
+				//if (coneAngle >= light->minConeAngle)
+				//{
+					CollisionLine line;
+					line.from = *lumelWorldPosition;
+					line.to = lightNode->worldPosition;
+					CollisionLine::FromOwnFromAndToPoints(&line);
+
+					if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, light->ownerChunkIndex, chunkIndex))
+					{
+						accumulatedShadowSamples++;
+					}
+				//}
+
+				numberOfShadowSamples++;
+			}
+		}
+
+		shadowFactor = accumulatedShadowSamples / (float)numberOfShadowSamples;
+	}
+
+	maxIntensity *= shadowFactor;
+
+	return maxIntensity;
 }*/
 
-void RayTracer::CalculateDirectIlluminationIntensityForLumel(float* outAverageIntensity, float* outAverageDistanceToLightSqr, Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex)
+/*float RayTracer::CalculateDirectIlluminationIntensityForLumel(Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex)
+{
+	int numberOfSamplesPerBlock = 4;
+	int numberOfSamples = 0;
+
+	//float accumulatedIntensity = 0.0f;
+	//float accumulatedDistanceToLightSqr = 0.0f;
+
+	
+
+
+	float maxIntensity = 0.0f;
+	int accumulatedShadowSamples = 0;
+	//int numberOfShadowSamples = 0;
+
+	for (int lightBlockIndex = 0; lightBlockIndex < light->numberOfBlocks; lightBlockIndex++)
+	{
+		LightBlock* lightBlock = &light->blocks[lightBlockIndex];
+
+		for (int i = 0; i < numberOfSamplesPerBlock; i++)
+		{
+			int lightNodeIndex = Math::GenerateRandomInt(0, lightBlock->numberOfNodes - 1);
+			LightNode* lightNode = &lightBlock->nodes[lightNodeIndex];
+
+			Vec3 lumelToLight;
+			Vec3::Sub(&lumelToLight, &lightNode->worldPosition, lumelWorldPosition);
+
+			Vec3 lumelToLightNormal;
+			Vec3::Normalize(&lumelToLightNormal, &lumelToLight);
+
+			float texelToLightDistanceSqr = Vec3::LengthSqr(&lumelToLight);
+			//accumulatedDistanceToLightSqr += texelToLightDistanceSqr;
+
+			float coneAngle = Math::Clamp(Vec3::Dot(&lumelToLightNormal, &lightNode->invDirection), 0.0f, 1.0f); // Is clamp needed?
+
+			if (coneAngle >= light->minConeAngle)
+			{
+				float attentuation = Math::Clamp(1.0f - (texelToLightDistanceSqr / light->distanceSqr), 0.0f, 1.0f);
+
+				float lambert = Math::Clamp(Vec3::Dot(lumelNormal, &lumelToLightNormal), 0.0f, 1.0f);
+
+				float coneFactor = Math::InverseLerp(coneAngle, light->minConeAngle, 1.0f);
+
+				float intensity = attentuation * lambert;// *coneFactor;
+
+				if (intensity > 0.0f)
+				{
+					if (intensity > maxIntensity)
+					{
+						maxIntensity = intensity;
+					}
+
+					CollisionLine line;
+					line.from = *lumelWorldPosition;
+					line.to = lightNode->worldPosition;
+					CollisionLine::FromOwnFromAndToPoints(&line);
+
+					if (!collisionMesh->DetermineIfLineIntersectsMesh(&line, light->ownerChunkIndex, chunkIndex))
+					{
+						accumulatedShadowSamples++;
+					}
+
+					//numberOfShadowSamples++;
+				}
+			}
+
+			numberOfSamples++;
+		}
+	}
+
+	//float averageIntensity = accumulatedIntensity / numberOfSamples;
+
+	//return averageIntensity;
+
+	float shadowFactor = accumulatedShadowSamples / (float)numberOfSamples;
+
+	float intensity = maxIntensity;// *shadowFactor;
+
+	return intensity;
+}*/
+
+/*
+void RayTracer::CalculateDirectIlluminationIntensityForLumel(float* outAverageIntensity, float* outAverageDistanceToLightSqr, Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex)
 {
 	int numberOfSamplesPerBlock = 4;
 	int numberOfSamples = 0;
@@ -97,11 +329,11 @@ void RayTracer::CalculateDirectIlluminationIntensityForLumel(float* outAverageIn
 
 	*outAverageIntensity = accumulatedIntensity / numberOfSamples;
 	*outAverageDistanceToLightSqr = accumulatedDistanceToLightSqr / numberOfSamples;
-}
-
+}*/
+/*
 float RayTracer::CalculateIndirectIlluminationIntensityForChunkAtPosition(Light* light, Vec3* worldPosition, Vec3* normal, ICollisionMesh* collisionMesh, int chunkIndex, int numberOfSamples, int recursionDepth)
 {
-	/*//int numberOfSamples = 16;
+	//int numberOfSamples = 16;
 
 	float accumulatedIntensity = 0.0f;
 	float bounceIntensityMultiplier = 0.8f;
@@ -143,6 +375,6 @@ float RayTracer::CalculateIndirectIlluminationIntensityForChunkAtPosition(Light*
 
 	float averageIntensity = accumulatedIntensity / numberOfSamples;
 
-	return averageIntensity;*/
+	return averageIntensity;
 	return 0.0f;
-}
+}*/

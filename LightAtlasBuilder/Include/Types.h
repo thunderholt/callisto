@@ -2,15 +2,23 @@
 
 #include "Include/FixedLengthArray.h"
 #include "Include/DynamicLengthArray.h"
+#include "Util/BitField.h"
 #include "Math/Math.h"
 
 #define AssetMaxFilePathLength 64
+//#define NumberOfLightsPerLightGroup 4
+#define LumelMaxBounceTargets 200
+#define MaxNumberOfBounces 2
+#define ExpandedLightMaxIntensityPoints 100
+#define ExpandedLightMaxShadowPoints 64
 
 typedef void(*ThreadEntryPointFunction)(void*);
 
 struct Config
 {
 	int indirectIlluminationHemispehereCircleCount;
+	int numberOfIndirectIlluminationSamplesPerBounce;
+	int numberOfIndirectIlluminationBounces;
 	//int indirectIlluminationHemispehereSegmentCount;
 };
 
@@ -54,17 +62,45 @@ struct Lumel
 	int chunkIndex;
 	int faceIndex;
 	RgbFloat colour;
-	float directIlluminationIntensityCache;
-	float directIlluminationAverageDistanceToLightSqrCache;
-	float indirectIlluminationIntensitySampleCache;
+	LumelBounceTarget bounceTargets[LumelMaxBounceTargets];
+	short numberOfBounceTargets;
+	float intensityCacheItemsByBounceNumber[MaxNumberOfBounces + 1];
+	//float intensityCacheItemsByLightGroupSlotIndexThenBounceNumber[NumberOfSlotsPerLightGroup][3];
+
+	//float directIlluminationIntensityCache;
+	//float directIlluminationAverageDistanceToLightSqrCache;
+	//float indirectIlluminationIntensitySampleCache;
 	//int numberOfIndirectIlluminationIntensitySamples;
-	LumelBounceTarget bounceTarget;
-	int numberOfBounceSamples;
+	//LumelBounceTarget bounceTarget;
+	//int numberOfBounceSamples;
+	//short numberOfSamplesForCurrentBounce;
 };
 
 //------ Lights -----//
 
-struct LightNode
+enum LightType
+{
+	LightTypeNone = 0,
+	LightTypePoint = 1,
+	LightTypeArea = 2
+};
+
+struct ExpandedLight
+{
+	LightType type;
+	Vec3 intensityPoints[ExpandedLightMaxIntensityPoints];
+	int numberOfIntensityPoints;
+	Vec3 shadowPoints[ExpandedLightMaxShadowPoints];
+	int numberOfShadowPoints;
+	//bool isDirectional;
+	//Vec3 direction;
+	Vec3 invDirection;
+	float distance;
+	float distanceSqr;
+	float minConeAngle;
+};
+
+/*struct LightNode
 {
 	Vec3 worldPosition;
 	Vec3 direction;
@@ -87,7 +123,7 @@ struct Light
 	float distance;
 	float distanceSqr;
 	//int numberOfEffectedChunks;
-};
+};*/
 
 //------ Json -----//
 
@@ -115,15 +151,44 @@ enum JsonParserErrorCode
 
 //------ World Meshes -----//
 
+struct WorldMeshChunk
+{
+	int startIndex;
+	int numberOfFaces;
+	int materialAssetRefIndex;
+	int lightAtlasIndex;
+	//Vec2i lightIslandOffset;
+	//Vec2i lightIslandSize;
+};
+
+struct WorldMeshLightAtlas
+{
+	Vec2i size;
+};
+
 struct WorldMeshLightIsland
 {
+	int lightAtlasIndex;
 	Vec2i offset;
 	Vec2i size;
 	int chunkIndex;
 	//MeshChunkFaceIndex chunkFaceIndex;
 };
 
-//------ Materials -----//
+struct WorldMeshLight
+{
+	LightType type;
+	Vec3 position;
+	//Vec3 rotation;
+	Vec3 iAxis;
+	Vec3 jAxis;
+	Vec3 kAxis;
+	float distance;
+	RgbFloat colour;
+	Vec2 size;
+};
+
+/*//------ Materials -----//
 
 struct MaterialStaticLightingDetails
 {
@@ -133,7 +198,7 @@ struct MaterialStaticLightingDetails
 	Vec2i gridDimensions;
 	float minConeAngle;
 	float distance;
-};
+};*/
 
 //------ Collision Meshes -----//
 
@@ -142,7 +207,8 @@ struct CollisionMeshChunk
 	int startFaceIndex;
 	int numberOfFaces;
 	AABB aabb;
-	MaterialStaticLightingDetails staticLightingDetails;
+	int lightAtlasIndex;
+	//MaterialStaticLightingDetails staticLightingDetails;
 	//int lightAtlasIndex;
 	//Vec2i lightIslandOffset;
 	//Vec2i lightIslandSize;

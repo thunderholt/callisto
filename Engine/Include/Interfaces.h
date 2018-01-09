@@ -293,9 +293,9 @@ public:
 	virtual int GetNumberOfChunks() = 0;
 	virtual AssetRef* GetMaterialAssetRef(int index) = 0;
 	virtual int GetNumberOfMaterialAssetRefs() = 0;
-	//virtual AssetRef* GetLightAtlasTextureAssetRef(int index) = 0;
-	//virtual int GetNumberOfLightAtlasTextureAssetRefs() = 0;
-	virtual AssetRef* GetLightAtlasTextureAssetRef() = 0;
+	virtual AssetRef* GetLightAtlasTextureAssetRef(int index) = 0;
+	virtual int GetNumberOfLightAtlasTextureAssetRefs() = 0;
+	//virtual AssetRef* GetLightAtlasTextureAssetRef() = 0;
 	virtual AssetRef* GetPVSAssetRef() = 0;
 	virtual ICollisionMesh* GetCollisionMesh() = 0;
 };

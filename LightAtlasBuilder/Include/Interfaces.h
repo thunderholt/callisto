@@ -38,6 +38,7 @@ public:
 	virtual void ReadVec2i(Vec2i* out) = 0;
 	virtual void ReadVec3(Vec3* out) = 0;
 	virtual void ReadVec3i(Vec3i* out) = 0;
+	virtual void ReadRgbFloat(RgbFloat* out) = 0;
 	virtual void ReadAssetRef(AssetRef* out) = 0;
 };
 
@@ -62,7 +63,7 @@ public:
 	virtual ~ICollisionMesh() {}
 	virtual void AllocateGeometry(int numberOfChunks, int numberOfFaces) = 0;
 	virtual void AllocateGrid(Vec3 gridOriginOffset, Vec3i gridDimensions, float gridCellSize) = 0;
-	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies, MaterialStaticLightingDetails* staticLightingDetails) = 0;
+	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies,/*, MaterialStaticLightingDetails* staticLightingDetails*/int lightAtlasIndex) = 0;
 	virtual void Finish() = 0;
 	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex1, int ignoreChunkIndex2) = 0;
 	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, MeshChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex1, int ignoreChunkIndex2) = 0;
@@ -78,9 +79,13 @@ public:
 	virtual ~IWorldMeshAsset() {}
 	virtual bool Load(const char* filePath) = 0;
 	virtual ICollisionMesh* GetCollisionMesh() = 0;
+	virtual WorldMeshLightAtlas* GetLightAtlas(int lightAtlasIndex) = 0;
+	virtual int GetNumberOfLightAtlases() = 0;
 	virtual WorldMeshLightIsland* GetLightIsland(int lightIslandIndex) = 0;
 	virtual WorldMeshLightIsland* FindLightIslandForChunk(int chunkIndex) = 0;
 	virtual int GetNumberOfLightIslands() = 0;
+	virtual WorldMeshLight* GetLight(int lightIndex) = 0;
+	virtual int GetNumberOfLights() = 0;
 };
 
 class IMaterialAsset
@@ -88,7 +93,7 @@ class IMaterialAsset
 public:
 	virtual ~IMaterialAsset() {}
 	virtual bool Load(const char* filePath) = 0;
-	virtual MaterialStaticLightingDetails* GetStaticLightingDetails() = 0;
+	//virtual MaterialStaticLightingDetails* GetStaticLightingDetails() = 0;
 };
 
 class ILightAtlas
@@ -96,6 +101,10 @@ class ILightAtlas
 public:
 	virtual ~ILightAtlas() {}
 	virtual void Allocate(int width, int height) = 0;
+	virtual void ResetLumelIntensityCacheItems() = 0;
+	//virtual void ResetLumelIntensityCacheItemsForBounceNumber(int bounceNumber) = 0;
+	//virtual void AverageLumelIntensityCacheItemsForBounceNumber(int bounceNumber) = 0;
+	virtual void AccumulateLumelColoursFromIntensityCacheItems(RgbFloat* lightColour) = 0;
 	virtual void WriteToPngFile(const char* filePath) = 0;
 	virtual Lumel* GetLumels() = 0;
 	virtual Vec2i GetSize() = 0;
@@ -155,18 +164,27 @@ class IWorker
 {
 public:
 	virtual ~IWorker() {}
-	virtual void Init(int startLightIslandIndex, int numberOfLightIslandIndexes) = 0;
-	virtual void SetCurrentLight(Light* light) = 0;
-	virtual void ComputeBasicLumelDataAsync() = 0;
+	//virtual void Init(int startLightIslandIndex, int numberOfLightIslandIndexes) = 0;
+	virtual void SetCurrentLightAtlasDetails(int* lightIslandIndexes, int numberofLightIslandIndexes, BitField* effectedChunksFieldForCurrentLightAtlas) = 0;
+	virtual void SetCurrentLight(ExpandedLight* light, BitField* effectedChunksFieldForCurrentLight) = 0;
+	virtual void ComputeLumelBasicDataAsync() = 0;
+	virtual void ComputeLumelBounceTargetsAsync() = 0;
 	virtual void ComputeDirectIlluminationIntensitiesForCurrentLightAsync() = 0;
-	virtual void ComputeIndirectIlluminationBouncesTargetsForCurrentLightAsync(NormalWithinHemisphereCalculationMetrics* normalWithinHemisphereCalculationMetrics, int hemisphereCircleIndex, int hemisphereSegmentIndex) = 0;
-	virtual void AccumulateIndirectIlluminationIntensitiesForCurrentLightAsync() = 0;
-	virtual void CompositeColourForCurrentLightAsync() = 0;
+	virtual void ComputeIndirectIlluminationBounceIntensitiesForCurrentLightAsync(int bounceNumber) = 0;
+	//virtual void SetCurrentLight(Light* light) = 0;
+	//virtual void SetCurrentLightSlotIndex(int lightSlotIndex) = 0;
+	//virtual void SetCurrentLightGroup(LightGroup* lightGroup);
+	//virtual void ComputeBasicLumelDataAsync() = 0;
+	//virtual void ComputeDirectIlluminationIntensitiesForCurrentLightGroupAsync() = 0;
+	//virtual void ComputeIndirectIlluminationBouncesTargetsForCurrentLightAsync(NormalWithinHemisphereCalculationMetrics* normalWithinHemisphereCalculationMetrics, int hemisphereCircleIndex, int hemisphereSegmentIndex) = 0;
+	//virtual void AccumulateIndirectIlluminationIntensitiesForCurrentLightAsync() = 0;
+	//virtual void CompositeColourForCurrentLightAsync() = 0;
+	//virtual void AccumulateIndirectIlluminationIntensitiesForCurrentLightGroupAsync(NormalWithinHemisphereCalculationMetrics* normalWithinHemisphereCalculationMetrics, int hemisphereCircleIndex, int hemisphereSegmentIndex, int bounceNumber) = 0;
 	virtual void FillBordersAsync() = 0;
 	virtual bool GetHasFinished() = 0;
 	virtual void RunThreadEntryPoint() = 0;
-	virtual void DumpStats() = 0;
-	virtual int GetTotalFailures() = 0;
+	//virtual void DumpStats() = 0;
+	//virtual int GetTotalFailures() = 0;
 };
 
 class IRayTracer
@@ -174,7 +192,9 @@ class IRayTracer
 public:
 	virtual ~IRayTracer() {}
 	//virtual RgbFloat CalculateColourForChunkAtPosition(Vec3* worldPosition, Vec3* normal, int chunkIndex) = 0;
-	virtual void CalculateDirectIlluminationIntensityForLumel(float* outAverageIntensity, float* outAverageDistanceToLightSqr, Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex) = 0;
+	//virtual void CalculateDirectIlluminationIntensityForLumel(float* outAverageIntensity, float* outAverageDistanceToLightSqr, Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal/*, float baseDistanceToLightSqr*/, ICollisionMesh* collisionMesh, int chunkIndex) = 0;
+	//virtual float CalculateDirectIlluminationIntensityForLumel(Light* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex) = 0;
+	virtual float CalculateDirectIlluminationIntensityForLumel(ExpandedLight* light, Vec3* lumelWorldPosition, Vec3* lumelNormal, ICollisionMesh* collisionMesh, int chunkIndex) = 0;
 };
 
 class IEngine
@@ -184,9 +204,9 @@ public:
 	virtual void BuildLightAtlases(const char* worldMeshAssetFilePath, const char* assetsFolderPath) = 0;
 	virtual ILogger* GetLogger() = 0;
 	virtual IWorldMeshAsset* GetWorldMeshAsset() = 0;
-	virtual ILightAtlas* GetLightAtlas() = 0;
-	virtual Light* GetLight(int index) = 0;
-	virtual int GetNumberOfLights() = 0;
+	virtual ILightAtlas* GetCurrentLightAtlas() = 0;
+	//virtual Light* GetLight(int index) = 0;
+	//virtual int GetNumberOfLights() = 0;
 	virtual IRayTracer* GetRayTracer() = 0;
 	virtual IThreadManager* GetThreadManager() = 0;
 	virtual ITimestampProvider* GetTimestampProvider() = 0;

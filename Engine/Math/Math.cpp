@@ -1,21 +1,21 @@
 #include <stdlib.h>
 #include "Math/Math.h"
 
-void Math::CreateTransformFromRotation(Mat4* out, Vec3* rotation)
+void Math::CreateTransformFromEulerRotationXZY(Mat4* out, Vec3* rotation)
 {
 	Mat4 xRotationTransform, yRotationTransform, zRotationTransform;
 
-	Mat4::CreateZRotation(&zRotationTransform, rotation->z);
-	Mat4::CreateYRotation(&yRotationTransform, rotation->y);
 	Mat4::CreateXRotation(&xRotationTransform, rotation->x);
+	Mat4::CreateYRotation(&yRotationTransform, rotation->y);
+	Mat4::CreateZRotation(&zRotationTransform, rotation->z);
 
 	Mat4::Multiply(out, &yRotationTransform, &zRotationTransform);
 	Mat4::Multiply(out, out, &xRotationTransform);
 }
 
-void Math::CreateTransformFromPostionAndRotation(Mat4* out, Vec3* position, Vec3* rotation)
+void Math::CreateTransformFromPostionAndEulerRotationXZY(Mat4* out, Vec3* position, Vec3* rotation)
 {
-	Math::CreateTransformFromRotation(out, rotation);
+	Math::CreateTransformFromEulerRotationXZY(out, rotation);
 	Mat4::Translate(out, position);
 }
 

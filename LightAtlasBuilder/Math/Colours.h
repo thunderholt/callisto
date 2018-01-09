@@ -61,6 +61,13 @@ struct RgbFloat
 		out->b = c->b * amount;
 	}
 
+	static void ScaleAndAdd(RgbFloat* out, RgbFloat* a, RgbFloat* b, float amount)
+	{
+		out->r = a->r + b->r * amount;
+		out->g = a->g + b->g * amount;
+		out->b = a->b + b->b * amount;
+	}
+
 	static void Saturate(RgbFloat* out, RgbFloat* c)
 	{
 		out->r = c->r > 1.0f ? 1.0f : c->r;

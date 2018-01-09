@@ -34,6 +34,11 @@ struct LineSphereBuffers
 	GLuint position;
 };
 
+struct SystemTextureAssetIndexes
+{
+	int blankLightAtlas;
+};
+
 class OpenGLRasterizer : public IRasterizer
 {
 public:
@@ -63,6 +68,7 @@ private:
 	void DrawLineCubes(RasterJob* rasterJob);
 	void DrawLineCube(CommonRastorizationParameters* commonRasterizationParameters, Vec3* position, Vec3* size, RgbFloat* unoccludedColour, RgbFloat* occludedColour);
 	void DrawLineSphere(CommonRastorizationParameters* commonRasterizationParameters, Vec3* position, float radius, RgbFloat* unoccludedColour, RgbFloat* occludedColour);
+	bool LoadSystemTextureAssetIndexes();
 	bool LoadPrograms();
 	bool LoadWorldMeshChunkProgram();
 	bool LoadStaticMeshChunkProgram();
@@ -86,4 +92,5 @@ private:
 	LineCubeBuffers lineCubeBuffers;
 	LineSphereBuffers lineSphereBuffers;
 	Vec2 viewportSize;
+	SystemTextureAssetIndexes systemTextureAssetIndexes;
 };

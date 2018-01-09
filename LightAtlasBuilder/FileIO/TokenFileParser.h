@@ -17,6 +17,7 @@ public:
 	virtual void ReadVec2i(Vec2i* out);
 	virtual void ReadVec3(Vec3* out);
 	virtual void ReadVec3i(Vec3i* out);
+	virtual void ReadRgbFloat(RgbFloat* out);
 	virtual void ReadAssetRef(AssetRef* out);
 
 private:

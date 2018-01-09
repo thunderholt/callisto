@@ -74,12 +74,13 @@ void CollisionMesh::AllocateGrid(Vec3 gridOrigin, Vec3i gridDimensions, float gr
 	this->gridCells = new CollisionMeshGridCell[this->gridMetrics.numberOfCells];
 }
 
-void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies, MaterialStaticLightingDetails* staticLightingDetails/*, int lightAtlasIndex, Vec2i lightIslandOffset, Vec2i lightIslandSize*/)
+void CollisionMesh::PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies/*, MaterialStaticLightingDetails* staticLightingDetails*/, int lightAtlasIndex/*, Vec2i lightIslandOffset, Vec2i lightIslandSize*/)
 {
 	CollisionMeshChunk* chunk = &this->chunks[this->nextChunkIndex++];
 	chunk->startFaceIndex = this->nextFaceIndex;
 	chunk->numberOfFaces = numberOfFaces;
-	chunk->staticLightingDetails = *staticLightingDetails;
+	chunk->lightAtlasIndex = lightAtlasIndex;
+	//chunk->staticLightingDetails = *staticLightingDetails;
 	/*chunk->lightAtlasIndex = lightAtlasIndex;
 	chunk->lightIslandOffset = lightIslandOffset;
 	chunk->lightIslandSize = lightIslandSize;*/

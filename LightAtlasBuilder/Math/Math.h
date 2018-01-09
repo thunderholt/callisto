@@ -36,6 +36,7 @@ public:
 		return f1 >= f2 - epsilon && f1 <= f2 + epsilon;
 	}
 
+	static void CreateTransformFromEulerRotationXYZ(Mat4* out, Vec3* rotation);
 	static int GenerateRandomInt(int from, int to);
 	static float GenerateRandomFloat();
 	static float CalculateTriangleArea(Vec2* points);
@@ -57,4 +58,5 @@ public:
 	static void BuildNormalWithinHemisphereCalculationMetrics(NormalWithinHemisphereCalculationMetrics* out, int numberOfCircles, float maxCircleRotation, int numberOfOutputNormals);
 	static void CalculateNormalWithinHemisphere(Vec3* out, Vec3* normal, Vec3* binormal, NormalWithinHemisphereCalculationMetrics* metrics, int circleIndex, int segmentIndex);
 	//static void CalculateNormalWithinHemisphere(Vec3* out, Vec3* normal, Vec3* binormal, int numberOfCircles, int numberOfSegments, int circleNumber, int segmentNumber, float maxCircleRotation);
+	static void CalculateGridCounts(Vec2i* out, int maxNumberOfPoints, Vec2* gridSize, int minCount);
 };

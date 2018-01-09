@@ -2,7 +2,7 @@
 
 MaterialAsset::MaterialAsset()
 {
-	memset(&this->staticLightingDetails, 0, sizeof(MaterialStaticLightingDetails));
+	//memset(&this->staticLightingDetails, 0, sizeof(MaterialStaticLightingDetails));
 }
 
 MaterialAsset::~MaterialAsset()
@@ -45,10 +45,10 @@ bool MaterialAsset::Load(const char* filePath)
 				IJsonProperty* jsonProperty = jsonMaterial->GetObjectProperty(propertyIndex);
 				IJsonValue* jsonPropertyValue = jsonProperty->GetValue();
 
-				if (strcmp(jsonProperty->GetName(), "static-lighting-details") == 0)
+				/*if (strcmp(jsonProperty->GetName(), "static-lighting-details") == 0)
 				{
 					this->LoadStaticLightingDetailsFromJsonValue(jsonProperty->GetValue());
-				}
+				}*/
 			}
 
 			SafeDeleteAndNull(jsonMaterial);
@@ -64,12 +64,12 @@ bool MaterialAsset::Load(const char* filePath)
 	return success;
 }
 
-MaterialStaticLightingDetails* MaterialAsset::GetStaticLightingDetails()
+/*MaterialStaticLightingDetails* MaterialAsset::GetStaticLightingDetails()
 {
 	return &this->staticLightingDetails;
-}
+}*/
 
-
+/*
 void MaterialAsset::LoadStaticLightingDetailsFromJsonValue(IJsonValue* jsonStaticLightingDetails)
 {
 	for (int propertyIndex = 0; propertyIndex < jsonStaticLightingDetails->GetNumberOfObjectProperties(); propertyIndex++)
@@ -102,4 +102,4 @@ void MaterialAsset::LoadStaticLightingDetailsFromJsonValue(IJsonValue* jsonStati
 			this->staticLightingDetails.distance = jsonPropertyValue->GetFloatValue();
 		}
 	}
-}
+}*/

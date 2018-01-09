@@ -16,6 +16,9 @@ LightAtlas::~LightAtlas()
 
 void LightAtlas::Allocate(int width, int height)
 {
+	IEngine* engine = GetEngine();
+	ILogger* logger = engine->GetLogger();
+
 	this->size.x = width;
 	this->size.y = height;
 
@@ -37,6 +40,89 @@ void LightAtlas::Allocate(int width, int height)
 		lumel->colour.r = 0.0f;
 		lumel->colour.g = 1.0f;
 		lumel->colour.b = 0.0f;
+	}
+
+	logger->Write("Allocated light atlas: %d x %d.", this->size.x, this->size.y);
+}
+
+void LightAtlas::ResetLumelIntensityCacheItems()
+{
+	for (int y = 0; y < this->size.y; y++)
+	{
+		for (int x = 0; x < this->size.x; x++)
+		{
+			int lumelIndex = y * this->size.x + x;
+			Lumel* lumel = &this->lumels[lumelIndex];
+
+			if (lumel->isParticipant)
+			{
+				for (int bounceNumber = 0; bounceNumber < MaxNumberOfBounces; bounceNumber++)
+				{
+					lumel->intensityCacheItemsByBounceNumber[bounceNumber] = 0;
+				}
+			}
+		}
+	}
+}
+
+/*void LightAtlas::ResetLumelIntensityCacheItemsForBounceNumber(int bounceNumber)
+{
+	for (int y = 0; y < this->size.y; y++)
+	{
+		for (int x = 0; x < this->size.x; x++)
+		{
+			int lumelIndex = y * this->size.x + x;
+			Lumel* lumel = &this->lumels[lumelIndex];
+			
+			if (lumel->isParticipant)
+			{
+				lumel->intensityCacheItemsByBounceNumber[bounceNumber] = 0;
+				lumel->numberOfSamplesForCurrentBounce = 0;
+			}
+		}
+	}
+}*/
+
+/*void LightAtlas::AverageLumelIntensityCacheItemsForBounceNumber(int bounceNumber)
+{
+	for (int y = 0; y < this->size.y; y++)
+	{
+		for (int x = 0; x < this->size.x; x++)
+		{
+			int lumelIndex = y * this->size.x + x;
+			Lumel* lumel = &this->lumels[lumelIndex];
+
+			if (lumel->isParticipant)
+			{
+				lumel->intensityCacheItemsByBounceNumber[bounceNumber] /= (float)lumel->numberOfSamplesForCurrentBounce;
+			}
+		}
+	}
+}*/
+
+void LightAtlas::AccumulateLumelColoursFromIntensityCacheItems(RgbFloat* lightColour)
+{
+	IEngine* engine = GetEngine();
+	const Config* config = engine->GetConfig();
+
+	for (int y = 0; y < this->size.y; y++)
+	{
+		for (int x = 0; x < this->size.x; x++)
+		{
+			int lumelIndex = y * this->size.x + x;
+			Lumel* lumel = &this->lumels[lumelIndex];
+
+			if (lumel->isParticipant)
+			{
+				float totalIntensity = 0.0f;
+				for (int bounceNumber = 0; bounceNumber <= config->numberOfIndirectIlluminationBounces; bounceNumber++)
+				{
+					totalIntensity += lumel->intensityCacheItemsByBounceNumber[bounceNumber];
+				}
+
+				RgbFloat::ScaleAndAdd(&lumel->colour, &lumel->colour, lightColour, totalIntensity);
+			}
+		}
 	}
 }
 
@@ -123,6 +209,8 @@ void LightAtlas::WriteToPngFile(const char* filePath)
 
 	RgbUByte* outputColours = new RgbUByte[this->size.x * this->size.y];
 
+	float maxInputColourChannelIntensity = 2.0f;
+
 	for (int y = 0; y < this->size.y; y++)
 	{
 		for (int x = 0; x < this->size.x; x++)
@@ -132,9 +220,13 @@ void LightAtlas::WriteToPngFile(const char* filePath)
 			RgbFloat* inputColour = &lumel->colour;
 			RgbUByte* outputColour = &outputColours[lumelIndex];
 
-			outputColour->r = (unsigned char)(Math::Clamp(inputColour->r, 0.0f, 1.0f) * 255);
+			outputColour->r = (unsigned char)(Math::Clamp(inputColour->r / maxInputColourChannelIntensity, 0.0f, 1.0f) * 255.0f);
+			outputColour->g = (unsigned char)(Math::Clamp(inputColour->g / maxInputColourChannelIntensity, 0.0f, 1.0f) * 255.0f);
+			outputColour->b = (unsigned char)(Math::Clamp(inputColour->b / maxInputColourChannelIntensity, 0.0f, 1.0f) * 255.0f);
+
+			/*outputColour->r = (unsigned char)(Math::Clamp(inputColour->r, 0.0f, 1.0f) * 255);
 			outputColour->g = (unsigned char)(Math::Clamp(inputColour->g, 0.0f, 1.0f) * 255);
-			outputColour->b = (unsigned char)(Math::Clamp(inputColour->b, 0.0f, 1.0f) * 255);
+			outputColour->b = (unsigned char)(Math::Clamp(inputColour->b, 0.0f, 1.0f) * 255);*/
 		}
 	}
 

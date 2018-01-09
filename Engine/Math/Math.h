@@ -46,8 +46,8 @@ public:
 		return f1 >= f2 - epsilon && f1 <= f2 + epsilon;
 	}
 
-	static void CreateTransformFromRotation(Mat4* out, Vec3* rotation);
-	static void CreateTransformFromPostionAndRotation(Mat4* out, Vec3* position, Vec3* rotation);
+	static void CreateTransformFromEulerRotationXZY(Mat4* out, Vec3* rotation);
+	static void CreateTransformFromPostionAndEulerRotationXZY(Mat4* out, Vec3* position, Vec3* rotation);
 	static float RotateTowardsTargetAngle(float currentAngle, float targetAngle, float maxDelta);
 	static float Lerp(float from, float to, float amount);
 	static float GenerateRandomFloat();

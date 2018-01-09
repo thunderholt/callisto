@@ -10,9 +10,9 @@ public:
 	virtual void BuildLightAtlases(const char* worldMeshAssetFilePath, const char* assetsFolderPath);
 	virtual ILogger* GetLogger();
 	virtual IWorldMeshAsset* GetWorldMeshAsset();
-	virtual ILightAtlas* GetLightAtlas();
-	virtual Light* GetLight(int index);
-	virtual int GetNumberOfLights();
+	virtual ILightAtlas* GetCurrentLightAtlas();
+	//virtual Light* GetLight(int index);
+	//virtual int GetNumberOfLights();
 	virtual IRayTracer* GetRayTracer();
 	virtual IThreadManager* GetThreadManager();
 	virtual ITimestampProvider* GetTimestampProvider();
@@ -20,13 +20,15 @@ public:
 	virtual const Config* GetConfig();
 
 private:
-	void InitWorkers();
-	void InitLightAtlas();
-	void InitLights();
-	void ComputeLightIslandsOnWorkers();
-	void FillBordersOnWorkers();
+	//void InitWorkers();
+	//void InitLightAtlas();
+	//void InitLights();
+	void ComputeLightIslandsOnWorkers(int lightAtlasIndex);
+	//void FillBordersOnWorkers();
 	void WaitForAllWorkersToFinish();
-	void WriteOutputFiles();
+	void ExpandLight(ExpandedLight* out, WorldMeshLight* worldMeshLight);
+	void BuildEffectedChunksFieldForLight(BitField* out, ExpandedLight* light);
+	void WriteOutputFile(int lightAtlasIndex);
 
 	Config config;
 	const char* assetsFolderPath;
@@ -36,7 +38,7 @@ private:
 	IThreadManager* threadManager;
 	ITimestampProvider* timestampProvider;
 	//DynamicLengthArray<ILightAtlas*> lightAtlases;
-	ILightAtlas* lightAtlas;
-	DynamicLengthArray<Light*> lights;
+	ILightAtlas* currentLightAtlas;
+	//DynamicLengthArray<Light*> lights;
 	FixedLengthArray<IWorker*, 16> workers;
 };

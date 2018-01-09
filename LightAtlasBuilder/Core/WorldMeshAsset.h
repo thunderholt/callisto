@@ -2,15 +2,6 @@
 
 #include "Include/LightAtlasBuilder.h"
 
-struct WorldMeshChunk
-{
-	int startIndex;
-	int numberOfFaces;
-	int materialAssetRefIndex;
-	//Vec2i lightIslandOffset;
-	//Vec2i lightIslandSize;
-};
-
 class WorldMeshAsset : public IWorldMeshAsset
 {
 public:
@@ -19,12 +10,20 @@ public:
 
 	virtual bool Load(const char* filePath);
 	virtual ICollisionMesh* GetCollisionMesh();
+	virtual WorldMeshLightAtlas* GetLightAtlas(int lightAtlasIndex);
+	virtual int GetNumberOfLightAtlases();
 	virtual WorldMeshLightIsland* GetLightIsland(int lightIslandIndex);
 	virtual WorldMeshLightIsland* FindLightIslandForChunk(int chunkIndex);
 	virtual int GetNumberOfLightIslands();
+	virtual WorldMeshLight* GetLight(int lightIndex);
+	virtual int GetNumberOfLights();
 	
 private:
 	ICollisionMesh* collisionMesh;
+	WorldMeshLightAtlas* lightAtlases;
+	int numberOfLightAtlases;
 	WorldMeshLightIsland* lightIslands;
 	int numberOfLightIslands;
+	WorldMeshLight* lights;
+	int numberOfLights;
 };

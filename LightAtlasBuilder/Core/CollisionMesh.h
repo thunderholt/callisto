@@ -22,7 +22,7 @@ public:
 	virtual ~CollisionMesh();
 	virtual void AllocateGeometry(int numberOfChunks, int numberOfFaces);
 	virtual void AllocateGrid(Vec3 gridOrigin, Vec3i gridDimensions, float gridCellSize);
-	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies, MaterialStaticLightingDetails* staticLightingDetails);
+	virtual void PushChunk(int startIndex, int numberOfFaces, Vec3* positions, Vec3* normals, Vec2* materialUVs, Vec2* lightAtlasUVs, unsigned short* indecies,/*, MaterialStaticLightingDetails* staticLightingDetails*/int lightAtlasIndex);
 	virtual void Finish();
 	virtual bool DetermineIfLineIntersectsMesh(CollisionLine* line, int ignoreChunkIndex1, int ignoreChunkIndex2);
 	virtual bool FindNearestLineIntersectWithMesh(Vec3* outIntersection, MeshChunkFaceIndex* outChunkFaceIndex, CollisionLine* line, int ignoreChunkIndex1, int ignoreChunkIndex2);

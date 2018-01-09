@@ -33,6 +33,7 @@ void AssetManager::BeginLoadingCoreAssets()
 	this->BeginLoadingAsset(AssetTypeSpriteSheet, "sprite-sheets/icons/debug.ss", true);
 	this->BeginLoadingAsset(AssetTypeTexture, "textures/sprite-sheets/fonts/debug.png", true);
 	this->BeginLoadingAsset(AssetTypeTexture, "textures/sprite-sheets/icons/debug.png", true);
+	this->BeginLoadingAsset(AssetTypeTexture, "textures/system/blank-light-atlas.png", true);
 	
 	this->loadingPhase = AssetManagerLoadingPhaseLoadingReferencedAssets;
 	this->isLoadingCoreAssets = true;

@@ -111,6 +111,13 @@ void TokenFileParser::ReadVec3i(Vec3i* out)
 	out->z = this->ReadInt();
 }
 
+void TokenFileParser::ReadRgbFloat(RgbFloat* out)
+{
+	out->r = this->ReadFloat();
+	out->g = this->ReadFloat();
+	out->b = this->ReadFloat();
+}
+
 void TokenFileParser::ReadAssetRef(AssetRef* out)
 {
 	this->ReadString(out->filePath, AssetMaxFilePathLength);

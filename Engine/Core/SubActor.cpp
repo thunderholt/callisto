@@ -97,7 +97,7 @@ void SubActor::RecalculateNonHierachicalComputedLocationData()
 	Vec3::Add(&this->nonHierachicalComputedLocationData.localPosition, &this->baseLocationData.localPositionBase, &this->baseLocationData.localPositionOffset);
 	Vec3::Add(&this->nonHierachicalComputedLocationData.localRotation, &this->baseLocationData.localRotationBase, &this->baseLocationData.localRotationOffset);
 
-	Math::CreateTransformFromPostionAndRotation(
+	Math::CreateTransformFromPostionAndEulerRotationXZY(
 		&this->nonHierachicalComputedLocationData.localTransform, &this->nonHierachicalComputedLocationData.localPosition, &this->nonHierachicalComputedLocationData.localRotation);
 
 	this->nonHierachicalComputedLocationData.isValid = true;

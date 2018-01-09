@@ -481,7 +481,7 @@ void Actor::RecalculateComputedLocationData()
 	Sphere::Translate(&this->computedLocationData.worldCollisionSphere, &this->baseLocationData.localCollisionSphere, &this->baseLocationData.worldPosition);
 
 	// Calculate the actor's world transform.
-	Math::CreateTransformFromPostionAndRotation(
+	Math::CreateTransformFromPostionAndEulerRotationXZY(
 		&this->computedLocationData.worldTransform, &this->baseLocationData.worldPosition, &this->baseLocationData.worldRotation);
 
 	// The computed location data is now valid.

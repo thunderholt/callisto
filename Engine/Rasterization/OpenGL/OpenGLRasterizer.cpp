@@ -58,17 +58,20 @@ bool OpenGLRasterizer::PostCoreAssetLoadInit()
 
 	logger->Write("Post initialising OpenGL rasterizer...");
 
-	if (this->LoadPrograms())
+	if (this->LoadSystemTextureAssetIndexes())
 	{
-		if (this->CreateSprite2DBuffers())
+		if (this->LoadPrograms())
 		{
-			if (this->CreateSprite3DBuffers())
+			if (this->CreateSprite2DBuffers())
 			{
-				if (this->CreateLineCubeBuffers())
+				if (this->CreateSprite3DBuffers())
 				{
-					if (this->CreateLineSphereBuffers())
+					if (this->CreateLineCubeBuffers())
 					{
-						success = true;
+						if (this->CreateLineSphereBuffers())
+						{
+							success = true;
+						}
 					}
 				}
 			}
@@ -253,10 +256,20 @@ void OpenGLRasterizer::DrawWorldMeshChunks(RasterJob* rasterJob)
 		WorldMeshChunk* chunk = worldMeshAsset->GetChunk(jobItem->chunkIndex);
 		AssetRef* materialAssetRef = worldMeshAsset->GetMaterialAssetRef(chunk->materialAssetRefIndex);
 		//AssetRef* lightAtlasTextureAssetRef = worldMeshAsset->GetLightAtlasTextureAssetRef(chunk->lightAtlasTextureAssetRefIndex);
-		AssetRef* lightAtlasTextureAssetRef = worldMeshAsset->GetLightAtlasTextureAssetRef();
+		
 		IMaterialAsset* materialAsset = assetManager->GetMaterialAsset(materialAssetRef->index);
 		ITextureAsset* diffuseTextureAsset = assetManager->GetTextureAsset(materialAsset->GetTextureAssetRef(MaterialTextureTypeDiffuse)->index);
-		ITextureAsset* lightAtlasTextureAsset = assetManager->GetTextureAsset(lightAtlasTextureAssetRef->index);
+		
+		ITextureAsset* lightAtlasTextureAsset = null;
+		if (chunk->lightAtlasIndex != -1)
+		{
+			AssetRef* lightAtlasTextureAssetRef = worldMeshAsset->GetLightAtlasTextureAssetRef(chunk->lightAtlasIndex);
+			lightAtlasTextureAsset = assetManager->GetTextureAsset(lightAtlasTextureAssetRef->index);
+		}
+		else
+		{
+			lightAtlasTextureAsset = assetManager->GetTextureAsset(this->systemTextureAssetIndexes.blankLightAtlas);
+		}
 
 		/*if (jobItem->chunkIndex != 21)
 		{
@@ -716,6 +729,19 @@ void OpenGLRasterizer::DrawLineSphere(CommonRastorizationParameters* commonRaste
 
 	// Disable the vertex attributes.
 	glDisableVertexAttribArray(attributeLocations->position);
+}
+
+bool OpenGLRasterizer::LoadSystemTextureAssetIndexes()
+{
+	IEngine* engine = GetEngine();
+	IAssetManager* assetManager = engine->GetAssetManager();
+
+	bool success = true;
+
+	this->systemTextureAssetIndexes.blankLightAtlas = assetManager->FindAssetIndex(AssetTypeTexture, "textures/system/blank-light-atlas.png");
+	success &= this->systemTextureAssetIndexes.blankLightAtlas != -1;
+
+	return success;
 }
 
 bool OpenGLRasterizer::LoadPrograms()

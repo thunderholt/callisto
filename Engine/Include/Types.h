@@ -595,6 +595,7 @@ struct WorldMeshChunk
 	//Vec2i lightIslandOffset;
 	//Vec2i lightIslandSize;
 	int lastRenderedFrameId;
+	int lightAtlasIndex;
 };
 
 //------ Static Meshes -----//

@@ -12,5 +12,5 @@ void main()
 
 	vec4 lightAtlasSample = texture2D(lightAtlasSampler, fragmentLightAtlasTexCoord);
 
-	gl_FragColor = diffuseSample * lightAtlasSample + vec4(0.1, 0.1, 0.1, 0.0);
+	gl_FragColor = diffuseSample * (lightAtlasSample * 2.0);
 }
